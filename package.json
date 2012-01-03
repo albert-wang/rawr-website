@@ -1,0 +1,9 @@
+{
+	"name" : "RawrRawr Website Application", 
+	
+	"dependencies" : {
+		"express" 	: ">= 2.5.4", 
+		"mu2"		: ">= 0.5.3"
+	}
+}
+
