@@ -16,10 +16,10 @@
         app.set("view options", { layout : false });
 
         //Middleware
-        app.use(express.logger({stream : fs.createWriteStream("./logs/nodelog.log", { flags : "w+" })}));
-        app.use(express.static(__dirname + "/static/"));
+        app.use(express.logger({stream : fs.createWriteStream("./logs/nodelog.log", { flags : "a" })}));
+        app.use(express.profiler());
+        app.use(express.static("./static/"));
         app.use(express.router(routes));
-        
 
         return app;
     }
