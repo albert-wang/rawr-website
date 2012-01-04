@@ -2,10 +2,12 @@
 (function()
 {
     var setup = require("../utils/setup.js");
-    var fe    = require("flow").exec;
+    var flow  = require("flow");
+    var fe    = flow.exec;
 
     var DEFAULT_ID = 1;
     var INVALID_ID = 0;
+    var NOT_FOUND  = -1;
 
     //Two functions to get values by ID.
     function getCategoryIDByName(name, cb)
@@ -60,13 +62,61 @@
 
             if (result.rows.length == 0)
             {
-                return cb("No tag with the name: " + name + " was found.", INVALID_ID);
+                return cb("No tag with the name: " + name + " was found.", NOT_FOUND);
             }
 
             cb(undefined, result.rows[0].id);
         });
     }
 
+    function getOrCreateTagIDByName(name, cb)
+    {
+        fe(function()
+        {
+            getTagIDByName(name, this);
+        }, function(err, id)
+        {
+            if (err && id == NOT_FOUND)
+            {
+                client.query({
+                    name : "insert tag", 
+                    text : "INSERT INTO blog_tags (name) VALUES ($1) RETURNING id", 
+                    values : [ name ]
+                }, this);
+            } else if (err)
+            {
+                cb(err, INVALID_ID);
+                return undefined;
+            } else 
+            {
+                cb(err, id);
+                return undefined;
+            }
+        }, function(err, results)
+        {
+            if (err)
+            {
+                cb(err, INVALID_ID);
+                return undefined;
+            }
+
+            if (results.rows.length == 0)
+            {
+                cb("Insertion of a tag did not return an ID as it was supposed to", INVALID_ID);
+                return undefined;
+            }
+
+            cb(undefined, results.rows[0].id);
+        });
+    }
+
+    /*
+        Params must be an object with the following fields:
+            category : the category the post is to be placed in
+            title    : title of the post
+            content  : content of the post
+            tags     : [ list of tags. ]
+    */
     function post(params, cb)
     {
         fe(function()
@@ -110,19 +160,10 @@
                  return undefined;
              }
 
-             cb(undefined, result.rows[0].id);
-         });
-    }
+             var tags = params.tags || [];
 
-    function tag(params, cb)
-    {
-        fe(function()
-        {
-            setup.getConnection(this)
-        }, function(err, client)
-        {
-            if (err) { cb(err); return undefined; }
-        });
+             associateTagsWithPost(result.rows[0].id, tags, cb);
+         });
     }
 
     function associateTagsWithPost(postID, tags, cb)
@@ -134,14 +175,31 @@
         {
             if (err)
             {
-                cb(err);
+                cb(err, INVALID_ID);
                 return undefined;
             }
-
-            client.query({
-                name : "associate tags with post", 
-
-            }, this);
+            
+            flow.serialForEach(tags, function(tag)
+            {
+                getOrCreateTagIDByName(name, this);
+            }, function(err, tid)
+            {
+                client.query({
+                    name : "bridge tag", 
+                    text : "INSERT INTO blog_tag_bridge (post, tag) VALUES ($1, $2)", 
+                    values : [postID, tid]
+                }, this);
+            }, function(err, results)
+            {
+                if (err)
+                {
+                    cb(err, INVALID_ID);
+                    return undefined;
+                }
+            }, function()
+            {
+                cb(undefined, postID);
+            });
         });
     }
 
