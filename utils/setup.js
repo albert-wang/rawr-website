@@ -1,12 +1,12 @@
 
-global.__pq_connection_string = "tcp://rraawwrr:password@localhost";
-
 (function()
 {
     var express = require("express");
     var swig    = require("swig");
     var fs      = require("fs");
-    var pq      = require("pq").native;
+    var pg      = require("pg");
+
+    var connectionString = "tcp://rraawwrr:password@localhost";
 
     function setup(routes)
     {
@@ -24,7 +24,7 @@ global.__pq_connection_string = "tcp://rraawwrr:password@localhost";
         app.use(express.static("./static/"));
         app.use(express.router(routes));
 
-        pg.connect(__pq_connection_string, function(err, client)
+        pg.connect(__pg_connection_string, function(err, client)
         {
             if (err)
             {
@@ -38,8 +38,14 @@ global.__pq_connection_string = "tcp://rraawwrr:password@localhost";
         return app;
     }
 
+    function getConnection(cb)
+    {
+        pg.connect(connectionString, cb);
+    }
+
     module.exports = {
-        setup : setup
+        setup : setup, 
+        getConnection : getConnection
     };
 })();
 
