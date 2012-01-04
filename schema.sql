@@ -3,6 +3,12 @@ CREATE TABLE IF NOT EXISTS blog_categories
     , name      VARCHAR(128)
     );
 
+DELETE FROM blog_categories;
+INSERT INTO blog_categories(name) VALUES
+    ('uncategorized'),
+    ('programming'),
+    ('araboth')
+    ;
 
 CREATE TABLE IF NOT EXISTS blog_posts 
     ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY

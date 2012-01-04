@@ -24,23 +24,20 @@
         app.use(express.static("./static/"));
         app.use(express.router(routes));
 
-        pg.connect(__pg_connection_string, function(err, client)
-        {
-            if (err)
-            {
-                console.log(err);
-            } else 
-            {
-                console.log("Got a connection");
-            }
-        });
-
         return app;
     }
 
     function getConnection(cb)
     {
-        pg.connect(connectionString, cb);
+        pg.connect(connectionString, function(err, client)
+        {
+            if (err)
+            {
+                console.log(err);
+            }
+
+            cb(err, client);
+        });
     }
 
     module.exports = {

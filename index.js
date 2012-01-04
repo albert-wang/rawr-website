@@ -2,24 +2,51 @@ var http      = require("http");
 var nodeutil  = require("util");
 var express   = require("express");
 var setup     = require("./utils/setup.js")
-var flo       = require("flow").exec;
+var fe        = require("flow").exec;
+
+//temp
+var api       = require("./cms/blogapi.js");
 
 var app = setup.setup(function(app)
 {
     //Routing
     app.get("/", function(req, res)
     {
-        flo(function()
+        fe(function()
         {
             setup.getConnection(this);
         }, function(err, client)
         {
-
-        }
+            this();
+        });
 
         res.render("container.html", { Title : "Title" });
+    });
+
+
+    //API stuff
+    app.post("/api/blog/post/?", function(req, res)
+    {
+        res.render("container.html", { Title : "Title" });
+    });
+
+    app.get("/api/blog/post/?", function(req, res)
+    {
+        res.render("container.html", { Title : "Title" });
+    });
+
+    app.get("/api/blog/categoryid/:name/?", function(req, res)
+    {
+        api.getCategoryIDByName(req.params.name, function(err, id)
+        {
+            if (err)
+            {
+                console.log(err);
+            }
+            res.render("container.html", { Title : id });
+        });
     });
 });
 //Listen
 app.listen(23296);
-
+console.log("Listening on port 23296");
