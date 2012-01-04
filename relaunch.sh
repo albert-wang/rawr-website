@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
 killall node
-./launch.sh
+./launch.sh &> /dev/null
 

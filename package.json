@@ -1,5 +1,5 @@
 {
-	"name" : "RawrRawr Website Application", 
+	"name" : "website_blog", 
 	
 	"dependencies" : {
 		"express" 	: ">= 2.5.4", 
