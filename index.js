@@ -22,50 +22,6 @@ var app = setup.setup(function(app)
 
         res.render("container.html", { Title : "Title" });
     });
-
-    //API stuff
-    app.post("/api/blog/post/?", function(req, res)
-    {
-        res.render("container.html", { Title : "Title" });
-    });
-
-    app.get("/api/blog/post/?", function(req, res)
-    {
-        res.render("container.html", { Title : "Title" });
-    });
-
-    app.get("/api/blog/categoryid/:name/?", function(req, res)
-    {
-        api.getCategoryIDByName(req.params.name, function(err, id)
-        {
-            if (err)
-            {
-                console.log(err);
-            }
-            res.render("container.html", { Title : id });
-        });
-    });
-});
-
-api.post({
-   category : "programming", 
-   title    : "Hello, World!", 
-   content  : "Hey", 
-   tags     : [
-    "Hello", "World"
-   ]
-
-}, function(err, pid)
-{
-    api.comment({
-        post : pid,
-        author: "Me",
-        email : "asdf@gmail.com",
-        contents: "Hey, it worked!", 
-    }, function(err, cid)
-    {
-        console.log("Got: " + pid + " and " + cid);
-    });
 });
 
 //Listen
