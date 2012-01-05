@@ -8,7 +8,7 @@ DROP TABLE blog_tag_bridge CASCADE;
 
 CREATE TABLE IF NOT EXISTS blog_categories
     ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY
-    , name      VARCHAR(128)
+    , name      VARCHAR(128) NOT NULL
     );
 
 CREATE INDEX blog_categories_name_index ON blog_categories
@@ -26,10 +26,10 @@ INSERT INTO blog_categories(name) VALUES
 --The post table
 CREATE TABLE IF NOT EXISTS blog_posts 
     ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY
-    , title     VARCHAR(128)
-    , category  INTEGER REFERENCES blog_categories(id)
-    , content   TEXT
-    , time      TIMESTAMP
+    , title     VARCHAR(128) NOT NULL
+    , category  INTEGER NOT NULL REFERENCES blog_categories(id)
+    , content   TEXT NOT NULL
+    , time      TIMESTAMP NOT NULL
     );
 
 --The comment table.
@@ -37,16 +37,17 @@ CREATE TABLE IF NOT EXISTS blog_posts
 CREATE TABLE IF NOT EXISTS blog_comments
     ( id             SERIAL NOT NULL UNIQUE PRIMARY KEY
     , parent_post    INTEGER REFERENCES blog_posts(id)
-    , author         VARCHAR(128)
+    , author         VARCHAR(128) NOT NULL
+    , author_email   VARCHAR(128) NOT NULL
     , parent_comment INTEGER REFERENCES blog_comments(id)
-    , content        TEXT
-    , time           TIMESTAMP
+    , content        TEXT NOT NULL
+    , time           TIMESTAMP NOT NULL
     );
 
 --Create the tag table, index, and bridge
 CREATE TABLE IF NOT EXISTS blog_tags
     ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY
-    , name      VARCHAR(128)
+    , name      VARCHAR(128) NOT NULL
     );
 
 CREATE INDEX blog_tags_name_index ON blog_tags 
@@ -54,8 +55,8 @@ CREATE INDEX blog_tags_name_index ON blog_tags
     );
 
 CREATE TABLE IF NOT EXISTS blog_tag_bridge
-    ( post      INTEGER REFERENCES blog_posts(id)
-    , tag       INTEGER REFERENCES blog_tags(id)
+    ( post      INTEGER NOT NULL REFERENCES blog_posts(id)
+    , tag       INTEGER NOT NULL REFERENCES blog_tags(id)
     , PRIMARY KEY (post, tag)
     );
 

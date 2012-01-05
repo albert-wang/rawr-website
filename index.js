@@ -23,7 +23,6 @@ var app = setup.setup(function(app)
         res.render("container.html", { Title : "Title" });
     });
 
-
     //API stuff
     app.post("/api/blog/post/?", function(req, res)
     {
@@ -49,21 +48,24 @@ var app = setup.setup(function(app)
 });
 
 api.post({
-    category: "programming", 
-    title   : "Hello, World!",
-    content : "This is some content",
-    tags    : [
-        "hello", "world"
-    ]
+   category : "programming", 
+   title    : "Hello, World!", 
+   content  : "Hey", 
+   tags     : [
+    "Hello", "World"
+   ]
+
 }, function(err, pid)
 {
-    if (err)
-    { 
-        console.log(err);
-        return;
-    }
-
-    console.log("Got PID: " + pid);
+    api.comment({
+        post : pid,
+        author: "Me",
+        email : "asdf@gmail.com",
+        contents: "Hey, it worked!", 
+    }, function(err, cid)
+    {
+        console.log("Got: " + pid + " and " + cid);
+    });
 });
 
 //Listen

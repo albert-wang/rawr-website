@@ -118,15 +118,15 @@
         });
     }
 
-    /*
-        Params must be an object with the following fields:
-            category : the category the post is to be placed in
-            title    : title of the post
-            content  : content of the post
-            tags     : [ list of tags. ]
-    */
     function post(params, cb)
     {
+        /*
+            Params must be an object with the following fields:
+                category : the category the post is to be placed in
+                title    : title of the post
+                content  : content of the post
+                tags     : [ list of tags. ]
+        */
         fe(function()
         {
             setup.getConnection(this);
@@ -184,6 +184,57 @@
          });
     }
 
+    function comment(params, cb)
+    {
+        /*
+            Params must be an object with the following fields: 
+               post     : post id to create the comment on
+               author   : author's name
+               email    : author's email
+               content  : content of the comment
+               parent   : optional comment parent
+        */
+
+        fe(function()
+        {
+            setup.getConnection(this);
+        }, function(err, client)
+        {
+            if (err)
+            {
+                cb(err, INVALID_ID);
+                return undefined;
+            }
+
+            var parent = params.post || 1;
+            var author = params.author || "anonymous";
+            var email  = params.email || "none@none.com";
+            var content = params.content || "?";
+            
+            client.query({
+                name : "insert comment", 
+                text : "INSERT INTO blog_comments (parent_post, author, author_email, parent_comment, content, time)" + 
+                       " VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING id", 
+                values : [ parent, author, email, params.parent, content ]
+            }, this);
+        }, function(err, results)
+        {
+            if (err)
+            {
+                cb(err, INVALID_ID);
+                return undefined;
+            }
+
+            if (results.rows.length == 0)
+            {
+                cb("Insert did not return id as requested.", INVALID_ID);
+                return undefined;
+            }
+
+            cb(undefined, results.rows[0].id);
+        });
+    }
+
     function associateTagsWithPost(postID, tags, cb)
     {
         fe(function()
@@ -232,6 +283,7 @@
 
     module.exports = {
         post                    : post,
+        comment                 : comment,
         getCategoryIDByName     : getCategoryIDByName,
         getTagIDByName          : getTagIDByName
     };
