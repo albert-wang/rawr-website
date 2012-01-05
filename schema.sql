@@ -1,5 +1,11 @@
 
 -- Create the categories table and index
+DROP TABLE blog_categories CASCADE;
+DROP TABLE blog_posts CASCADE;
+DROP TABLE blog_comments CASCADE;
+DROP TABLE blog_tags CASCADE;
+DROP TABLE blog_tag_bridge CASCADE;
+
 CREATE TABLE IF NOT EXISTS blog_categories
     ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY
     , name      VARCHAR(128)
@@ -11,7 +17,6 @@ CREATE INDEX blog_categories_name_index ON blog_categories
 
 -- Then insert the valid values into it.
 -- Make sure that there are no other values in it.
-DELETE FROM blog_categories;
 INSERT INTO blog_categories(name) VALUES
     ('uncategorized'),
     ('programming'),
@@ -50,7 +55,7 @@ CREATE INDEX blog_tags_name_index ON blog_tags
 
 CREATE TABLE IF NOT EXISTS blog_tag_bridge
     ( post      INTEGER REFERENCES blog_posts(id)
-    , tag       INTEGER REFERENCES blog_comments(id)
+    , tag       INTEGER REFERENCES blog_tags(id)
     , PRIMARY KEY (post, tag)
     );
 

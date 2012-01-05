@@ -47,6 +47,25 @@ var app = setup.setup(function(app)
         });
     });
 });
+
+api.post({
+    category: "programming", 
+    title   : "Hello, World!",
+    content : "This is some content",
+    tags    : [
+        "hello", "world"
+    ]
+}, function(err, pid)
+{
+    if (err)
+    { 
+        console.log(err);
+        return;
+    }
+
+    console.log("Got PID: " + pid);
+});
+
 //Listen
 app.listen(23296);
 console.log("Listening on port 23296");

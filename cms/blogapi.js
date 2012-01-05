@@ -78,11 +78,7 @@
         {
             if (err && id == NOT_FOUND)
             {
-                client.query({
-                    name : "insert tag", 
-                    text : "INSERT INTO blog_tags (name) VALUES ($1) RETURNING id", 
-                    values : [ name ]
-                }, this);
+                setup.getConnection(this);
             } else if (err)
             {
                 cb(err, INVALID_ID);
@@ -92,6 +88,18 @@
                 cb(err, id);
                 return undefined;
             }
+        }, function(err, client)
+        {
+            if (err)
+            {
+                cb(err, INVALID_ID);
+            }
+
+            client.query({
+                name : "insert tag", 
+                text : "INSERT INTO blog_tags (name) VALUES ($1) RETURNING id", 
+                values : [ name ]
+            }, this);
         }, function(err, results)
         {
             if (err)
@@ -131,9 +139,19 @@
             }
 
             var category = params.category || "uncategorized";
-            getCategoryIDByName(category, this);
+            var inner = this;
+            getCategoryIDByName(category, function(err, catID) 
+            { 
+                if (err)
+                {
+                    console.log(err);
+                    return undefined;
+                }
 
-         }, function(catID)
+                inner(client, catID); 
+            });
+
+         }, function(client, catID)
          {
             var title = params.title || "Blank Title";
             var content = params.content || "Empty!";
@@ -181,23 +199,32 @@
             
             flow.serialForEach(tags, function(tag)
             {
-                getOrCreateTagIDByName(name, this);
-            }, function(err, tid)
-            {
-                client.query({
-                    name : "bridge tag", 
-                    text : "INSERT INTO blog_tag_bridge (post, tag) VALUES ($1, $2)", 
-                    values : [postID, tid]
-                }, this);
-            }, function(err, results)
-            {
-                if (err)
+                var inner = this;
+                fe(function()
                 {
-                    cb(err, INVALID_ID);
-                    return undefined;
-                }
+                    getOrCreateTagIDByName(tag, this);
+                }, function(err, tid)
+                {
+                    client.query({
+                        name : "bridge tag", 
+                        text : "INSERT INTO blog_tag_bridge (post, tag) VALUES ($1, $2)", 
+                        values : [postID, tid]
+                    }, this);
+                }, function(err, results)
+                {
+                    if (err)
+                    {
+                        cb(err, INVALID_ID);
+                        return undefined;
+                    }
+                    inner();
+                });
             }, function()
             {
+                //nop
+            }, function()
+            {
+                //Finish
                 cb(undefined, postID);
             });
         });
