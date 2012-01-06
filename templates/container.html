@@ -1,24 +1,34 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{{ Title|title }}</title>
+        <title>{{ title|title }}</title>
         {% include "head_common.html" %}
     </head>
     <body>
-        <div id='header'>
-            {% include "header.html" %}
-        </div>
-
-        <div class='background'>
-            <img src='/img/blue.jpg'/>
-        </div>
-
-        {% include "navigation.html" %}
-
-        <div id='content' class='container'>
-            <div class='background container'>
+        <div class='wrapper'>
+            <div id='header'>
+                {% include "header.html" %}
             </div>
-            asdfasdf
+
+            <div class='background'>
+                <img src='/img/blue.jpg'/>
+            </div>
+
+            {% include "navigation.html" %}
+
+            {% if feature %}
+                {% include "featured.html" %}
+            {% endif %}
+
+            <div id='content' class='lightbox container'>
+                asdfasdf
+            </div>
+            
+            <div class='push'>
+            </div>
+        </div>
+        <div class='footer container'>
+            This is the footer
         </div>
     </body>
 </html>

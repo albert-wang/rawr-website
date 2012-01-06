@@ -2,18 +2,19 @@
     <div class='navigation container'>
         <img id='indie' src='/img/indie.png'/>
         <ul>
-            <li>
-                <span>
-                    <h1>Blog</h1>
-                    <p>Nyancats</p>
-                </span>
+            {% for blk in navigation_blocks %}
+            <li> 
+                <a href='{{ blk.link }}'>
+                    <span>
+                        <h1>{{blk.title}}</h1>
+                        <p>{{blk.text}}</p>
+                    </span>
+                </a>
+                {% if blk.active %}
+                    <div class='active'> </div>
+                {% endif %}
             </li>
-            <li>
-                <span>
-                    <h1>Downloads</h1>
-                    <p>Rawr rawr rawr</p>
-                </span>
-            </li>
+            {% endfor %}
         </ul>
     </div>
 </div>
