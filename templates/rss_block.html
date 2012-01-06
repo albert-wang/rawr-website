@@ -1,0 +1,4 @@
+
+{% for feed in feeds %}
+<a class='rsslink' href='{{feed.url}}'><img src='/img/feed.png'/>{{ feed.text }} </a>
+{% endfor %}

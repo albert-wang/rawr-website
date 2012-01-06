@@ -1,0 +1,7 @@
+
+{% for tweet in tweets %}
+<p> {{ tweet.text }} </p>
+<h3><a href="http://twitter.com/#!/rraawwrr/status/{{ tweet.id_str }}">Posted {{ tweet.created_at|fuzzy_date }}</a></h3>
+{% endfor %}
+
+
