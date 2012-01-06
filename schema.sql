@@ -19,6 +19,7 @@ CREATE INDEX blog_categories_name_index ON blog_categories
 -- Make sure that there are no other values in it.
 INSERT INTO blog_categories(name) VALUES
     ('uncategorized'),
+    ('feature')
     ('programming'),
     ('araboth')
     ;

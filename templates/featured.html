@@ -1,8 +1,8 @@
 <div id="feature" class="container">
     <div id="featuredcontent">
-        <h2>{{ feature.category|upper }}</h2>
-        <h1> {{ feature.title }} </h1>
-        <p> {{ feature.text }} </p>
-        <a href="{{ feature.link }}">More...</a>
+        <h2>FEATURED</h2>
+        <h1> {{ feature.title|title }} </h1>
+        <p> {{ feature.text|truncate }} </p>
+        <a href="/blog/post/{{feature.id}}/{{feature.title|linkify}}">More...</a>
     </div>
 </div>

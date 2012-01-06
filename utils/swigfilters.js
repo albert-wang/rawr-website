@@ -1,5 +1,7 @@
 
 (function(){
+    var TRUNCATE_LENGTH = 140;
+
     function prettyDate(time)
     {
         var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," ")),
@@ -20,7 +22,31 @@
             day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
     }
 
+    function truncate(text, length)
+    {
+        var len = length || TRUNCATE_LENGTH;
+        if (text.length > len)
+        {
+            var indexofspace = text.indexOf(" ", len);
+            return text.substr(0, indexofspace - 1) + "...";
+        }
+        return text;
+    }
+
+    function longtruncate(text)
+    {
+        return truncate(text, 300);
+    }
+
+    function linkify(text)
+    {
+        return text.replace(/\s/g, "-").toLowerCase();
+    }
+
     module.exports = {
-        fuzzy_date: prettyDate
+        fuzzy_date: prettyDate,
+        truncate: truncate,
+        longtruncate: longtruncate, 
+        linkify : linkify
     };
 })();

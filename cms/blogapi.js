@@ -8,6 +8,7 @@
     var DEFAULT_ID = 1;
     var INVALID_ID = 0;
     var NOT_FOUND  = -1;
+    var POSTS_PER_PAGE = 10;
 
     //Two functions to get values by ID.
     function getCategoryIDByName(name, cb)
@@ -281,11 +282,57 @@
         });
     }
 
+
+    function postsInCategory(optionalCategory, optionalMaximum, cb)
+    {
+        fe(function()
+        {
+            setup.getConnection(this);
+        }, function(err, client)
+        {
+            if (err)
+            {
+                cb(err, undefined);
+                return undefined; 
+            }
+
+            var limit = optionalMaximum || POSTS_PER_PAGE;
+            if (!optionalCategory)
+            {
+                client.query({
+                    name: "get posts", 
+                    text: "SELECT id, title, category, content, time FROM blog_posts LIMIT $1", 
+                    values: [limit]
+                }, this);
+            } else 
+            {
+                var outer = this;
+                getCategoryIDByName(optionalCategory, function(err, cid)
+                {
+                    if (err)
+                    {
+                        cb(err, undefined);
+                        return undefined;
+                    }
+                    client.query({
+                        name: "get posts by category name", 
+                        text: "SELECT id, title, category, content, time FROM blog_posts WHERE category = $1 LIMIT $2", 
+                        values: [cid, limit]
+                    }, outer);
+                });
+            }
+        }, function(err, posts)
+        {
+            cb(err, posts);
+        });
+    }
+
     module.exports = {
         post                    : post,
         comment                 : comment,
         getCategoryIDByName     : getCategoryIDByName,
-        getTagIDByName          : getTagIDByName
+        getTagIDByName          : getTagIDByName,
+        postsInCategory         : postsInCategory
     };
 })();
 
