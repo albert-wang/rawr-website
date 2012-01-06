@@ -2,6 +2,9 @@
 
 mkdir -p logs
 
+#Used only for tweet caches.
+mkdir -p cache 
+
 if [ "$(pidof node)" ]; then
 	echo "Node already running..."
 else
