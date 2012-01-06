@@ -53,6 +53,17 @@ var app = setup.setup(function(app)
     });
 });
 
+var tweet = require("backuptweets");
+
+tweet({
+    "user" : "rraawwrr", 
+    "debug": true,
+    "max"  : 3
+}, function(tweets)
+{
+    console.log(tweets.json.length);
+});
+
 //Listen
 app.listen(23296);
 console.log("Listening on port 23296");
