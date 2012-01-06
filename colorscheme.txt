@@ -1,0 +1,25 @@
+*** Primary Color:
+
+   var. 1 = #032564 = rgb(3,37,100)
+   var. 2 = #14284B = rgb(20,40,75)
+   var. 3 = #011841 = rgb(1,24,65)
+   var. 4 = #305EB2 = rgb(48,94,178)
+   var. 5 = #5374B2 = rgb(83,116,178)
+
+*** Secondary Color A:
+
+   var. 1 = #967A00 = rgb(150,122,0)
+   var. 2 = #71611C = rgb(113,97,28)
+   var. 3 = #624F00 = rgb(98,79,0)
+   var. 4 = #CBAE33 = rgb(203,174,51)
+   var. 5 = #CBB65B = rgb(203,182,91)
+
+*** Secondary Color B:
+
+   var. 1 = #964000 = rgb(150,64,0)
+   var. 2 = #71401C = rgb(113,64,28)
+   var. 3 = #622A00 = rgb(98,42,0)
+   var. 4 = #CB7333 = rgb(203,115,51)
+   var. 5 = #CB8B5B = rgb(203,139,91)
+
+
