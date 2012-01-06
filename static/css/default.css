@@ -1,11 +1,41 @@
+html
+{
+    height: 100%;
+}
 
 body
 {
-    background-color: #333333;
+    background-color: #262626;
     margin: 0;
     padding: 0;
-    font-family: verdana;
+    font-family: 'Open Sans', arial, sans-serif;
     color: white;
+    height: 100%;
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -4em;
+}
+
+.footer, .push
+{
+    font-family: arial;
+    height: 4em;
+}
+
+.footer
+{
+    border-top: 1px dotted white;
+    padding-top: 15px;
+    font-size: small;
+}
+
+.clear
+{
+    clear: both;
 }
 
 div 
@@ -17,6 +47,11 @@ div
 {
     width: 100%;
     height: 32px;
+}
+
+#header div.bar img
+{
+    border: 0;
 }
 
 div.container
@@ -41,51 +76,53 @@ div.background
 {
     width: 100%;
     min-width: 960px;
+    height: 100%;
     position: absolute;
     z-index: -1;
+    overflow: hidden;
 }
 
 div.background img
 {
     width: 100%;
-    height: auto;
 }
 
-div#content > div.background
+div.lightbox
 {
-    height: 1000px;
-    margin: 0 auto 0 auto;
-    background-color: #101010;
-    opacity: 0.8;
+    background-image: url("/img/lightbox.png");
+    padding: 15px 5px 5px 5px;
+    overflow: hidden;
 }
 
 div.navigation
 {
-    font-family: arial, helvetica;
     height: 8em;
 }
 
 div.navigation * 
 {
+    font-family: arial;
     margin: 0;
 }
 
 div.navigation h1
 {
-    font-size: 2.7em;
+    font-size: 1.7em;
     font-weight: lighter;
 }
 
 div.navigation p
 {
-    font-size: 0.9em;
+    margin-top: 4px;
+    font-size: 0.7em;
     font-weight: lighter;
 }
 
 div.navigation li
 {
     float: left;
-    margin-right: 30px;
+    margin-right: 27px;
+    padding: 9px;
 }
 
 div.navigation li:hover
@@ -99,3 +136,135 @@ div.navigation ul
     list-style: none;
 }
 
+div.navigation a
+{
+    text-decoration: none;
+}
+
+div.navigation a:visited
+{
+    color: inherit;
+}
+
+div.navigation div.active
+{
+    margin-top: 7px;
+    border-bottom: 2px solid white;
+}
+
+div#feature div#featuredcontent
+{
+    font-family: Open Sans, Arial;
+    width: 40%;
+    padding-left: 9px;
+    margin: 15px 0 70px 0;
+}
+
+div#feature h1,h2,p
+{   
+    padding: 0;
+    margin: 0;
+}
+
+div#feature h1
+{
+    font-size: 2.0em;
+}
+
+div#feature a:visited
+{
+    color: inherit;
+}
+
+div#feature p
+{
+    margin: 10px 0px 20px 0px;
+    font-size: 0.9em;
+}
+
+div#feature h2
+{
+    font-size: 0.7em;
+    font-weight: lighter;
+    margin-bottom: 7px;
+}
+
+div#content h1, p
+{
+    padding: 0;
+    margin: 0;
+}
+
+div#content h1
+{
+    font-weight: lighter;
+    font-size: 1.4em;
+}
+
+div#content a
+{
+    color: #2caea0;    
+}
+
+div#content a:visited
+{
+    color: #305eb2;
+}
+
+div#content .right
+{
+    float: right;
+    margin-right: 15px;
+}
+
+div.right .block
+{
+    border-left: 1px dotted white;
+    padding-left: 9px;
+    margin-right: 15px;
+    width: 150px;
+    height: 180px;
+    float: right;
+}
+
+div#content .left
+{
+    font-size: 1.7em;
+    padding-left: 15px;
+    float: left;
+    width: 40%;
+}
+
+div.feed
+{
+    padding-left: 15px;
+    margin: 40px 0 20px 0;
+}
+
+div.feed .block
+{
+    float: left;
+    width: 22%;
+    margin-right: 3%;
+    padding-top: 10px;
+}
+
+.no1
+{
+    border-top: 3px solid #305eb2;
+}
+
+.no2
+{
+    border-top: 3px solid #4b32b3;
+}
+
+.no3
+{
+    border-top: 3px solid #2caea0;
+}
+
+.no4
+{
+    border-top: 3px solid #cb9533;
+}

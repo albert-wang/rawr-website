@@ -12,8 +12,56 @@ var app = setup.setup(function(app)
     //Routing
     app.get("/", function(req, res)
     {
-        res.render("container.html", { Title : "Title" });
+        navigation = [
+            {
+                link: '/', 
+                title: 'Blog', 
+                text: 'nyan nyan nyan', 
+                active: true
+            },
+            {
+                link: "/",
+                title: "Gallery", 
+                text: "lorem ipsum", 
+            },
+            {
+                link: "/",
+                title: "Projects", 
+                text: "projects proejcts", 
+
+            },
+            {
+                link: '/',
+                title: 'Downloads',
+                text: 'nyancats',
+            }, 
+            {
+                link: "/", 
+                title: "About", 
+                text: "about about about"
+            }
+        ];
+
+        feature = {
+            category: "Feature",
+            title : "This is some feature text. blah blah blah blah blah blah", 
+            text  : "This is some subtext under the feature.",
+            link  : "/"
+        }
+
+        res.render("container.html", { title : "Title", navigation_blocks: navigation, feature: feature });
     });
+});
+
+var tweet = require("backuptweets");
+
+tweet({
+    "user" : "rraawwrr", 
+    "debug": true,
+    "max"  : 3
+}, function(tweets)
+{
+    console.log(tweets.json.length);
 });
 
 //Listen

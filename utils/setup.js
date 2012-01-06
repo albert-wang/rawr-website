@@ -21,7 +21,7 @@
         //Middleware
         app.use(express.logger({stream : fs.createWriteStream("./logs/http.log", { flags : "a" })}));
         app.use(express.profiler());
-        app.use(express.static("./static/"));
+        app.use(express.static("./static/"), { maxAge: 1 });
         app.use(express.router(routes));
 
         return app;
