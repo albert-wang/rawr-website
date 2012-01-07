@@ -181,6 +181,10 @@ div.teir2
     display: block;
     position: absolute;
     background-image: url('/img/darkbox.png');
+}
+
+div.teir2 > .right
+{
     font-family: 'Open Sans', Arial;
 }
 
