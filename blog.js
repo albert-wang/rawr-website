@@ -3,9 +3,9 @@
 {
     var api = require("./cms/blogapi.js")
 
-    function navigation(env, active, cb)
+    function navigation(active, cb)
     {
-        env.getAllCategories(function(err, categories)
+        api.getAllCategories(function(err, categories)
         {
             var navigation = [
                 {
@@ -60,7 +60,7 @@
             {
                 api.postsInCategory(null, 4, function(err, other)
                 {
-                    navigation(env, "Blog", function(err, navcontents)
+                    navigation("Blog", function(err, navcontents)
                     {
                         featured = {
                             title: "This is some featured title", 
@@ -115,6 +115,7 @@
 
     module.exports = {
         home: home
-    } })();
+    } 
+})();
 
 

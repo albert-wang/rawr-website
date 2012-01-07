@@ -2,6 +2,7 @@
 (function(){
     var TRUNCATE_LENGTH = 140;
     var mkd = require('markdown')
+    var USE_S3 = false;
 
     function prettyDate(time)
     {
@@ -49,11 +50,23 @@
         return mkd.markdown.toHTML(text);
     }
 
+    function imglink(text)
+    {
+        if (USE_S3)
+        {
+            return "//img.rawrrawr.com/web/" + text;
+        } else 
+        {
+            return "/img/" + text;
+        }
+    }
+
     module.exports = {
         fuzzy_date: prettyDate,
         truncate: truncate,
         longtruncate: longtruncate, 
         linkify : linkify,
-        markdown: markdown
+        markdown: markdown,
+        imglink : imglink
     };
 })();

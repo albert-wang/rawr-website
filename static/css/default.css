@@ -145,7 +145,7 @@ div.navigation div.block
     padding: 4px;
 }
 
-div.navigation div.hovering
+div.navigation div:hover
 {
     background-image: url('/img/darkbox.png');
 }
@@ -209,9 +209,14 @@ div#feature h1
     font-size: 2.0em;
 }
 
+div#feature a
+{
+    color: #36D792;
+}
+
 div#feature a:visited
 {
-    color: inherit;
+    color: #007241;
 }
 
 div#feature p

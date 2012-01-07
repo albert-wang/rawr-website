@@ -43,12 +43,20 @@
         app.use(express.logger({stream : fs.createWriteStream("./logs/http.log", { flags : "a" })}));
         app.use(express.profiler());
         app.use(express.static("./static/"), { maxAge: 1 });
+        app.use(express.bodyParser());
         app.use(express.router(routes));
 
         setInterval(function() { downloadTweets(function(data){}) }, 1000 * 60 * 30);
 
         return app;
     }
+
+    function schedule(cb)
+    {
+        cb();
+        setInterval(cb, 1000 * 60 * 30);
+    }
+
 
     function getConnection(cb)
     {

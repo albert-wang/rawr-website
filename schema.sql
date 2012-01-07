@@ -5,6 +5,7 @@ DROP TABLE blog_posts CASCADE;
 DROP TABLE blog_comments CASCADE;
 DROP TABLE blog_tags CASCADE;
 DROP TABLE blog_tag_bridge CASCADE;
+DROP TABLE blog_future_posts CASCADE;
 
 CREATE TABLE IF NOT EXISTS blog_categories
     ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY
@@ -19,7 +20,7 @@ CREATE INDEX blog_categories_name_index ON blog_categories
 -- Make sure that there are no other values in it.
 INSERT INTO blog_categories(name) VALUES
     ('uncategorized'),
-    ('feature')
+    ('feature'),
     ('programming'),
     ('araboth')
     ;
@@ -31,6 +32,13 @@ CREATE TABLE IF NOT EXISTS blog_posts
     , category  INTEGER NOT NULL REFERENCES blog_categories(id)
     , content   TEXT NOT NULL
     , time      TIMESTAMP NOT NULL
+    );
+
+--Future posts
+CREATE TABLE IF NOT EXISTS blog_future_posts
+    ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY
+    , json      TEXT NOT NULL
+    , post_time TIMESTAMP NOT NULL
     );
 
 --The comment table.

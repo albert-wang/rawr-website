@@ -4,6 +4,7 @@
     var setup = require("../utils/setup.js");
     var flow  = require("flow");
     var fe    = flow.exec;
+    require("datejs");
 
     var DEFAULT_ID = 1;
     var INVALID_ID = 0;
@@ -136,6 +137,95 @@
             }
 
             cb(undefined, results.rows[0].id);
+        });
+    }
+
+    function futurepost(params, time, cb)
+    {
+        /*
+            Params are identical to the one that post takes.
+        */
+        fe(function()
+        {
+            setup.getConnection(this);
+        }, function(err, client)
+        {
+            if (err)
+            {
+                cb(err);
+                return undefined;
+            }
+
+            var parsedTime = Date.parse(time);
+            console.log("Adding post named '" + params.title + "' to be posted at: " + parsedTime);
+            client.query({
+                name: "insert future post", 
+                text: "INSERT INTO blog_future_posts (json, post_time) VALUES($1, $2)",
+                values : [ JSON.stringify(params), parsedTime ]
+            }, this);
+        }, function(err, results)
+        {
+            cb(err);
+        });
+    }
+
+    function postscheduled(cb)
+    {
+        var now = new Date();
+        fe(function()
+        {
+            setup.getConnection(this);
+        }, function(err, c)
+        {
+            //Used for lambda captures.
+            var client = c;
+            if (err)
+            {
+                cb(err);
+                return undefined;
+            }
+
+            var outer = this;
+
+            client.query({
+                name: "get future posts", 
+                text: "SELECT json FROM blog_future_posts WHERE post_time <= $1", 
+                values: [now]
+            }, function(err, results)
+            {
+                outer(err, results, client);
+            });
+        }, function(err, results, client)
+        {
+            if (err)
+            {
+                cb(err);
+                return undefined;
+            }
+            
+            flow.serialForEach(results.rows, function(row)
+            {
+                var params = JSON.parse(row.json);
+                post(params, this)
+            }, function(err, pid)
+            {
+                if (err)
+                {
+                    console.log("Failed to insert post.");
+                    return undefined;
+                }
+                console.log("Inserted: " + pid);
+            }, function()
+            {
+                client.query({
+                    name: "remove future posts",
+                    text: "DELETE FROM blog_future_posts WHERE post_time <= $1", 
+                    values: [now]
+                }, function(err, results)
+                {
+                    cb(err);
+                });
+            });
         });
     }
 
@@ -289,19 +379,17 @@
                         cb(err, INVALID_ID);
                         return undefined;
                     }
-                    inner();
+                    inner(tag);
                 });
+            }, function(tag)
+            {
+
             }, function()
             {
-                //nop
-            }, function()
-            {
-                //Finish
                 cb(undefined, postID);
             });
         });
     }
-
 
     function postsInCategory(optionalCategory, optionalMaximum, cb)
     {
@@ -347,13 +435,21 @@
         });
     }
 
+    function base64Decode(text)
+    {
+        return new Buffer(text, 'base64').toString('utf8');
+    }
+
     module.exports = {
         post                    : post,
+        postscheduled           : postscheduled,
+        futurepost              : futurepost,
         comment                 : comment,
         getCategoryIDByName     : getCategoryIDByName,
         getTagIDByName          : getTagIDByName,
         postsInCategory         : postsInCategory, 
         getAllCategories        : getAllCategories,
+        base64Decode            : base64Decode
     };
 })();
 
