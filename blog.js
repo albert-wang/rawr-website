@@ -60,40 +60,14 @@
             {
                 api.postsInCategory(null, 4, function(err, other)
                 {
+                    console.log(other);
                     navigation("Blog", function(err, navcontents)
                     {
-                        featured = {
-                            title: "This is some featured title", 
-                            text: "this is some long text sasdfkl;asfua o;dfiuas;foyasd f;asidfja; sdifha s;dfja" + 
-                                "longer longer dfas df;aofdyua; fasi;oy a;sdfiu as;iofajfo; asf8asiyf o;asdfuias;f as",
-                        }
-
-                        other = [
-                            {
-                                title: "This is a blog title",
-                                content: "This is some content. Lorem ipsum dolor sit amet"
-                            },
-                            {
-                                title: "This is a blog title",
-                                content: "This is some content. Lorem ipsum dolor sit amet"
-                            },
-                            {
-                                title: "This is a blog title",
-                                content: "#This is some content#\n. Lorem ipsum dolor sit amet. This is some seriously longer" + 
-                                    " content, which can take up over nine thousand lines. sadfla;sdf asdiofaso;fias dfasf"
-                            },
-                            {
-                                title: "This is a blog title",
-                                content: "This is some content. Lorem ipsum dolor sit amet"
-                            }
-                        ]
-
-
                         var data = {
                             title: "Rawr Productions", 
                             navigation_blocks: navcontents,
-                            feature: featured,
-                            feed: other,
+                            feature: featured.rows[0],
+                            feed: other.rows,
                             blocks: [
                                 {
                                     title: "Twitter", 

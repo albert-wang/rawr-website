@@ -93,6 +93,7 @@
 
     module.exports = {
         setup : setup, 
+        schedule : schedule,
         getConnection : getConnection,
         getTweets: getTweets, 
         swig: swig

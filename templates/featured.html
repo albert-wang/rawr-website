@@ -2,7 +2,7 @@
     <div id="featuredcontent">
         <h2>FEATURED</h2>
         <h1> {{ feature.title|title }} </h1>
-        <p> {{ feature.text|truncate }} </p>
+        <p> {{ feature.content|truncate }} </p>
         <a href="/blog/post/{{feature.id}}/{{feature.title|linkify}}">More...</a>
     </div>
 </div>
