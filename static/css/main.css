@@ -5,7 +5,7 @@ div.right
     margin-right: 15px;
 }
 
-div.right .block
+div.right div.block
 {
     border-left: 1px dotted white;
     padding-left: 9px;

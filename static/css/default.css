@@ -116,7 +116,6 @@ div.navigation
 
 div.navigation * 
 {
-    font-family: arial;
     margin: 0;
     font-weight: lighter;
 }
@@ -124,12 +123,14 @@ div.navigation *
 div.navigation h1
 {
     font-size: 1.7em;
+    font-family: arial;
 }
 
-div.navigation p
+div.navigation ul p
 {
     margin-top: 4px;
     font-size: 0.7em;
+    font-family: arial;
 }
 
 div.navigation li
@@ -156,12 +157,12 @@ div.navigation ul
     list-style: none;
 }
 
-div.navigation a
+div.navigation ul a
 {
     text-decoration: none;
 }
 
-div.navigation a:visited
+div.navigation ul a:visited
 {
     color: inherit;
 }
@@ -183,9 +184,10 @@ div.teir2
     background-image: url('/img/darkbox.png');
 }
 
-div.teir2 > .right
+div.teir2 h1
 {
     font-family: 'Open Sans', Arial;
+    font-size: 1.4em;
 }
 
 div#feature div#featuredcontent

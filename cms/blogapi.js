@@ -38,6 +38,26 @@
         });
     }
 
+    function getAllCategories(cb)
+    {
+        fe(function()
+        {
+            setup.getConnection(this);
+        }, function(err, client)
+        {
+            if (err)
+            {
+                cb(err, undefined); 
+                return undefined;
+            }
+
+            client.query({
+                name: "get all categories", 
+                text: "SELECT id, name FROM blog_categories", 
+            }, cb);
+        });
+    }
+
     function getTagIDByName(name, cb)
     {
         fe(function()
@@ -332,7 +352,8 @@
         comment                 : comment,
         getCategoryIDByName     : getCategoryIDByName,
         getTagIDByName          : getTagIDByName,
-        postsInCategory         : postsInCategory
+        postsInCategory         : postsInCategory, 
+        getAllCategories        : getAllCategories,
     };
 })();
 
