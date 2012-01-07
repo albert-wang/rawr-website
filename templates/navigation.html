@@ -4,17 +4,34 @@
         <ul>
             {% for blk in navigation_blocks %}
             <li> 
-                <a href='{{ blk.link }}'>
-                    <span>
-                        <h1>{{blk.title}}</h1>
-                        <p>{{blk.text}}</p>
-                    </span>
-                </a>
+                <div class='block' id='{{blk.title}}'>
+                    <a href='{{ blk.link }}'>
+                        <span>
+                            <h1>{{blk.title}}</h1>
+                            <p>{{blk.text}}</p>
+                        </span>
+                    </a>
+                </div>
                 {% if blk.active %}
                     <div class='active'> </div>
                 {% endif %}
             </li>
             {% endfor %}
+            <div class='clear'> </div>
         </ul>
+        {% for blk in navigation_blocks %}
+            <div id="teir2{{blk.title}}" class='teir2 container' style="display: none">
+                <div class='right'>
+                    {% for blk in blocks %}
+                    <div class='block'>
+                        <h1>{{ blk.title|title }}</h1>
+                        {{ blk.content|raw }}
+                    </div>
+                    {% endfor %}
+                    <div class='clear'></div>
+
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>

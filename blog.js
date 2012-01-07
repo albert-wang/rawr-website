@@ -85,7 +85,7 @@
 
                     var data = {
                         title: "Rawr Productions", 
-                        navigation_blocks: navigation("Home"), 
+                        navigation_blocks: navigation("Blog"), 
                         feature: featured,
                         feed: other,
                         blocks: [

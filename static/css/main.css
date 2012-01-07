@@ -1,5 +1,5 @@
 
-div#content .right
+div.right
 {
     float: right;
     margin-right: 15px;
@@ -15,7 +15,7 @@ div.right .block
     float: right;
 }
 
-div#content .left
+div.left
 {
     font-size: 1.7em;
     padding-left: 15px;
@@ -23,37 +23,37 @@ div#content .left
     width: 40%;
 }
 
-div#content .right .block ul
+div.right div.block ul
 {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-div#content .right .block h1
+div.right div.block h1
 {
-    margin-bottom: 10px;
+    margin-bottom: 10px !important;
 }
 
-div#content .right .block h3
+div.right div.block h3
 {
     font-size: 0.7em;
     font-weight: lighter;
 }
 
-div#content .right .block img
+div.right div.block img
 {
     border: none;
     margin-right: 10px;
 }
 
-div#content .right .block a.rsslink
+div.right div.block a.rsslink
 {
     text-decoration: none;
     color: white;
 }
 
-div#content .right .block a.rsslink:hover
+div.right div.block a.rsslink:hover
 {
     text-decoration: underline;
 }
