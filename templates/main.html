@@ -12,7 +12,7 @@
             </div>
 
             <div class='background'>
-                <img src='/img/blue.jpg'/>
+                <img src='//img.rawrrawr.com/web/blue.jpg'/>
             </div>
 
             {% include "navigation.html" %}
@@ -39,26 +39,14 @@
                 </div>
 
                 <div class='clear'></div>
-                
+               
                 <div class='feed'>
-                    <div class='block no1'>
-                        <h1>This is the title 1</h1>
-                        <p> This is the content. lorem ipsum dolor sit amet </p>
+                    {% for post in feed %}
+                    <div class='block no{{ forloop.index + 1 }}'>
+                        <a href='/blog/post/{{ post.id }}/{{ post.title|linkify }}'><h1>{{ post.title|title }}</h1></a>
+                        <p> {{ post.content|markdown|longtruncate|raw }} </p>
                     </div>
-                    <div class='block no2'>
-                        <h1>This is the title 2</h1>
-                        <p> This is the content. lorem ipsum dolor sit amet </p>
-                    </div>
-
-                    <div class='block no3'>
-                        <h1>This is the title 3</h1>
-                        <p> This is the content. lorem ipsum dolor sit amet </p>
-                    </div>
-
-                    <div class='block no4'>
-                        <h1>This is the title 4</h1>
-                        <p> This is the content. lorem ipsum dolor sit amet </p>
-                    </div>
+                    {% endfor %}
 
                     <div class='clear'></div>
                 </div>

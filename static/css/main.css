@@ -73,6 +73,11 @@ div.feed .block
     padding-top: 10px;
 }
 
+div.feed .block p
+{
+    margin-top: 10px;
+}
+
 .no1
 {
     border-top: 3px solid #305eb2;
@@ -85,7 +90,7 @@ div.feed .block
 
 .no3
 {
-    border-top: 3px solid #2caea0;
+    border-top: 3px solid #005D54;
 }
 
 .no4

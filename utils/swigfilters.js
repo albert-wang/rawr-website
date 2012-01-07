@@ -1,6 +1,7 @@
 
 (function(){
     var TRUNCATE_LENGTH = 140;
+    var mkd = require('markdown')
 
     function prettyDate(time)
     {
@@ -35,7 +36,7 @@
 
     function longtruncate(text)
     {
-        return truncate(text, 300);
+        return truncate(text, 256);
     }
 
     function linkify(text)
@@ -43,10 +44,16 @@
         return text.replace(/\s/g, "-").toLowerCase();
     }
 
+    function markdown(text)
+    {
+        return mkd.markdown.toHTML(text);
+    }
+
     module.exports = {
         fuzzy_date: prettyDate,
         truncate: truncate,
         longtruncate: longtruncate, 
-        linkify : linkify
+        linkify : linkify,
+        markdown: markdown
     };
 })();

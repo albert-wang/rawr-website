@@ -13,6 +13,16 @@ body
     height: 100%;
 }
 
+a
+{
+    text-decoration: none;
+}
+
+a:hover
+{
+    text-decoration: underline;
+}
+
 .wrapper {
     min-height: 100%;
     height: auto !important;
@@ -76,6 +86,7 @@ div.background
 {
     width: 100%;
     min-width: 960px;
+    height: auto !important;
     height: 100%;
     position: absolute;
     z-index: -1;
