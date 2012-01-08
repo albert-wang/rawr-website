@@ -7,14 +7,22 @@
     var pg      = require("pg");
     var tweet   = require("backuptweets");
     var knox    = require("knox");
+    var img     = require("imagemagick")
 
     var connectionString = "tcp://rraawwrr:password@localhost";
     var memoryTweets = null;
+
     var s3 = new knox.createClient({
         key: "AKIAJTIODAJRLODKOZFA", 
         secret: "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", 
         bucket: "img.rawrrawr.com"
     });
+
+    if (require("os").type() !== "Linux")
+    {
+        img.convert.path = "imgconvert";
+        img.identify.path = "imgidentify";   
+    }
 
     function downloadTweets(cb)
     {
@@ -100,11 +108,12 @@
     }
 
     module.exports = {
-        setup : setup, 
-        schedule : schedule,
-        getConnection : getConnection,
-        getTweets: getTweets, 
-        swig: swig
+        setup           : setup, 
+        schedule        : schedule,
+        getConnection   : getConnection,
+        getTweets       : getTweets, 
+        swig            : swig,
+        s3              : s3
     };
 })();
 

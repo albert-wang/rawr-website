@@ -3,6 +3,7 @@
 {
 	var common  = require("./common.js");
 	var setup   = require("./utils/setup.js");
+	var gapi    = require("./cms/galleryapi.js");
 	var fe      = require("flow").exec;
 	var util    = require("util");
 
@@ -78,12 +79,19 @@
 			res.end();
 			return;
 		}
-
-		console.log(req.body);
-		console.log(util.inspect(req.files));
-
-		res.writeHead(302, { 'Location' : '/admin' });
-		res.end();
+		
+		gapi.image({
+			image: req.files.image.path, 
+			title: req.body.title, 
+			desc : req.body.desc, 
+			gallery : req.body.gallery,
+			type : req.files.image.type
+		}, function(err)
+		{
+			if (err) { console.log(err); }
+			res.writeHead(302, { 'Location' : '/admin' });
+			res.end();
+		});
 	}
 
 	module.exports = {

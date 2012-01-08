@@ -7,6 +7,10 @@
 	var fs    = require("fs");
 	var filter= require("../utils/swigfilters.js");
 	var fe    = flow.exec;
+	var img   = require("imagemagick");
+	var mime  = require("mime");
+	var crypto= require("crypto");
+	var util  = require('util');
 	
 	function regenerateRSSFeedForImages(cb)
 	{
@@ -75,12 +79,19 @@
 					title: title
 					desc : description of the image
 					gallery: id of the gallery
+					type : mimetype of the image
 				}
 		*/
 
 		var title = params.title || "Untitled";
 		var desc  = params.desc  || "";
 		var gid   = params.gallery || 1;
+		var name  = null;
+
+		if (typeof gid !== "number")
+		{
+			gid = 1;
+		}
 
 
 		setup.getConnection(function(err, client)
@@ -95,7 +106,7 @@
 			{
 				client.query({
 					name : "select gallery by id", 
-					text : "SELECT id, name, s3folder FROM gallery_categories WHERE id = $1", 
+					text : "SELECT id, name FROM gallery_categories WHERE id = $1", 
 					values : [gid]
 				}, this)
 			}, function(err, results)
@@ -106,19 +117,87 @@
 					return undefined;
 				}
 
+				var shasum = crypto.createHash("sha1");
+				var s = fs.ReadStream(params.image);
+				var outer = this;
+
+				s.on('data', function(d)
+				{
+					shasum.update(d);
+				});
+
+				s.on('end', function()
+				{
+					var d = shasum.digest("hex");
+					outer(d);
+				});
+			}, function(digest)
+			{
+				name = digest + "." + mime.extension(params.type);
+
+				var input = fs.ReadStream(params.image);
+				var output = fs.WriteStream("./cache/" + name);
+
+				util.pump(input, output, this);
+			}, function(err)
+			{
+				if (err)
+				{
+					cb(err, undefined);
+					return undefined;
+				}
+
 				//Apply image magic to rescale the image to thumbnail size.
-
+				img.convert(["./cache/" + name, "-thumbnail", "80x180", "./cache/thumb-" + name], this);
+			}, function(err, meta)
+			{
 				//S3 upload the image and the thumbnail to the appropriate folder
+				var outer = this;
+				setup.s3.putFile("./cache/" + name, "/gallery/" + name, function(err, res)
+				{
+					if (err)
+					{
+						cb(err, undefined);
+						return undefined;
+					}
 
+					if (res.statusCode != 200)
+					{
+						cb("Status code: " + res.statusCode, undefined);
+						return undefined;
+					}
+
+					setup.s3.putFile("./cache/thumb-" + name, "/gallery/thumb-" + name, outer);
+				});
+			}, function(err, res)
+			{
 				//Insert these new values into the database.
-			}
+				if (err)
+				{
+					cb(err, undefined);
+					return undefined;
+				}
 
+				if (res.statusCode != 200)
+				{
+					cb("Status code: " + res.statusCode, undefined);
+					return undefined;
+				}
 
-			);
+				client.query({
+					name: "insert image into gallery", 
+					text: "INSERT INTO gallery_images (name, title, description, category, time VALUES($1, $2, $3, $4, NOW())", 
+					values: [name, title, desc, gid]
+				}, this);
+			}, function(err, results)
+			{
+				cb(err);	
+			});
 		});
 	}
 
 	module.exports = {
-		regenerateRSSFeedForImages: regenerateRSSFeedForImages
+		regenerateRSSFeedForImages: regenerateRSSFeedForImages,
+		image: image
 	};
 })();

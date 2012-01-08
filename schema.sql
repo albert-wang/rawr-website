@@ -78,7 +78,6 @@ CREATE TABLE IF NOT EXISTS blog_tag_bridge
 CREATE TABLE IF NOT EXISTS gallery_categories
     ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY
     , name      VARCHAR(128) NOT NULL
-    , s3folder  VARCHAR(128) NOT NULL
     );
 
 INSERT INTO gallery_categories(name, s3folder) VALUES

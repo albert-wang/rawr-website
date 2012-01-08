@@ -1,18 +1,21 @@
 {
-	"name" : "website_blog", 
+    "name" : "website_blog", 
     "version" : "0.0.1",
 	
-	"dependencies" : {
-		"express" 		: "2.5.x", 
-		"swig"			: "0.9.x",
-        "backuptweets" 	: "0.1.x",
+    "dependencies" : 
+    {
+        "express"       : "2.5.x", 
+        "swig"          : "0.9.x",
+        "backuptweets"  : "0.1.x",
+        "datejs"        : "*", 
+        "flow"          : "0.2.x",
+        "imagemagick"   : "0.1.x",
         "knox"          : "0.0.9",
-        "datejs"    	: "*", 
-        "flow"      	: "0.2.x",
-        "markdown"  	: "0.3.1", 
-        "memcached" 	: "0.0.x",
-        "pg"        	: "0.6.x",
-        "rss"       	: "0.0.x"
-	}
+        "markdown"      : "0.3.1", 
+        "memcached"     : "0.0.x",
+        "pg"            : "0.6.x",
+        "rss"           : "0.0.x",
+        "mime"          : "1.2.x"
+    }
 }
 
