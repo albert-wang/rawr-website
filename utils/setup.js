@@ -6,9 +6,15 @@
     var fs      = require("fs");
     var pg      = require("pg");
     var tweet   = require("backuptweets");
+    var knox    = require("knox");
 
     var connectionString = "tcp://rraawwrr:password@localhost";
     var memoryTweets = null;
+    var s3 = new knox.createClient({
+        key: "AKIAJTIODAJRLODKOZFA", 
+        secret: "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", 
+        bucket: "img.rawrrawr.com"
+    });
 
     function downloadTweets(cb)
     {
@@ -47,6 +53,14 @@
         app.use(express.router(routes));
 
         setInterval(function() { downloadTweets(function(data){}) }, 1000 * 60 * 30);
+
+        s3.get("cirnobig.gif")
+            .on('response', function(res)
+            {
+                console.log(res.statusCode);
+                console.log(res.headers);
+                console.log(res.body);
+            }).end();
 
         return app;
     }

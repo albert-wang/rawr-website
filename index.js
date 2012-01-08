@@ -1,5 +1,6 @@
 var setup     = require("./utils/setup.js")
 var blog      = require("./blog.js")
+//var gallery   = require("./gallery.js")
 
 var app = setup.setup(function(app)
 {
@@ -18,7 +19,7 @@ var app = setup.setup(function(app)
 
 	app.post("/imageupload", function(req, res)
 	{
-		
+		//gallery.imgapi(req, res);
 	})
 });
 
