@@ -6,44 +6,50 @@ var admin     = require("./admin.js")
 var app = setup.setup(function(app)
 {
     //Routing
-    app.get("/", function(req, res)
-    {
-        blog.home(req, res, setup);
-    });
 
-
+    //Basic website routes
+    (function(){
+	    app.get("/", function(req, res)
+	    {
+	        blog.home(req, res, setup);
+	    });
+	})();
 
     //The admin routes
-    app.get("/admin/?", function(req, res)
-	{
-		admin.panel(req, res);
-	});
+    (function(){
+	    app.get("/admin/?", function(req, res)
+		{
+			admin.panel(req, res);
+		});
 
-	app.post("/admin/authenticate/?", function(req, res)
-	{
-		admin.auth(req, res);
-	});
+		app.post("/admin/authenticate/?", function(req, res)
+		{
+			admin.auth(req, res);
+		});
 
-	app.post("/admin/addgallery/?", function(req, res)
-	{
-		admin.addGallery(req, res);
-	})
+		app.post("/admin/addgallery/?", function(req, res)
+		{
+			admin.addGallery(req, res);
+		})
 
-	app.post("/admin/gallery/?", function(req, res)
-	{
-		admin.gallery(req, res);
-	})
+		app.post("/admin/gallery/?", function(req, res)
+		{
+			admin.gallery(req, res);
+		})
 
-	app.post("/admin/unauth/?", function(req, res)
-	{
-		admin.unauth(req, res);
-	});
+		app.post("/admin/unauth/?", function(req, res)
+		{
+			admin.unauth(req, res);
+		});
+	})();
 
-    //The API
-    app.post("/api", function(req, res)
-	{
-		blog.postapi(req, res, setup);
-	})
+    //The API routes
+    (function() {
+	    app.post("/api", function(req, res)
+		{
+			blog.postapi(req, res, setup);
+		})
+	})();
 });
 
 setup.schedule(function()
