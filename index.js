@@ -1,11 +1,4 @@
-var http      = require("http");
-var nodeutil  = require("util");
-var express   = require("express");
 var setup     = require("./utils/setup.js")
-var fe        = require("flow").exec;
-//temp
-var api       = require("./cms/blogapi.js");
-var swig      = require("swig");
 var blog      = require("./blog.js")
 
 var app = setup.setup(function(app)
@@ -31,6 +24,9 @@ var app = setup.setup(function(app)
 
 setup.schedule(function()
 {
+	var api       = require("./cms/blogapi.js");
+	var gapi      = require("./cms/galleryapi.js")
+
 	api.postscheduled(function(err)
 	{
 		if (err)
@@ -47,6 +43,15 @@ setup.schedule(function()
 			console.log(err);
 		}	
 		console.log("Finished generating RSS feeds");
+	});
+
+	gapi.regenerateRSSFeedForImages(function(err, xml)
+	{
+		if (err)
+		{
+			console.log(err);
+		}	
+		console.log("Finished generating Image RSS Feeds");
 	});
 });
 

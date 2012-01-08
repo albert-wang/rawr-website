@@ -46,7 +46,7 @@
                 <div class='feed'>
                     {% for post in feed %}
                     <div class='block no{{ forloop.index + 1 }}'>
-                        <a href='/blog/post/{{ post.id }}/{{ post.title|linkify }}'>
+                        <a href='/post/{{ post.id }}/{{ post.title|linkify }}'>
                             <h1>{{ post.title|title }}</h1>
                         </a>
                         <p> {{ post.content|markdown|longtruncate|raw }} </p>
