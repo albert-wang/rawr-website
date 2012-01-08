@@ -20,7 +20,13 @@ div.left
     font-size: 1.7em;
     padding-left: 15px;
     float: left;
-    width: 40%;
+    width: 45%;
+}
+
+div.left p
+{
+    font-size: 0.8em;
+    margin-top: 15px;
 }
 
 div.right div.block ul
@@ -45,6 +51,12 @@ div.right div.block img
 {
     border: none;
     margin-right: 10px;
+}
+
+div.right div.block a
+{
+    display: block;
+    margin-bottom: 9px;
 }
 
 div.right div.block a.rsslink

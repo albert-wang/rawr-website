@@ -1,4 +1,6 @@
-
+------------------------
+-- Here we start the schema for blog posts.
+------------------------
 -- Create the categories table and index
 DROP TABLE blog_categories CASCADE;
 DROP TABLE blog_posts CASCADE;
@@ -69,3 +71,19 @@ CREATE TABLE IF NOT EXISTS blog_tag_bridge
     , PRIMARY KEY (post, tag)
     );
 
+-------------------
+--- Here we start the schema for the gallery.
+-------------------
+
+CREATE TABLE IF NOT EXISTS gallery_categories
+    ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY
+    , name      VARCHAR(128) NOT NULL
+    , s3folder  VARCHAR(128) NOT NULL
+    );
+
+CREATE TABLE IF NOT EXISTS gallery_images
+    ( id            SERIAL NOT NULL UNIQUE PRIMARY KEY
+    , name          VARCHAR(128) NOT NULL
+    , title         VARCHAR(128) NOT NULL
+    , description   TEXT NOT NULL
+    );

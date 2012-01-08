@@ -11,28 +11,28 @@
                 {
                     link: '/', 
                     title: 'Blog', 
-                    text: 'nyan nyan nyan', 
+                    text: 'Read the blog', 
                 },
                 {
                     link: "/",
                     title: "Gallery", 
-                    text: "lorem ipsum", 
+                    text: "Browse the gallery", 
                 },
                 {
                     link: "/",
                     title: "Projects", 
-                    text: "projects proejcts", 
+                    text: "What I'm working on", 
 
                 },
                 {
                     link: '/',
                     title: 'Downloads',
-                    text: 'nyancats',
+                    text: 'most recent builds and tools',
                 }, 
                 {
                     link: "/", 
                     title: "About", 
-                    text: "about about about"
+                    text: "About Rawr Productions"
                 }
             ];
 
@@ -60,7 +60,6 @@
             {
                 api.postsInCategory(null, 4, function(err, other)
                 {
-                    console.log(other);
                     navigation("Blog", function(err, navcontents)
                     {
                         var data = {
@@ -75,7 +74,10 @@
                                 }, 
                                 { 
                                     title: "RSS", 
-                                    content: rssblock.render({ feeds: [{ url: "/", text: "Blog Posts" }]})
+                                    content: rssblock.render({ feeds: [
+                                        { url: "/rss/blog.rss", text: "Blog Posts" }, 
+                                        { url: "/rss/gallery.rss", text: "Gallery Updates" },
+                                    ]})
                                 }
                             ]
                         }
@@ -87,8 +89,56 @@
         });
     }
 
+    function postapi(req, res, env)
+    {
+        if (req.body.key !== "{81D6B2F2-1983-4583-9CDE-DA9F6A3B66B7}")
+        {
+            return undefined;
+        }
+
+        var postContent = {
+            title   : api.base64Decode(req.body.title).toLowerCase(), 
+            content : api.base64Decode(req.body.post),
+            category: api.base64Decode(req.body.category),
+            tags    : api.base64Decode(req.body.tags).split(',')
+        }
+
+        var date = null;
+        if (req.body.date)
+        {
+            date = api.base64Decode(req.body.date);
+        }
+
+        if (!date)
+        {
+            api.post(postContent, function(err, id)
+            {
+                if (err)
+                {
+                    res.end("Failed to insert a post.");
+                } else 
+                {
+                    res.end("http://www.rawrrawr.com/post/" + id);
+                }
+            });
+        } else 
+        {
+            api.futurepost(postContent, date, function(err)
+            {
+                if (err)
+                {
+                    res.end("Failed to insert a future post.");
+                } else 
+                {
+                    res.end("http://www.rawrrawr.com");
+                }
+            });
+        }
+    }
+
     module.exports = {
-        home: home
+        home    : home, 
+        postapi : postapi
     } 
 })();
 

@@ -3,7 +3,11 @@
 {
     var setup = require("../utils/setup.js");
     var flow  = require("flow");
+    var rss   = require("rss");
+    var filter= require("../utils/swigfilters.js")
     var fe    = flow.exec;
+    var fs    = require("fs");
+
     require("datejs");
 
     var DEFAULT_ID = 1;
@@ -202,7 +206,7 @@
                 cb(err);
                 return undefined;
             }
-            
+
             flow.serialForEach(results.rows, function(row)
             {
                 var params = JSON.parse(row.json);
@@ -214,7 +218,6 @@
                     console.log("Failed to insert post.");
                     return undefined;
                 }
-                console.log("Inserted: " + pid);
             }, function()
             {
                 client.query({
@@ -424,7 +427,8 @@
                     }
                     client.query({
                         name: "get posts by category name", 
-                        text: "SELECT id, title, category, content, time FROM blog_posts WHERE category = $1 LIMIT $2", 
+                        text: "SELECT id, title, category, content, time " + 
+                            "FROM blog_posts WHERE category = $1 LIMIT $2", 
                         values: [cid, limit]
                     }, outer);
                 });
@@ -435,6 +439,66 @@
         });
     }
 
+    function regenerateRSSFeedForPosts(cb)
+    {
+        var feed = new rss({
+            title        : "Rawr Production Blog Posts", 
+            description  : "Most recent blog updates", 
+            feed_url     : "http://www.rawrrawr.com/rss/blog.rss", 
+            site_url     : "http://www.rawrrawr.com", 
+            author       : "Rawr Productions"
+        });
+
+        fe(function()
+        {
+            setup.getConnection(this);
+        }, function(err, client)
+        {
+            if (err)
+            {
+                cb(err, undefined);
+                return undefined;
+            }
+
+            client.query({
+                name: "get recent posts with category", 
+                text: "SELECT p.id, p.title, p.content, p.time, c.name FROM " + 
+                    " blog_posts p JOIN blog_categories c ON p.category = c.id" + 
+                    " ORDER BY p.time DESC LIMIT $1", 
+                values: [30]
+            }, this);
+        }, function(err, results)
+        {
+            if (err)
+            {
+                cb(err, undefined);
+                return undefined;
+            }
+
+            flow.serialForEach(results.rows, function(post)
+            {
+                feed.item({
+                    title       : post.title, 
+                    description : filter.truncate(post.content, 512), 
+                    url         : "http://www.rawrrawr.com/post/" + post.id + "/" + filter.linkify(post.title), 
+                    date        : post.time
+                });
+                this();
+            }, function()
+            {
+                
+            }, function()
+            {
+                var xml = feed.xml();
+                fs.writeFile("./static/rss/blog.rss", xml, function(err)
+                {
+                    cb(err, xml);     
+                });
+            });
+        });
+    }
+
+
     function base64Decode(text)
     {
         return new Buffer(text, 'base64').toString('utf8');
@@ -442,14 +506,16 @@
 
     module.exports = {
         post                    : post,
-        postscheduled           : postscheduled,
         futurepost              : futurepost,
         comment                 : comment,
         getCategoryIDByName     : getCategoryIDByName,
         getTagIDByName          : getTagIDByName,
         postsInCategory         : postsInCategory, 
         getAllCategories        : getAllCategories,
-        base64Decode            : base64Decode
+        base64Decode            : base64Decode,
+
+        postscheduled           : postscheduled,
+        regenerateRSSFeedForPosts: regenerateRSSFeedForPosts
     };
 })();
 
