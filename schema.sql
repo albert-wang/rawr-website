@@ -80,8 +80,8 @@ CREATE TABLE IF NOT EXISTS gallery_categories
     , name      VARCHAR(128) NOT NULL
     );
 
-INSERT INTO gallery_categories(name, s3folder) VALUES
-    ('uncategorized', 'default')
+INSERT INTO gallery_categories(name) VALUES
+    ('uncategorized')
     ;
 
 CREATE TABLE IF NOT EXISTS gallery_images
