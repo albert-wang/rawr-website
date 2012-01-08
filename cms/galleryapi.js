@@ -147,12 +147,18 @@
 					return undefined;
 				}
 
+				var outer = this;
+
 				//Apply image magic to rescale the image to thumbnail size.
-				img.convert(["./cache/" + name, "-thumbnail", "80x180", "./cache/thumb-" + name], this);
+				img.convert(["./cache/" + name, "-thumbnail", "80x180", "./cache/thumb-" + name], function(err, meta)
+				{
+					img.convert(["./cache/" + name, "-resize", "800x600", "./cache/med-" + name], outer);
+				});
 			}, function(err, meta)
 			{
 				//S3 upload the image and the thumbnail to the appropriate folder
 				var outer = this;
+
 				setup.s3.putFile("./cache/" + name, "/gallery/" + name, function(err, res)
 				{
 					if (err)
@@ -167,10 +173,39 @@
 						return undefined;
 					}
 
-					setup.s3.putFile("./cache/thumb-" + name, "/gallery/thumb-" + name, outer);
+					setup.s3.putFile("./cache/thumb-" + name, "/gallery/thumb-" + name, function(err, res)
+					{
+						if (err)
+						{
+							cb(err, undefined);
+							return undefined;
+						}
+
+						if (res.statusCode != 200)
+						{
+							cb("Status code: " + res.statusCode, undefined);
+							return undefined;
+						}
+
+						setup.s3.putFile("./cache/med-" + name, "/gallery/med-" + name, outer);
+					});
 				});
 			}, function(err, res)
 			{
+				fs.unlink("./cache/" + name, function(e1)
+				{
+					fs.unlink("./cache/thumb-" + name, function(e2)
+					{
+						fs.unlink("./cache/med-"+ name, function(e3)
+						{
+							if (e1 || e2 || e3)
+							{
+								console.log("Failed to unlink some of the cached files.");
+							}	
+						});
+					});
+				});
+
 				//Insert these new values into the database.
 				if (err)
 				{

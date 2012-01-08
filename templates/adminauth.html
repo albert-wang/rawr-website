@@ -79,11 +79,9 @@
                         <label>Title </label>       <input type='text' name='title'/><div class='clear'></div>
                         <label>Description</label>  <input type='text' name='desc'/><div class='clear'></div>
                         <label>Gallery </label>     <select name='gallery'>
-                            <option value='hey'>hey</option>
                             {% for cat in categories %}
                             <option value='{{cat.id}}'>{{cat.name|title}}</option>
                             {% endfor %}
-
                         </select>
                         <div class='clear'></div>
                         <input id="imgupbutton" type='submit' value='Upload' />
