@@ -3,14 +3,16 @@
     "version" : "0.0.1",
 	
 	"dependencies" : {
-		"express" 	: "2.5.x", 
-		"swig"		: "0.9.x",
-        "pg"        : "0.6.x",
-        "flow"      : "0.2.x",
-        "backuptweets" : "0.1.x",
-        "markdown"  : "0.3.1", 
-        "datejs"    : "*", 
-        "rss"       : "0.0.x"
+		"express" 		: "2.5.x", 
+		"swig"			: "0.9.x",
+        "backuptweets" 	: "0.1.x",
+        "knox"          : "0.0.9",
+        "datejs"    	: "*", 
+        "flow"      	: "0.2.x",
+        "markdown"  	: "0.3.1", 
+        "memcached" 	: "0.0.x",
+        "pg"        	: "0.6.x",
+        "rss"       	: "0.0.x"
 	}
 }
 

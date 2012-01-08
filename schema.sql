@@ -86,4 +86,6 @@ CREATE TABLE IF NOT EXISTS gallery_images
     , name          VARCHAR(128) NOT NULL
     , title         VARCHAR(128) NOT NULL
     , description   TEXT NOT NULL
+    , category      INTEGER REFERENCES gallery_categories(id)
+    , time          TIMESTAMP NOT NULL
     );
