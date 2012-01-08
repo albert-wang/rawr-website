@@ -186,7 +186,7 @@
 
 				client.query({
 					name: "insert image into gallery", 
-					text: "INSERT INTO gallery_images (name, title, description, category, time VALUES($1, $2, $3, $4, NOW())", 
+					text: "INSERT INTO gallery_images (name, title, description, category, time) VALUES($1, $2, $3, $4, NOW())", 
 					values: [name, title, desc, gid]
 				}, this);
 			}, function(err, results)
