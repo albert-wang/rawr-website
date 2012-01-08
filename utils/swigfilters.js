@@ -4,6 +4,13 @@
     var mkd = require('markdown')
     var USE_S3 = false;
 
+    //The external server uses S3, while 
+    //Local host (ran on windows) does not.
+    if (require("os").type() === "Linux")
+    {
+        USE_S3 = true;
+    }
+
     function prettyDate(time)
     {
         var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," ")),
