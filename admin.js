@@ -9,28 +9,15 @@
 
 	function panel(req, res)
 	{
+
 		common.navigation("Admin", function(err, navcontents)
 		{
-			fe(function()
-			{
-				setup.getConnection(this)
-			}, function(err, client)
+			gapi.getGalleries(function(err, galleries)
 			{
 				if (err)
 				{
 					console.log(err);
-					return undefined;
-				}
-
-				client.query({
-					name: "get gallery categories", 
-					text: "SELECT id, name FROM gallery_categories"
-				}, this)
-			}, function(err, results)
-			{
-				if (err)
-				{
-					console.log(err);
+					res.end();
 					return undefined;
 				}
 
@@ -38,10 +25,10 @@
 					authed : req.session.authenticated,
 					title: "Admin Auth", 
 					navigation_blocks: navcontents, 
-					categories: results.rows
+					categories: galleries
 				});
+			});
 		});
-		})
 	}
 
 	function auth(req, res)
@@ -71,6 +58,29 @@
 		res.end();
 	}
 
+	function addGallery(req, res)
+	{
+		if (!req.session.authenticated)
+		{
+			res.statusCode = 403;
+			res.end();
+			return;
+		}
+
+		gapi.gallery({
+			name: req.body.name
+		}, function(err)
+		{
+			if (err)
+			{
+				res.statusCode = 500;
+				res.end();
+			}
+			res.statusCode = 200;
+			res.end();
+		});
+	}
+
 	function gallery(req, res)
 	{
 		if (!req.session.authenticated)
@@ -79,7 +89,7 @@
 			res.end();
 			return;
 		}
-		
+
 		gapi.image({
 			image: req.files.image.path, 
 			title: req.body.title, 
@@ -98,6 +108,7 @@
 		auth : auth,
 		panel: panel, 
 		gallery: gallery, 
+		addGallery: addGallery,
 		unauth: unauth
 	}
 

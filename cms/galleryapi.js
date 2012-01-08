@@ -35,7 +35,7 @@
 
 			client.query({
 				name : "get recent images with category", 
-				text : "SELECT i.name, i.title, i.description, i.time, c.id as cid, c.name as cat, c.s3folder FROM " + 
+				text : "SELECT i.name, i.title, i.description, i.time, c.id as cid, c.name as cat FROM " + 
 					"gallery_images i JOIN gallery_categories c ON i.category = c.id " + 
 					"ORDER BY i.time DESC LIMIT $1", 
 				values: [30]
@@ -231,8 +231,62 @@
 		});
 	}
 
+	function gallery(params, cb)
+	{
+		if (!params.name)
+		{
+			cb("No name provided", undefined);
+			return undefined;
+		}
+
+		setup.getConnection(function(err, client)
+		{
+			if (err)
+			{
+				cb(err, undefined);
+			}
+
+			client.query({
+				name : "insert gallery", 
+				text : "INSERT INTO gallery_categories (name) VALUES($1)", 
+				values: [params.name]
+			}, cb);
+		});
+	}
+
+	function getGalleries(cb)
+	{
+		setup.getConnection(function(err, client)
+		{
+			if (err)
+			{
+				cb(err, undefined);
+				return undefined;
+			}
+
+			fe(function()
+			{
+				client.query({
+					name : "select galleries", 
+					text : "SELECT id, name FROM gallery_categories"
+				}, this);
+			}, function(err, results)
+			{
+				if (err)
+				{
+					cb(err, undefined);
+					return undefined;
+				}
+
+				cb(undefined, results.rows);
+			});
+		})
+	}
+
 	module.exports = {
 		regenerateRSSFeedForImages: regenerateRSSFeedForImages,
-		image: image
+		image: image,
+		getGalleries : getGalleries,
+		gallery:gallery
 	};
 })();

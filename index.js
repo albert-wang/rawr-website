@@ -24,6 +24,11 @@ var app = setup.setup(function(app)
 		admin.auth(req, res);
 	});
 
+	app.post("/admin/addgallery/?", function(req, res)
+	{
+		admin.addGallery(req, res);
+	})
+
 	app.post("/admin/gallery/?", function(req, res)
 	{
 		admin.gallery(req, res);

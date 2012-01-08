@@ -27,6 +27,13 @@
                     $.post('/admin/unauth')
                         .success(function() { location.reload(); });
                 })
+
+                $("#gallerybutton").click(function(e)
+                {
+                    $.post("/admin/addgallery", { name: $("#newgalname").val() })
+                        .success(function() { location.reload(); })
+                        .error(function() {});
+                })
             })
         </script>
     </head>
@@ -53,6 +60,7 @@
                     
                     {% if authed %}
                     <a id="upload_image" href="#">Upload an Image</a>
+                    <a id="add_gallery" href="#">Add a Gallery</a>
                     <a id="manage_post" href="#">Edit a Post</a>
                     <a id="manage_comment" href="#">Manage comments</a>
                     <a id="unauth" href="#">Log out</a>
@@ -72,6 +80,13 @@
                 </div>
                 
                 {% if authed %}
+                <div id="add_gallery_div" class="operation">
+                    <p> Add a gallery </p>
+                    <form>
+                        <label>Gallery Name</label><input id="newgalname" type='text' name='name'/><div class='clear'></div>
+                        <input id='gallerybutton' type='button' value='Add'/>
+                    </form>
+                </div>
                 <div id="upload_image_div" class='operation'>
                     <p> Choose an image to upload, along with its metadata </p>
                     <form action='/admin/gallery' method='POST' enctype="multipart/form-data">

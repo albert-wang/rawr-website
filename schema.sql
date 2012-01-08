@@ -83,7 +83,8 @@ CREATE TABLE IF NOT EXISTS gallery_categories
     );
 
 INSERT INTO gallery_categories(name) VALUES
-    ('uncategorized')
+    ('uncategorized'), 
+    ('araboth')
     ;
 
 CREATE TABLE IF NOT EXISTS gallery_images
