@@ -74,6 +74,8 @@ CREATE TABLE IF NOT EXISTS blog_tag_bridge
 -------------------
 --- Here we start the schema for the gallery.
 -------------------
+DROP TABLE gallery_categories;
+DROP TABLE gallery_images;
 
 CREATE TABLE IF NOT EXISTS gallery_categories
     ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY
