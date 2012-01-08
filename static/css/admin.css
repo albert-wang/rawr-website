@@ -1,0 +1,54 @@
+div#content h1
+{
+	font-size: 2.7em;
+}
+
+div#content p
+{
+	font-size: 1.7em;
+}
+
+p#admin_nav a
+{
+	display: block;
+	float: left;
+	margin-right: 30px;
+}
+
+div#content .operation
+{
+	display: none;
+	margin: 10px 0 20px 10px;
+	padding-left: 10px;
+	border-left: 1px dotted white;
+}
+
+div#content .operation form
+{
+	margin-top: 15px;
+}
+
+div#content .operation label
+{
+	font-size: 1.4em;
+	width: 150px;
+	float: left;
+	margin-bottom: 12px;
+}
+
+div#content .operation input,select
+{
+	font-size: 1.4em;
+	width: 80%;
+	border: none;
+	background-color: #DFDFDF;
+}
+
+div#content .operation input[type=submit], input[type=button]
+{
+	font-size: 1.4em;
+	margin-left: 150px;
+	width: 25%;
+	border: none;
+	background-color: #DFDFDF;
+}

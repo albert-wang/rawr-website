@@ -1,5 +1,6 @@
 var setup     = require("./utils/setup.js")
 var blog      = require("./blog.js")
+var admin     = require("./admin.js")
 //var gallery   = require("./gallery.js")
 
 var app = setup.setup(function(app)
@@ -11,15 +12,32 @@ var app = setup.setup(function(app)
     });
 
 
+
+    //The admin routes
+    app.get("/admin/?", function(req, res)
+	{
+		admin.panel(req, res);
+	});
+
+	app.post("/admin/authenticate/?", function(req, res)
+	{
+		admin.auth(req, res);
+	});
+
+	app.post("/admin/gallery/?", function(req, res)
+	{
+		admin.gallery(req, res);
+	})
+
+	app.post("/admin/unauth/?", function(req, res)
+	{
+		admin.unauth(req, res);
+	});
+
     //The API
     app.post("/api", function(req, res)
 	{
 		blog.postapi(req, res, setup);
-	})
-
-	app.post("/imageupload", function(req, res)
-	{
-		//gallery.imgapi(req, res);
 	})
 });
 

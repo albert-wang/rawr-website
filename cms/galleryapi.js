@@ -66,6 +66,58 @@
 		});
 	}
 
+	function image(params, cb)
+	{
+		/*
+			Params must be in the format: 
+				{
+					image: path to the image. Can be anywhere readable on disk.
+					title: title
+					desc : description of the image
+					gallery: id of the gallery
+				}
+		*/
+
+		var title = params.title || "Untitled";
+		var desc  = params.desc  || "";
+		var gid   = params.gallery || 1;
+
+
+		setup.getConnection(function(err, client)
+		{
+			if (err)
+			{
+				cb(err, undefined);
+				return undefined;
+			}
+
+			fe(function()
+			{
+				client.query({
+					name : "select gallery by id", 
+					text : "SELECT id, name, s3folder FROM gallery_categories WHERE id = $1", 
+					values : [gid]
+				}, this)
+			}, function(err, results)
+			{
+				if (err)
+				{
+					cb(err, undefined);
+					return undefined;
+				}
+
+				//Apply image magic to rescale the image to thumbnail size.
+
+				//S3 upload the image and the thumbnail to the appropriate folder
+
+				//Insert these new values into the database.
+			}
+
+
+			);
+		});
+	}
+
 	module.exports = {
 		regenerateRSSFeedForImages: regenerateRSSFeedForImages
 	};

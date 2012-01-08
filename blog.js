@@ -1,53 +1,8 @@
 
 (function()
 {
-    var api = require("./cms/blogapi.js")
-
-    function navigation(active, cb)
-    {
-        api.getAllCategories(function(err, categories)
-        {
-            var navigation = [
-                {
-                    link: '/', 
-                    title: 'Blog', 
-                    text: 'Read the blog', 
-                },
-                {
-                    link: "/",
-                    title: "Gallery", 
-                    text: "Browse the gallery", 
-                },
-                {
-                    link: "/",
-                    title: "Projects", 
-                    text: "What I'm working on", 
-
-                },
-                {
-                    link: '/',
-                    title: 'Downloads',
-                    text: 'most recent builds and tools',
-                }, 
-                {
-                    link: "/", 
-                    title: "About", 
-                    text: "About Rawr Productions"
-                }
-            ];
-
-            for (var i = 0; i < navigation.length; ++i)
-            {
-                if (navigation[i].title === active) 
-                {
-                    navigation[i].active = true;
-                }
-            }
-
-            cb(undefined, navigation);
-            return undefined;
-        });
-    }
+    var api     = require("./cms/blogapi.js")
+    var common  = require("./common.js");
 
     function home(req, res, env)
     {
@@ -60,7 +15,7 @@
             {
                 api.postsInCategory(null, 4, function(err, other)
                 {
-                    navigation("Blog", function(err, navcontents)
+                    common.navigation("Blog", function(err, navcontents)
                     {
                         var data = {
                             title: "Rawr Productions", 
@@ -93,6 +48,8 @@
     {
         if (req.body.key !== "{81D6B2F2-1983-4583-9CDE-DA9F6A3B66B7}")
         {
+            res.statusCode = 403;
+            res.end();
             return undefined;
         }
 

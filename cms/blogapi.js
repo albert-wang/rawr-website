@@ -442,7 +442,7 @@
     function regenerateRSSFeedForPosts(cb)
     {
         var feed = new rss({
-            title        : "Rawr Production Blog Posts", 
+            title        : "Rawr Productions Blog Posts", 
             description  : "Most recent blog updates", 
             feed_url     : "http://www.rawrrawr.com/rss/blog.rss", 
             site_url     : "http://www.rawrrawr.com", 
@@ -479,7 +479,7 @@
             {
                 feed.item({
                     title       : post.title, 
-                    description : filter.truncate(post.content, 512), 
+                    description : filter.truncate(filter.markdown(post.content), 512), 
                     url         : "http://www.rawrrawr.com/post/" + post.id + "/" + filter.linkify(post.title), 
                     date        : post.time
                 });

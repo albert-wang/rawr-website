@@ -81,6 +81,10 @@ CREATE TABLE IF NOT EXISTS gallery_categories
     , s3folder  VARCHAR(128) NOT NULL
     );
 
+INSERT INTO gallery_categories(name, s3folder) VALUES
+    ('uncategorized', 'default')
+    ;
+
 CREATE TABLE IF NOT EXISTS gallery_images
     ( id            SERIAL NOT NULL UNIQUE PRIMARY KEY
     , name          VARCHAR(128) NOT NULL

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ title|title }}</title>
+        {% include "head_common.html" %}
+        <link href="/css/admin.css" rel="stylesheet" type="text/css"/>
+
+        <script type="text/javascript">
+            $(window).ready(function()
+            {
+                $(".operation").hide();
+                $("#admin_nav a").click(function(e)
+                {
+                    var id = $(this).attr("id") + "_div";
+                    $("#" + id).toggle();   
+                })
+
+                $("#authbutton").click(function(e)
+                {
+                    $.post("/admin/authenticate", { password: $("#authpass").val() })
+                        .success(function() { location.reload() })
+                        .error(function() {  });
+                })
+
+                $("#unauth_button").click(function(e)
+                {
+                    $.post('/admin/unauth')
+                        .success(function() { location.reload(); });
+                })
+            })
+        </script>
+    </head>
+    <body>
+        <div class='wrapper'>
+            <div id='header'>
+                {% include "header.html" %}
+            </div>
+
+            <div class='background'>
+                <img src='{{ 'blue.jpg'|imglink }}'/>
+            </div>
+
+            {% include "navigation.html" %}
+
+            {% if feature %}
+                {% include "featured.html" %}
+            {% endif %}
+
+            <div id='content' class='lightbox container'>
+                <h1>What would you like to do?</h1>
+                
+                <p id="admin_nav">
+                    
+                    {% if authed %}
+                    <a id="upload_image" href="#">Upload an Image</a>
+                    <a id="manage_post" href="#">Edit a Post</a>
+                    <a id="manage_comment" href="#">Manage comments</a>
+                    <a id="unauth" href="#">Log out</a>
+                    {% else %}
+                    <a id="authenticate" href="#">Authenticate</a>
+                    {% endif %}
+                    <div class='clear'> </div>
+                </p>
+
+                <div id="authenticate_div" class='operation'>
+                    <p>Authenticate your session with the agreed upon password</p>
+                    <form>
+                        <label>Password </label>    <input type='text' id="authpass" name='pass'><div class='clear'></div>
+                        <input id="authbutton" type='button' value='Upload' />
+                        <div class='clear'></div>
+                    </form>
+                </div>
+                
+                {% if authed %}
+                <div id="upload_image_div" class='operation'>
+                    <p> Choose an image to upload, along with its metadata </p>
+                    <form action='/admin/gallery' method='POST' enctype="multipart/form-data">
+                        <label>File </label>        <input type='file' name='image'/><div class='clear'></div>
+                        <label>Title </label>       <input type='text' name='title'/><div class='clear'></div>
+                        <label>Description</label>  <input type='text' name='desc'/><div class='clear'></div>
+                        <label>Gallery </label>     <select name='gallery'>
+                            <option value='hey'>hey</option>
+                            {% for cat in categories %}
+                            <option value='{{cat.id}}'>{{cat.name|title}}</option>
+                            {% endfor %}
+
+                        </select>
+                        <div class='clear'></div>
+                        <input id="imgupbutton" type='submit' value='Upload' />
+                        <div class='clear'></div>
+                    </form>
+                </div>
+
+                <div id="unauth_div" class='operation'>
+                    <a href='#' id='unauth_button'>Really log out</a>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class='push'>
+            </div>
+        </div>
+        <div class='footer container'>
+            {% include "footer.html" %}
+        </div>
+    </body>
+</html>
