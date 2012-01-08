@@ -54,14 +54,6 @@
 
         setInterval(function() { downloadTweets(function(data){}) }, 1000 * 60 * 30);
 
-        s3.get("cirnobig.gif")
-            .on('response', function(res)
-            {
-                console.log(res.statusCode);
-                console.log(res.headers);
-                console.log(res.body);
-            }).end();
-
         return app;
     }
 
