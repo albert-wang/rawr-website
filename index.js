@@ -14,14 +14,29 @@ var app = setup.setup(function(app)
 	        blog.home(req, res, setup);
 	    });
 
+	    app.get("/blog/?", function(req, res)
+		{
+			blog.category(req, res, "all");
+		});
+
+		app.get("/blog/:category/?", function(req, res)
+		{
+			blog.category(req, res, req.params.category);	
+		})
+
 	    app.get("/gallery/?", function(req, res)
 	    {
 	    	gallery.home(req, res, setup);
 	    });
 
-	    app.get("/gallery/:gallery/?", function(req, res, gal)
+	    app.get("/gallery/:gallery/?", function(req, res)
 	    {
 	    	gallery.category(req, res, req.params.gallery);
+	    });
+
+	    app.get("/gallery/:gallery/:index", function(req, res)
+	    {
+	    	gallery.category(req, res, req.params.gallery, req.params.index);
 	    });
 	})();
 

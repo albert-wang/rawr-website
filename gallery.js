@@ -23,8 +23,9 @@
 		});
 	}
 
-	function category(req, res, gallery)
+	function category(req, res, gallery, i)
 	{
+		var index = i || 0;
 		common.navigation("Gallery", function(err, nav)
 		{
 			gapi.getImagesInGallery(gallery, function(err, images, galleryDesc)
@@ -39,7 +40,8 @@
 				res.render("gallery_category.html", {
 					navigation_blocks: nav, 
 					category         : galleryDesc,
-					images           : images
+					images           : images,
+					start_index      : index
 				});
 			});
 		});

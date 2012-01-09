@@ -13,7 +13,7 @@
         {
             api.postsInCategory("feature", 1, function(err, featured)
             {
-                api.postsInCategory(null, 4, function(err, other)
+                api.postsInCategory(null, 4, 0, function(err, other)
                 {
                     common.navigation("Home", function(err, navcontents)
                     {
@@ -41,6 +41,19 @@
                     });
                 });
             });
+        });
+    }
+
+    function category(req, res, category, page)
+    {
+        if (category === "all")
+        {
+            category = null;
+        }
+
+        api.postsInCategory(category, 10, page, function(err, posts)
+        {
+            
         });
     }
 

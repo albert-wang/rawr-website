@@ -394,8 +394,10 @@
         });
     }
 
-    function postsInCategory(optionalCategory, optionalMaximum, cb)
+    function postsInCategory(optionalCategory, optionalMaximum, optionalPage, cb)
     {
+        var page = optionalPage || 0;
+        
         fe(function()
         {
             setup.getConnection(this);
