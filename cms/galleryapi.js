@@ -248,8 +248,8 @@
 
 			client.query({
 				name : "insert gallery", 
-				text : "INSERT INTO gallery_categories (name) VALUES($1)", 
-				values: [params.name]
+				text : "INSERT INTO gallery_categories (name, description) VALUES($1, $2)", 
+				values: [params.name, params.desc]
 			}, cb);
 		});
 	}
@@ -281,6 +281,28 @@
 				cb(undefined, results.rows);
 			});
 		})
+	}
+
+	function getAllGalleriesWithOneImage(cb)
+	{
+		setup.getConnection(function(err, client)
+		{
+			client.query({
+				name: "select all galleries with latest image", 
+				text: "SELECT c.id, g.name, c.description FROM " +
+						"(SELECT i.category, MAX(i.id) as id FROM gallery_images i GROUP BY i.category) as m " +
+						"JOIN gallery_images g ON g.id = m.id " + 
+						"JOIN gallery_categories c ON g.category = c.id;"
+			}, this);
+		}, function(err, results)
+		{
+			if (err)
+			{
+				cb(err, undefined);
+				return undefined;
+			}
+			cb(undefined, results.rows);
+		});
 	}
 
 	module.exports = {

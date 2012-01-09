@@ -1,7 +1,7 @@
 var setup     = require("./utils/setup.js")
 var blog      = require("./blog.js")
 var admin     = require("./admin.js")
-//var gallery   = require("./gallery.js")
+var gallery   = require("./gallery.js")
 
 var app = setup.setup(function(app)
 {
@@ -12,6 +12,11 @@ var app = setup.setup(function(app)
 	    app.get("/", function(req, res)
 	    {
 	        blog.home(req, res, setup);
+	    });
+
+	    app.get("/gallery/?", function(req, res)
+	    {
+	    	gallery.home(req, res, setup);
 	    });
 	})();
 
@@ -45,7 +50,7 @@ var app = setup.setup(function(app)
 
     //The API routes
     (function() {
-	    app.post("/api", function(req, res)
+	    app.post("/api/?", function(req, res)
 		{
 			blog.postapi(req, res, setup);
 		})

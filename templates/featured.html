@@ -3,6 +3,10 @@
         <h2>FEATURED</h2>
         <h1> {{ feature.title|title }} </h1>
         <p> {{ feature.content|truncate }} </p>
+        {% if feature.link %}
+        <a href="{{feature.link}}">More...</a>
+        {% else %}
         <a href="/post/{{feature.id}}/{{feature.title|linkify}}">More...</a>
+        {% endif %}
     </div>
 </div>

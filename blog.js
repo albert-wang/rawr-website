@@ -15,7 +15,7 @@
             {
                 api.postsInCategory(null, 4, function(err, other)
                 {
-                    common.navigation("Blog", function(err, navcontents)
+                    common.navigation("Home", function(err, navcontents)
                     {
                         var data = {
                             title: "Rawr Productions", 

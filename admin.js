@@ -23,7 +23,7 @@
 
 				res.render("adminauth.html", {
 					authed : req.session.authenticated,
-					title: "Admin Auth", 
+					title: "Admin Panel", 
 					navigation_blocks: navcontents, 
 					categories: galleries
 				});
@@ -68,7 +68,8 @@
 		}
 
 		gapi.gallery({
-			name: req.body.name
+			name: req.body.name,
+			desc: req.body.desc
 		}, function(err)
 		{
 			if (err)

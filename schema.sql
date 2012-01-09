@@ -78,13 +78,14 @@ DROP TABLE gallery_categories CASCADE;
 DROP TABLE gallery_images CASCADE;
 
 CREATE TABLE IF NOT EXISTS gallery_categories
-    ( id        SERIAL NOT NULL UNIQUE PRIMARY KEY
-    , name      VARCHAR(128) NOT NULL
+    ( id            SERIAL NOT NULL UNIQUE PRIMARY KEY
+    , name          VARCHAR(128) NOT NULL
+    , description   VARCHAR(128) NOT NULL
     );
 
-INSERT INTO gallery_categories(name) VALUES
-    ('uncategorized'), 
-    ('araboth')
+INSERT INTO gallery_categories(name, description) VALUES
+    ('uncategorized', 'Uncategorized Images'), 
+    ('araboth', 'Araboth')
     ;
 
 CREATE TABLE IF NOT EXISTS gallery_images

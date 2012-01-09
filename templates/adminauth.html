@@ -30,7 +30,10 @@
 
                 $("#gallerybutton").click(function(e)
                 {
-                    $.post("/admin/addgallery", { name: $("#newgalname").val() })
+                    $.post("/admin/addgallery", { 
+                        name: $("#newgalname").val(),
+                        desc: $("#newgaldesc").val()
+                    })
                         .success(function() { location.reload(); })
                         .error(function() {});
                 })
@@ -84,6 +87,7 @@
                     <p> Add a gallery </p>
                     <form>
                         <label>Gallery Name</label><input id="newgalname" type='text' name='name'/><div class='clear'></div>
+                        <label>Display Name</label><input id="newgaldesc" type='text' name='name'/><div class='clear'></div>
                         <input id='gallerybutton' type='button' value='Add'/>
                     </form>
                 </div>
