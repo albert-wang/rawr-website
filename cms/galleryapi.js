@@ -86,6 +86,7 @@
 		var title = params.title || "Untitled";
 		var desc  = params.desc  || "";
 		var gid   = params.gallery || 1;
+		var inputName = null;
 		var name  = null;
 
 		if (typeof gid !== "number")
@@ -133,8 +134,16 @@
 				});
 			}, function(digest)
 			{
-				name = digest + "." + mime.extension(params.type);
-
+				inputName = digest + "." + mime.extension(params.type);
+				if (params.type === "image/bmp")
+				{
+					//Convert BMPs to PNG
+					name = digest + ".png";
+				} else 
+				{
+					name = inputName;
+				}
+				
 				var input = fs.ReadStream(params.image);
 				var output = fs.WriteStream("./cache/" + name);
 
@@ -150,10 +159,22 @@
 				var outer = this;
 
 				//Apply image magic to rescale the image to thumbnail size.
-				img.convert(["./cache/" + name, "-resize", "120x180^", "-gravity", "center", "-extent", "120x180", "./cache/thumb-" + name], function(err, meta)
+				if (inputName !== name)
 				{
-					img.convert(["./cache/" + name, "-resize", "800x600", "./cache/med-" + name], outer);
-				});
+					img.convert(["./cache/" + inputName, "./cache/" + name], function()
+					{
+						img.convert(["./cache/" + name, "-resize", "120x180^", "-gravity", "center", "-extent", "120x180", "./cache/thumb-" + name], function(err, meta)
+						{
+							img.convert(["./cache/" + name, "-resize", "800x600", "./cache/med-" + name], outer);
+						});		
+					}
+				} else 
+				{
+					img.convert(["./cache/" + name, "-resize", "120x180^", "-gravity", "center", "-extent", "120x180", "./cache/thumb-" + name], function(err, meta)
+					{
+						img.convert(["./cache/" + name, "-resize", "800x600", "./cache/med-" + name], outer);
+					});		
+				}
 			}, function(err, meta)
 			{
 				//S3 upload the image and the thumbnail to the appropriate folder
