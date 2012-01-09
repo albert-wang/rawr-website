@@ -23,7 +23,30 @@
 		});
 	}
 
+	function category(req, res, gallery)
+	{
+		common.navigation("Gallery", function(err, nav)
+		{
+			gapi.getImagesInGallery(gallery, function(err, images, galleryDesc)
+			{
+				if (err)
+				{
+					console.log("Err getting: " + gallery);
+					res.end();
+					return;
+				}
+
+				res.render("gallery_category.html", {
+					navigation_blocks: nav, 
+					category         : galleryDesc,
+					images           : images
+				});
+			});
+		});
+	}
+
 	module.exports = {
-		home : home
+		home : home,
+		category : category
 	}
 })();
