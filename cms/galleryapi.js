@@ -89,12 +89,6 @@
 		var inputName = null;
 		var name  = null;
 
-		if (typeof gid !== "number")
-		{
-			gid = 1;
-		}
-
-
 		setup.getConnection(function(err, client)
 		{
 			if (err)
