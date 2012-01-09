@@ -194,7 +194,7 @@ div.teir2 h1
 div#feature div#featuredcontent
 {
     font-family: 'Open Sans', Arial;
-    width: 40%;
+    width: 50%;
     padding-left: 9px;
     margin: 15px 0 70px 0;
 }
@@ -255,3 +255,37 @@ div#content a:visited
     color: #305eb2;
 }
 
+.no1
+{
+    border-top: 3px solid #305eb2;
+}
+
+.no2
+{
+    border-top: 3px solid #4b32b3;
+}
+
+.no3
+{
+    border-top: 3px solid #005D54;
+}
+
+.no4
+{
+    border-top: 3px solid #cb9533;
+}
+
+.no5
+{
+    border-top: 3px solid #A64F00;
+}
+
+.no6
+{
+    border-top: 3px solid #FF9200;
+}
+
+.no7
+{
+    border-top: 3px solid #66A3D2;
+}

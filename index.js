@@ -18,6 +18,11 @@ var app = setup.setup(function(app)
 	    {
 	    	gallery.home(req, res, setup);
 	    });
+
+	    app.get("/gallery/:gallery/?", function(req, res, gal)
+	    {
+	    	gallery.category(req, res, req.params.gallery);
+	    });
 	})();
 
     //The admin routes

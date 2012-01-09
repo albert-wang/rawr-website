@@ -84,6 +84,11 @@
        return "//img.rawrrawr.com/gallery/med-" + text;
     }
 
+    function stylenumber(valu)
+    {
+        return valu % 7 + 1;
+    }
+
     module.exports = {
         fuzzy_date      : prettyDate,
         truncate        : truncate,
@@ -93,6 +98,7 @@
         imglink         : imglink,
         gallerylink     : gallerylink,
         thumblink       : thumblink,
-        medlink         : medlink
+        medlink         : medlink,
+        stylenumber     : stylenumber
     };
 })();

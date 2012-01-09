@@ -1,0 +1,36 @@
+
+div.gallery
+{
+	float: left;
+	padding-top: 10px;
+	margin: 5px;
+	width: 21%;
+}
+
+div.gallery_block 
+{
+	background-image: url("/img/darkbox.png");
+	padding: 5px;
+}
+
+div.gallery_block h1
+{
+	white-space: nowrap;
+	width: 100%;
+	overflow: hidden;
+	font-size: 2em !important;
+}
+
+div.gallery_block a
+{
+	border: 0;
+}
+
+div.gallery_block img
+{
+	display: block;
+	margin-left: 20px;
+	padding: 10px 0 10px 20px;
+	border: 0;
+	border-left: 1px white dotted;
+}

@@ -150,7 +150,7 @@
 				var outer = this;
 
 				//Apply image magic to rescale the image to thumbnail size.
-				img.convert(["./cache/" + name, "-resize", "120x180\^", "-gravity", "center", "-extent", "120x180", "./cache/thumb-" + name], function(err, meta)
+				img.convert(["./cache/" + name, "-resize", "120x180^", "-gravity", "center", "-extent", "120x180", "./cache/thumb-" + name], function(err, meta)
 				{
 					img.convert(["./cache/" + name, "-resize", "800x600", "./cache/med-" + name], outer);
 				});
@@ -305,11 +305,61 @@
 		});
 	}
 
+	function getGalleryIDAndDescription(gallery, cb)
+	{
+		setup.getConnection(function(err, client)
+		{
+			fe(function()
+			{
+				client.query({
+					name: "gallery by name", 
+					text: "select id, description from gallery_categories WHERE name = $1", 
+					values: [gallery]
+				}, this)
+			}, function(err, results)
+			{
+				if (err)
+				{
+					cb(err, undefined, undefined);
+					return undefined;
+				}
+
+				if (results.rows.length == 0)
+				{
+					cb("None found", undefined, undefined);
+					return undefined;
+				}
+
+				cb(undefined, results.rows[0].id, results.rows[0].description);
+			});
+		});
+	}
+
+	function getImagesInGallery(gallery, cb)
+	{
+		setup.getConnection(function(err, client)
+		{
+			getGalleryIDAndDescription(gallery, function(err, id, desc)
+			{
+				client.query(
+				{
+					name: "select images in category",
+					text: "SELECT id, name, title, description, time FROM gallery_images WHERE category = $1", 
+					values: [id]
+				}, function(err, results)
+				{
+					cb(err, results.rows, desc);
+				});
+			});
+		})
+	}
+
 	module.exports = {
-		regenerateRSSFeedForImages: regenerateRSSFeedForImages,
-		image: image,
-		getGalleries : getGalleries,
 		gallery:gallery,
-		getAllGalleriesWithOneImage:getAllGalleriesWithOneImage
+		getAllGalleriesWithOneImage:getAllGalleriesWithOneImage,
+		getGalleries : getGalleries,
+		getImagesInGallery:getImagesInGallery,
+		image: image,
+		regenerateRSSFeedForImages: regenerateRSSFeedForImages
 	};
 })();
