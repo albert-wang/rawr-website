@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ title|title }}</title>
+        {% include "head_common.html" %}
+        <link href="/css/gallery.css" rel="stylesheet" type="text/css"/>
+        <link type="text/css" href="/css/styles/bottom.css" rel="stylesheet" />
+        <script type="text/javascript" src="/js/jquery.pikachoose.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function ()
+            {
+                $("#gallery").PikaChoose({carousel:true});
+            });
+        </script>
+    </head>
+    <body>
+        <div class='wrapper'>
+            <div id='header'>
+                {% include "header.html" %}
+            </div>
+
+            <div class='background'>
+                <img src='{{ 'blue.jpg'|imglink }}'/>
+            </div>
+
+            {% include "navigation.html" %}
+
+            <div id="feature" class="container">
+                <div id="featuredcontent">
+                    <h2>CATEGORY</h2>
+                    <h1> {{ category|title }} </h1>
+                </div>
+            </div>
+
+
+            <div id='content' class='lightbox container'>
+              
+                <ul id="gallery" class="jcarousel-skin-pika">
+                {% for img in images %}
+                    <li>
+                        <a href="{{img.name|gallerylink}}">
+                            <img src="{{img.name|thumblink}}" ref="{{img.name|gallerylink}}" />
+                        </a>
+                        <span>Nyancats</span>
+                    </li>
+                {% endfor %}
+
+                    <li>
+                        <a href="#">
+                            <img src="/img/blue.jpg" />
+                        </a>
+                        <span>Nyancats</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class='push'>
+            </div>
+        </div>
+        <div class='footer container'>
+            {% include "footer.html" %}
+        </div>
+    </body>
+</html>
