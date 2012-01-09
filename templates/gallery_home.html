@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ title|title }}</title>
+        {% include "head_common.html" %}
+    </head>
+    <body>
+        <div class='wrapper'>
+            <div id='header'>
+                {% include "header.html" %}
+            </div>
+
+            <div class='background'>
+                <img src='{{ 'blue.jpg'|imglink }}'/>
+            </div>
+
+            {% include "navigation.html" %}
+
+            {% if feature %}
+                {% include "featured.html" %}
+            {% endif %}
+
+            <div id='content' class='lightbox container'>
+                {% for gallery in galleries %}
+                	<div class='gallery'>
+                		<h1>{{gallery.description|title}}</h1>
+                		<a href='/gallery/{{gallery.name}}'>
+                			<img src='{{gallery.image|gallerylink}}'/>
+                		</a>
+                	</div>
+                {% endfor %}
+                <div class='clear'></div>
+            </div>
+            
+            <div class='push'>
+            </div>
+        </div>
+        <div class='footer container'>
+            {% include "footer.html" %}
+        </div>
+    </body>
+</html>
