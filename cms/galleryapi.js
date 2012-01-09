@@ -289,7 +289,7 @@
 		{
 			client.query({
 				name: "select all galleries with latest image", 
-				text: "SELECT c.id, g.name, c.description FROM " +
+				text: "SELECT c.id, g.name as image, c.name, c.description FROM " +
 						"(SELECT i.category, MAX(i.id) as id FROM gallery_images i GROUP BY i.category) as m " +
 						"JOIN gallery_images g ON g.id = m.id " + 
 						"JOIN gallery_categories c ON g.category = c.id;"
@@ -309,6 +309,7 @@
 		regenerateRSSFeedForImages: regenerateRSSFeedForImages,
 		image: image,
 		getGalleries : getGalleries,
-		gallery:gallery
+		gallery:gallery,
+		getAllGalleriesWithOneImage:getAllGalleriesWithOneImage
 	};
 })();

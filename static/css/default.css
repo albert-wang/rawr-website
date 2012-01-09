@@ -207,7 +207,7 @@ div#feature h1,h2,p
 
 div#feature h1
 {
-    font-size: 2.0em;
+    font-size: 3.0em;
 }
 
 div#feature a
@@ -223,7 +223,7 @@ div#feature a:visited
 div#feature p
 {
     margin: 10px 0px 20px 0px;
-    font-size: 0.9em;
+    font-size: 1.1em;
 }
 
 div#feature h2

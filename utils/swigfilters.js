@@ -57,11 +57,23 @@
         return mkd.markdown.toHTML(text);
     }
 
+    //Used for web images.
     function imglink(text)
     {
         if (USE_S3)
         {
             return "//img.rawrrawr.com/web/" + text;
+        } else 
+        {
+            return "/img/" + text;
+        }
+    }
+
+    function gallerylink(text)
+    {
+        if (USE_S3)
+        {
+            return "//img.rawrrawr.com/gallery/" + text;
         } else 
         {
             return "/img/" + text;
@@ -74,6 +86,7 @@
         longtruncate: longtruncate, 
         linkify : linkify,
         markdown: markdown,
-        imglink : imglink
+        imglink : imglink,
+        gallerylink : gallerylink
     };
 })();
