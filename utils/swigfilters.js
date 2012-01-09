@@ -71,22 +71,28 @@
 
     function gallerylink(text)
     {
-        if (USE_S3)
-        {
-            return "//img.rawrrawr.com/gallery/" + text;
-        } else 
-        {
-            return "/img/" + text;
-        }
+       return "//img.rawrrawr.com/gallery/" + text;
+    }
+
+    function thumblink(text)
+    {
+       return "//img.rawrrawr.com/gallery/thumb-" + text;
+    }
+
+    function medlink(text)
+    {
+       return "//img.rawrrawr.com/gallery/med-" + text;
     }
 
     module.exports = {
-        fuzzy_date: prettyDate,
-        truncate: truncate,
-        longtruncate: longtruncate, 
-        linkify : linkify,
-        markdown: markdown,
-        imglink : imglink,
-        gallerylink : gallerylink
+        fuzzy_date      : prettyDate,
+        truncate        : truncate,
+        longtruncate    : longtruncate, 
+        linkify         : linkify,
+        markdown        : markdown,
+        imglink         : imglink,
+        gallerylink     : gallerylink,
+        thumblink       : thumblink,
+        medlink         : medlink
     };
 })();

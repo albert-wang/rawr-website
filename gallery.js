@@ -6,11 +6,6 @@
 
 	function home(req, res, setup)
 	{
-		setup.getConnection(function(err, client)
-		{
-			console.log(client);
-		});
-
 		common.navigation("Gallery", function(err, nav)
 		{
 			gapi.getAllGalleriesWithOneImage(function(err, galleries)
@@ -27,7 +22,6 @@
 			});
 		});
 	}
-
 
 	module.exports = {
 		home : home
