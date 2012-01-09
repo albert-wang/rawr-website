@@ -143,7 +143,7 @@
 				{
 					name = inputName;
 				}
-				
+
 				var input = fs.ReadStream(params.image);
 				var output = fs.WriteStream("./cache/" + name);
 
@@ -167,7 +167,7 @@
 						{
 							img.convert(["./cache/" + name, "-resize", "800x600", "./cache/med-" + name], outer);
 						});		
-					}
+					});
 				} else 
 				{
 					img.convert(["./cache/" + name, "-resize", "120x180^", "-gravity", "center", "-extent", "120x180", "./cache/thumb-" + name], function(err, meta)
