@@ -150,7 +150,7 @@
 				var outer = this;
 
 				//Apply image magic to rescale the image to thumbnail size.
-				img.convert(["./cache/" + name, "-resize", "120x180\^", "-gravity", "center", "-extent", "120x180", "./cache/thumb-" + name], function(err, meta)
+				img.convert(["./cache/" + name, "-resize", "120x180^", "-gravity", "center", "-extent", "120x180", "./cache/thumb-" + name], function(err, meta)
 				{
 					img.convert(["./cache/" + name, "-resize", "800x600", "./cache/med-" + name], outer);
 				});
