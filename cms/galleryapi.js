@@ -293,15 +293,15 @@
 						"(SELECT i.category, MAX(i.id) as id FROM gallery_images i GROUP BY i.category) as m " +
 						"JOIN gallery_images g ON g.id = m.id " + 
 						"JOIN gallery_categories c ON g.category = c.id;"
-			}, this);
-		}, function(err, results)
-		{
-			if (err)
+			}, function(err, results)
 			{
-				cb(err, undefined);
-				return undefined;
-			}
-			cb(undefined, results.rows);
+				if (err)
+				{
+					cb(err, undefined);
+					return undefined;
+				}
+				cb(undefined, results.rows);
+			});
 		});
 	}
 
