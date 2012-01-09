@@ -10,7 +10,7 @@
         <script type="text/javascript">
             $(document).ready(function ()
             {
-                $("#gallery").PikaChoose({carousel:true});
+                $("#gallery").PikaChoose({carousel:true, autoplay: false});
             });
         </script>
     </head>
@@ -42,16 +42,12 @@
                         <a href="{{img.name|gallerylink}}">
                             <img src="{{img.name|thumblink}}" ref="{{img.name|gallerylink}}" />
                         </a>
-                        <span>Nyancats</span>
+                        <span>
+                            <h1> {{img.title|title}} </h1>
+                            <p> {{img.description}} </p>
+                        </span>
                     </li>
                 {% endfor %}
-
-                    <li>
-                        <a href="#">
-                            <img src="/img/blue.jpg" />
-                        </a>
-                        <span>Nyancats</span>
-                    </li>
                 </ul>
             </div>
             

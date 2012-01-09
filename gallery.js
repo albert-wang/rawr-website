@@ -39,7 +39,7 @@
 				res.render("gallery_category.html", {
 					navigation_blocks: nav, 
 					category         : galleryDesc,
-					images           : [images[0],images[0],images[0],images[0],images[0],images[0],images[0],images[0], images[0],images[0],images[0],images[0],images[0],images[0],images[0],images[0]]
+					images           : images
 				});
 			});
 		});
