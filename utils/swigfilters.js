@@ -13,7 +13,7 @@
 
     function prettyDate(time)
     {
-        var date = new Date((time || "").toString().replace(/-/g,"/").replace(/[TZ]/g," ")),
+        var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," ")),
         diff = (((new Date()).getTime() - date.getTime()) / 1000),
         day_diff = Math.floor(diff / 86400);
 
@@ -89,6 +89,11 @@
         return valu % 7 + 1;
     }
 
+    function archiveToDate(arch)
+    {
+        return new Date(arch.year, arch.month - 1, 1);
+    }
+
     module.exports = {
         fuzzy_date      : prettyDate,
         truncate        : truncate,
@@ -99,6 +104,7 @@
         gallerylink     : gallerylink,
         thumblink       : thumblink,
         medlink         : medlink,
-        stylenumber     : stylenumber
+        stylenumber     : stylenumber,
+        archiveToDate   : archiveToDate
     };
 })();

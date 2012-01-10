@@ -22,21 +22,26 @@ var app = setup.setup(function(app)
 		app.get("/blog/:category/?", function(req, res)
 		{
 			blog.category(req, res, req.params.category);	
-		})
+		});
+
+		app.get("/blog/archive/:year/:month/:category?", function(req, res)
+		{
+			blog.archives(req, res, req.params.category, req.params.year, req.params.month);
+		});
+
+		app.get("/post/:id/:title/?", function(req, res)
+		{
+			blog.singlepost(req, res, req.params.id);
+		});
 
 	    app.get("/gallery/?", function(req, res)
 	    {
 	    	gallery.home(req, res, setup);
 	    });
 
-	    app.get("/gallery/:gallery/?", function(req, res)
+	    app.get("/gallery/:gallery/:index?", function(req, res)
 	    {
-	    	gallery.category(req, res, req.params.gallery);
-	    });
-
-	    app.get("/gallery/:gallery/:index", function(req, res)
-	    {
-	    	gallery.category(req, res, req.params.gallery, req.params.index);
+	    	gallery.category(req, res, req.params.gallery, req.params.index ? req.params.index : 0);
 	    });
 	})();
 

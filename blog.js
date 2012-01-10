@@ -56,35 +56,111 @@
         {
             api.postsInCategory(category, 5, page, function(err, posts, nolimitCount)
             {
-                if (err || !posts)
+                api.postsInCategoryByMonth(category, function(err, archives)
                 {
-                    res.end();
-                    return undefined;
-                }
-
-                flow.serialForEach(posts, function(post)
-                {
-                    var outer = this;
-                    api.getTagsOnPost(post.id, function(err, tags)
+                    if (err || !posts)
                     {
-                        post.tags = tags;
-                        outer();
+                        console.log(err);
+                        res.end();
+                        return undefined;
+                    }
+
+                    flow.serialForEach(posts, function(post)
+                    {
+                        var outer = this;
+                        api.getTagsOnPost(post.id, function(err, tags)
+                        {
+                            post.tags = tags;
+                            outer();
+                        });
+                    }, function()
+                    {
+                        
+                    }, function()
+                    {
+                        common.navigation("Blog", function(err, navcontents)
+                        {
+                            res.render("blog_category.html", {
+                               navigation_blocks: navcontents, 
+                               title: category || "Anything and Everything", 
+                               actual_category: category,
+                               feed: posts, 
+                               categories : categories.rows, 
+                               count: nolimitCount,
+                               archives: archives,
+                               pages: Math.floor(nolimitCount / 5)
+                            });
+                        });    
                     });
-                }, function()
-                {
-                    
-                }, function()
+                });
+            });
+        });
+    }
+
+    function singlepost(req, res, pid)
+    {
+        api.getPostWithId(pid, function(err, post)
+        {
+            api.getTagsOnPost(post.id, function(err, tags)
+            {
+                api.postsInCategoryByMonth(post.category, function(err, archives)
                 {
                     common.navigation("Blog", function(err, navcontents)
                     {
-                        res.render("blog_category.html", {
-                           navigation_blocks: navcontents, 
-                           title: category || "Anything and Everything", 
-                           feed: posts, 
-                           categories : categories.rows, 
-                           count: nolimitCount
+                        res.render("blog_single.html", {
+                            navigation_blocks: navcontents,
+                            title: post.title, 
+                            post : post, 
+                            tags : tags, 
+                            archives: archives
                         });
-                    });    
+                    });
+                });
+            });
+        });
+    }
+
+    function archives(req, res, cat, year, month)
+    {
+        api.getAllCategories(function(err, categories)
+        {
+            api.postsInCategoryByDate(cat, year, month, function(err, posts)
+            {
+                api.postsInCategoryByMonth(cat, function(err, archives)
+                {
+                    if (err || !posts)
+                    {
+                        console.log(err);
+                        res.end();
+                        return undefined;
+                    }
+
+                    flow.serialForEach(posts, function(post)
+                    {
+                        var outer = this;
+                        api.getTagsOnPost(post.id, function(err, tags)
+                        {
+                            post.tags = tags;
+                            outer();
+                        });
+                    }, function()
+                    {
+                        
+                    }, function()
+                    {
+                        common.navigation("Blog", function(err, navcontents)
+                        {
+                            res.render("blog_category.html", {
+                               navigation_blocks: navcontents, 
+                               title: cat || "Anything and Everything", 
+                               actual_category: cat,
+                               archive_date: new Date(year, month - 1, 1),
+                               feed: posts, 
+                               categories : categories.rows, 
+                               archives: archives,
+                            });
+                        });    
+                    });
                 });
             });
         });
@@ -140,9 +216,11 @@
     }
 
     module.exports = {
-        home    : home, 
-        postapi : postapi,
-        category: category
+        home        : home, 
+        postapi     : postapi,
+        category    : category,
+        singlepost  : singlepost,
+        archives    : archives
     } 
 })();
 

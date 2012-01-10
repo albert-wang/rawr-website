@@ -417,6 +417,33 @@
         });
     }
 
+    function getPostWithId(pid, cb)
+    {
+        setup.getConnection(function(err, client)
+        {
+            if (err)
+            {
+                cb(err, undefined);
+                return undefined;
+            }
+
+            client.query({
+                name: "get single post by id", 
+                text: "SELECT id, title, category, content, time FROM blog_posts WHERE id = $1", 
+                values: [pid]
+            }, function(err, results)
+            {
+                if (err)
+                {
+                    cb(err, undefined);
+                    return undefined;
+                }
+
+                cb(undefined, results.rows[0]);
+            });
+        });
+    }
+
     function totalPostsInCategory(optionalCategory, cb)
     {
         setup.getConnection(function(err, client)
@@ -453,6 +480,73 @@
 
                 cb(undefined, results.rows[0].c)
             });
+        });
+    }
+
+    function postsInCategoryByMonth(optionalCategory, cb)
+    {
+        setup.getConnection(function(err, client)
+        {
+            if (!optionalCategory)
+            {
+                client.query({
+                    name: "group posts by date", 
+                    text: "SELECT COUNT(*) AS count, DATE_PART('YEAR', time) AS year, " + 
+                        "DATE_PART('MONTH', time) AS month FROM blog_posts GROUP BY month,year",
+                }, function(err, results)
+                {
+                    if (err)
+                    {
+                        cb(err, undefined);
+                        return undefined;
+                    }
+                    cb(undefined, results.rows);
+                });
+            } else 
+            {
+                if (typeof optionalCategory === "number")
+                {
+                     client.query({
+                        name: "group posts by category name and by date with id", 
+                        text: "SELECT COUNT(*) as count, DATE_PART('YEAR', time) AS year, " + 
+                            "DATE_PART('MONTH', time) AS month FROM blog_posts WHERE category = $1 GROUP BY month, year", 
+                        values: [optionalCategory]
+                    }, function(err, posts)
+                    {
+                        if (err)
+                        {
+                            cb(err, undefined);
+                            return undefined;
+                        }
+                        cb(err, posts.rows, optionalCategory);
+                    });
+                } else 
+                {
+                    getCategoryIDByName(optionalCategory, function(err, cid)
+                    {
+                        if (err)
+                        {
+                            cb(err, undefined);
+                            return undefined;
+                        }
+
+                        client.query({
+                            name: "group posts by category name and by date", 
+                            text: "SELECT COUNT(*) as count, DATE_PART('YEAR', time) AS year, " + 
+                                "DATE_PART('MONTH', time) AS month FROM blog_posts WHERE category = $1 GROUP BY month, year", 
+                            values: [cid]
+                        }, function(err, posts)
+                        {
+                            if (err)
+                            {
+                                cb(err, undefined);
+                                return undefined;
+                            }
+                            cb(err, posts.rows, cid);
+                        });
+                    });
+                }
+            }
         });
     }
 
@@ -506,6 +600,54 @@
             {
                 cb(err, posts.rows, count);        
             });
+        });
+    }
+
+    function postsInCategoryByDate(optionalCategory, year, month, cb)
+    {
+        fe(function()
+        {
+            setup.getConnection(this);
+        }, function(err, client)
+        {
+            if (err)
+            {
+                cb(err, undefined);
+                return undefined; 
+            }
+
+            if (!optionalCategory)
+            {
+                client.query({
+                    name: "get posts date", 
+                    text: "SELECT id, title, category, content, time FROM blog_posts " +
+                        "WHERE DATE_PART('YEAR', time) = $1 AND DATE_PART('MONTH', time) = $2", 
+                    values: [year, month]
+                }, this);
+            } else 
+            {
+                var outer = this;
+                getCategoryIDByName(optionalCategory, function(err, cid)
+                {
+                    if (err)
+                    {
+                        cb(err, undefined);
+                        return undefined;
+                    }
+                    client.query({
+                        name: "get posts by category name date", 
+                        text: "SELECT id, title, category, content, time " + 
+                            "FROM blog_posts WHERE category = $1 AND DATE_PART('YEAR', time) = $2 AND DATE_PART('MONTH', time) = $3 ",
+                        values: [cid, year, month]
+                    }, function(err, posts)
+                    {
+                        outer(err, posts, cid);
+                    });
+                });
+            }
+        }, function(err, posts, cid)
+        {
+            cb(err, posts.rows);
         });
     }
 
@@ -575,18 +717,21 @@
     }
 
     module.exports = {
-        post                    : post,
-        futurepost              : futurepost,
-        comment                 : comment,
-        getCategoryIDByName     : getCategoryIDByName,
-        getTagIDByName          : getTagIDByName,
-        postsInCategory         : postsInCategory, 
-        getAllCategories        : getAllCategories,
         base64Decode            : base64Decode,
+        comment                 : comment,
+        futurepost              : futurepost,
+        getAllCategories        : getAllCategories,
+        getCategoryIDByName     : getCategoryIDByName,
+        getPostWithId           : getPostWithId,
+        getTagIDByName          : getTagIDByName,
         getTagsOnPost           : getTagsOnPost,
+        post                    : post,
         postscheduled           : postscheduled,
+        postsInCategory         : postsInCategory, 
+        regenerateRSSFeedForPosts: regenerateRSSFeedForPosts,
         totalPostsInCategory    : totalPostsInCategory,
-        regenerateRSSFeedForPosts: regenerateRSSFeedForPosts
+        postsInCategoryByMonth  : postsInCategoryByMonth,
+        postsInCategoryByDate   : postsInCategoryByDate
     };
 })();
 

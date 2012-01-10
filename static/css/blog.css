@@ -3,12 +3,24 @@
 {
 	float: left;
 	width: 63%;
+	color: #E0E0E0;
+}
+
+.spacer
+{
+	height: 50px;
 }
 
 div#content div.thinleft h1
 {
 	font-size: 3.1em;
 	margin-bottom: 20px;
+}
+
+div#content div.thinright h2
+{
+	font-size: 0.7em;
+	font-weight: lighter;
 }
 
 div#content div.thinleft h3
