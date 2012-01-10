@@ -3,6 +3,7 @@
 {
     var api     = require("./cms/blogapi.js")
     var common  = require("./common.js");
+    var flow    = require("flow");
 
     function home(req, res, env)
     {
@@ -11,7 +12,7 @@
 
         env.getTweets(function(tweets)
         {
-            api.postsInCategory("feature", 1, function(err, featured)
+            api.postsInCategory("featured", 1, 0, function(err, featured)
             {
                 api.postsInCategory(null, 4, 0, function(err, other)
                 {
@@ -20,8 +21,8 @@
                         var data = {
                             title: "Rawr Productions", 
                             navigation_blocks: navcontents,
-                            feature: featured.rows[0],
-                            feed: other.rows,
+                            feature: featured.rows ? featured.rows[0] : undefined,
+                            feed: other,
                             blocks: [
                                 {
                                     title: "Twitter", 
@@ -51,9 +52,41 @@
             category = null;
         }
 
-        api.postsInCategory(category, 10, page, function(err, posts)
+        api.getAllCategories(function(err, categories)
         {
-            
+            api.postsInCategory(category, 5, page, function(err, posts, nolimitCount)
+            {
+                if (err || !posts)
+                {
+                    res.end();
+                    return undefined;
+                }
+
+                flow.serialForEach(posts, function(post)
+                {
+                    var outer = this;
+                    api.getTagsOnPost(post.id, function(err, tags)
+                    {
+                        post.tags = tags;
+                        outer();
+                    });
+                }, function()
+                {
+                    
+                }, function()
+                {
+                    common.navigation("Blog", function(err, navcontents)
+                    {
+                        res.render("blog_category.html", {
+                           navigation_blocks: navcontents, 
+                           title: category || "Anything and Everything", 
+                           feed: posts, 
+                           categories : categories.rows, 
+                           count: nolimitCount
+                        });
+                    });    
+                });
+            });
         });
     }
 
@@ -108,7 +141,8 @@
 
     module.exports = {
         home    : home, 
-        postapi : postapi
+        postapi : postapi,
+        category: category
     } 
 })();
 

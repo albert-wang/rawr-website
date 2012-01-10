@@ -3,7 +3,7 @@
     <head>
         <title>{{ title|title }}</title>
         {% include "head_common.html" %}
-        <link href="/css/main.css" rel="stylesheet" type="text/css"/>
+        <link href="/css/blog.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <div class='wrapper'>
@@ -12,49 +12,46 @@
             </div>
 
             <div class='background'>
-                <img src='{{ 'blue.jpg'|imglink }}'/>
+                <img src='{{'blue.jpg'|imglink }}'/>
             </div>
 
             {% include "navigation.html" %}
 
-            {% if feature %}
-                {% include "featured.html" %}
-            {% endif %}
-
-            <div id='content' class='lightbox container'>
-                <div class='left'>
-                    <h1>Want to see what I've been working on recently?</h1>
-                    <p>
-                        <a href='/downloads'>Download them here</a> or check what I have open sourced on
-                        <a href="https://bitbucket.org/rraawwrr/">Bitbucket</a>
-                    </p>
+            <div id="feature" class="container">
+                <div id="featuredcontent">
+                    <h2>CATEGORY</h2>
+                    <h1>{{title|title}}</h1>
+                </div>
+            </div>
+            <div id='content' class='container'>
+                <div class='thinleft'>
+                    {% for post in feed %}
+                    <div class='lightbox no{{ forloop.index|stylenumber}}'>
+                        <h1>
+                            <a href="/post/{{post.id}}/{{post.title|linkify}}">{{post.title|title}}</a>
+                        </h1>
+                        <h3>Posted {{post.time|date("l, F jS")}} | 
+                        {% for tag in post.tags %}{{tag.name|title}} {% endfor %}
+                        </h3>
+                        <p>
+                            {{post.content|markdown|raw}}
+                        </p>
+                    </div>
+                    <div class='clear'></div>
+                    {% endfor %}
                     <div class='clear'></div>
                 </div>
 
-                <div class='right'>
-                    {% for blk in blocks %}
-                    <div class='block'>
-                        <h1>{{ blk.title|title }}</h1>
-                        {{ blk.content|raw }}
+                <div class='thinright'>
+                    {% for cat in categories %}
+                    <div class='block {% if forloop.first %}first{% endif %}'>
+                        <h1><a href="/blog/{{cat.name}}">{{cat.name|title}}</a></h1>
                     </div>
                     {% endfor %}
                     <div class='clear'></div>
                 </div>
 
                 <div class='clear'></div>
-               
-                <div class='feed'>
-                    {% for post in feed %}
-                    <div class='block no{{forloop.index|stylenumber}}'>
-                        <a href='/post/{{ post.id }}/{{ post.title|linkify }}'>
-                            <h1>{{ post.title|title }}</h1>
-                        </a>
-                        <p> {{ post.content|markdown|longtruncate|raw }} </p>
-                    </div>
-                    {% endfor %}
-
-                    <div class='clear'></div>
-                </div>
             </div>
             
             <div class='push'>

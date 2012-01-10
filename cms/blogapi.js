@@ -13,7 +13,7 @@
     var DEFAULT_ID = 1;
     var INVALID_ID = 0;
     var NOT_FOUND  = -1;
-    var POSTS_PER_PAGE = 10;
+    var POSTS_PER_PAGE = 5;
 
     //Two functions to get values by ID.
     function getCategoryIDByName(name, cb)
@@ -36,7 +36,7 @@
         {
             if (err || result.rows.length == 0)
             {
-                cb(err, DEFAULT_ID);
+                cb("Found no results", DEFAULT_ID);
                 return undefined;
             }
             cb(undefined, result.rows[0].id);
@@ -394,6 +394,68 @@
         });
     }
 
+    function getTagsOnPost(id, cb)
+    {
+        setup.getConnection(function(err, client)
+        {
+            fe(function()
+            {
+                client.query({
+                    name: "get tags on post", 
+                    text: "select t.name from blog_tag_bridge p JOIN blog_tags t ON t.id = p.tag WHERE p.post = $1 ", 
+                    values: [id]
+                }, this)
+            }, function(err, results)
+            {
+                 if (err)
+                 {
+                     cb(err, undefined);
+                     return undefined;
+                 }
+                 cb(undefined, results.rows);
+            });
+        });
+    }
+
+    function totalPostsInCategory(optionalCategory, cb)
+    {
+        setup.getConnection(function(err, client)
+        {
+            if (err)
+            {
+                cb(err, undefined);
+                return undefined;
+            }
+
+            fe(function()
+            {
+                if (!optionalCategory)
+                {
+                    client.query({
+                        name: "get number of posts", 
+                        text: "SELECT count(*) AS c FROM blog_posts",
+                    }, this);
+                } else 
+                {
+                    client.query({
+                        name: "get number of posts by category name", 
+                        text: "SELECT count(*) AS c FROM blog_posts WHERE category = $1", 
+                        values: [optionalCategory]
+                    }, this);
+                }
+            }, function(err, results)
+            {
+                if (err)
+                {
+                    cb(err, undefined);
+                    return undefined;
+                }
+
+                cb(undefined, results.rows[0].c)
+            });
+        });
+    }
+
     function postsInCategory(optionalCategory, optionalMaximum, optionalPage, cb)
     {
         var page = optionalPage || 0;
@@ -432,12 +494,18 @@
                         text: "SELECT id, title, category, content, time " + 
                             "FROM blog_posts WHERE category = $1 LIMIT $2 OFFSET $3", 
                         values: [cid, limit, page * POSTS_PER_PAGE]
-                    }, outer);
+                    }, function(err, posts)
+                    {
+                        outer(err, posts, cid);
+                    });
                 });
             }
-        }, function(err, posts)
+        }, function(err, posts, cid)
         {
-            cb(err, posts);
+            totalPostsInCategory(cid, function(err, count)
+            {
+                cb(err, posts.rows, count);        
+            });
         });
     }
 
@@ -515,8 +583,9 @@
         postsInCategory         : postsInCategory, 
         getAllCategories        : getAllCategories,
         base64Decode            : base64Decode,
-
+        getTagsOnPost           : getTagsOnPost,
         postscheduled           : postscheduled,
+        totalPostsInCategory    : totalPostsInCategory,
         regenerateRSSFeedForPosts: regenerateRSSFeedForPosts
     };
 })();

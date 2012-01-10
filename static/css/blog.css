@@ -1,0 +1,68 @@
+
+.thinleft
+{
+	float: left;
+	width: 63%;
+}
+
+div#content div.thinleft h1
+{
+	font-size: 3.1em;
+	margin-bottom: 20px;
+}
+
+div#content div.thinleft h3
+{
+	font-size: 0.8em;
+	margin-bottom: 20px;
+	font-weight: lighter;
+}
+
+div#content div.thinleft h3 img
+{
+	margin: 0;
+	padding: 0;
+}
+
+div#content div.lightbox
+{
+	padding: 16px;
+	text-align: justify;
+	margin-bottom: 60px;
+	background-image: url("/img/darkbox.png");
+}
+
+div#content div.lightbox p
+{
+	line-height: 1.45em;
+	margin-bottom: 10px;
+}
+
+div#content .thinright
+{
+	float: left;
+	width: 15%;
+	margin-left: 40px;
+}
+
+div#content .thinright h1
+{
+	font-size: 1.7em;
+}
+
+div#content .thinright div.block
+{
+	border-top: 1px white dotted;
+	height: 50px;
+	padding-top: 7px;
+}
+
+div#content .thinright div.first
+{
+	border-top: none;	
+}
+
+div#content .thinright div.block a
+{
+	color: white;
+}
