@@ -397,7 +397,7 @@
     function postsInCategory(optionalCategory, optionalMaximum, optionalPage, cb)
     {
         var page = optionalPage || 0;
-        
+
         fe(function()
         {
             setup.getConnection(this);
@@ -414,8 +414,8 @@
             {
                 client.query({
                     name: "get posts", 
-                    text: "SELECT id, title, category, content, time FROM blog_posts LIMIT $1", 
-                    values: [limit]
+                    text: "SELECT id, title, category, content, time FROM blog_posts LIMIT $1 OFFSET $2", 
+                    values: [limit, page * POSTS_PER_PAGE]
                 }, this);
             } else 
             {
@@ -430,8 +430,8 @@
                     client.query({
                         name: "get posts by category name", 
                         text: "SELECT id, title, category, content, time " + 
-                            "FROM blog_posts WHERE category = $1 LIMIT $2", 
-                        values: [cid, limit]
+                            "FROM blog_posts WHERE category = $1 LIMIT $2 OFFSET $3", 
+                        values: [cid, limit, page * POSTS_PER_PAGE]
                     }, outer);
                 });
             }
