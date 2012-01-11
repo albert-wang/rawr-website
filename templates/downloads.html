@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ title|title }}</title>
+        {% include "head_common.html" %}
+        <link href="/css/main.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <div class='wrapper'>
+            <div id='header'>
+                {% include "header.html" %}
+            </div>
+
+            <div class='background'>
+                <img src='{{ 'blue.jpg'|imglink }}'/>
+            </div>
+
+            {% include "navigation.html" %}
+
+
+            <div id='content' class='lightbox container'>
+                <div class='left'>
+                    <h1>No Downloads :(</h1>
+                    <p>
+                    	There are no downloads currently avaliable. Check back for more 
+                        development updates.
+                    </p>
+                    <div class='clear'></div>
+                </div>
+
+                <div class='right'>
+                	<img src="/img/downloadssample.png"/>
+                    <div class='clear'></div>
+                </div>
+
+                <div class='clear'></div>
+               
+                <div class='feed'>
+                    
+                </div>
+            </div>
+            
+            <div class='push'>
+            </div>
+        </div>
+        <div class='footer container'>
+            {% include "footer.html" %}
+        </div>
+    </body>
+</html>

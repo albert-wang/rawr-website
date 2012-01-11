@@ -2,6 +2,7 @@ var setup     = require("./utils/setup.js")
 var blog      = require("./blog.js")
 var admin     = require("./admin.js")
 var gallery   = require("./gallery.js")
+var statics   = require("./statics.js")
 
 var app = setup.setup(function(app)
 {
@@ -9,6 +10,7 @@ var app = setup.setup(function(app)
 
     //Basic website routes
     (function(){
+    	//Blog routes
 	    app.get("/", function(req, res)
 	    {
 	        blog.home(req, res, setup);
@@ -34,6 +36,23 @@ var app = setup.setup(function(app)
 			blog.singlepost(req, res, req.params.id);
 		});
 
+		//Static page routes
+		app.get("/projects/?", function(req, res)
+		{
+			statics.projects(req, res);
+		});
+
+		app.get("/downloads/?", function(req, res)
+		{
+			statics.downloads(req, res);
+		});
+
+		app.get("/about/?", function(req, res)
+		{
+			statics.about(req, res);
+		});
+
+		//Gallery routes
 	    app.get("/gallery/?", function(req, res)
 	    {
 	    	gallery.home(req, res, setup);

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ title|title }}</title>
+        {% include "head_common.html" %}
+        <link href="/css/main.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <div class='wrapper'>
+            <div id='header'>
+                {% include "header.html" %}
+            </div>
+
+            <div class='background'>
+                <img src='{{ 'blue.jpg'|imglink }}'/>
+            </div>
+
+            {% include "navigation.html" %}
+
+            <div id="feature" class="container">
+                <div id="featuredcontent">
+                    <h2>ABOUT</h2>
+                    <h1> Rawr Productions </h1>
+                    <p> 
+                    Where I talk about programming, gaming, and losing to 
+                    people in Starcraft. There is a lot of content in that 
+                    last category.
+                    </p>
+                </div>
+            </div>
+
+
+            <div id='content' class='lightbox container'>
+                <div class='left'>
+                    <h1>About</h1>
+                    <p>
+                        Rawr Productions is the name under which I plan to release my 
+                        games. 
+                        <br/><br/>
+                    	I am a Computer Science student at the University of Austin, and 
+                        write games in my spare time. This site is mostly focused on
+                        the development of Araboth, but I do other things in my spare time.
+                    </p>
+                    <div class='clear'></div>
+                </div>
+
+                <div class='right'>
+                	<img src="/img/downloadssample.png"/>
+                    <div class='clear'></div>
+                </div>
+
+                <div class='clear'></div>
+                   
+                <div class='feed'>  
+                    <div class='block no1'>
+                        <h1>Programming</h1>
+                        <p>
+                        Most of my work is done in C++ and DirectX9.0c. I'm 
+                        trying to learn some C# and DirectX11, but its on the
+                        backburner until Microsoft makes Direct2D interoperate with
+                        DirectX11 first.
+                        </p>
+                    </div>
+
+                    <div class='block no2'>
+                        <h1>Gaming</h1>
+                        <p>
+                        I'm currently trying to get better at Starcraft 2, and enjoy
+                        a variety of games. Right now; I'm playing through Skyrim and Bastion, and 
+                        am eagerly anticipating Guild Wars 2 and Diablo 3.
+                        </p>
+                    </div>
+
+                    <div class='block no3'>
+                        <h1>Education</h1>
+                        <p>
+                        I am a currently double majoring in Computer Science and Finance
+                        at the University of Texas at Austin. 
+                        </p>
+                    </div>
+
+                    <div class='block no4'>
+                        <h1>Social</h1>
+                        <p> You can find my twitter feed <a href='http://twitter.com/rraawwrr'>@rraawwrr</a>, and 
+                        my youtube channel <a href='http://www.youtube.com/user/bobrawr'>bobrawr</a>, where I post
+                        my development videos and gaming acheivements.</p>
+                    </div>
+
+                    <div class='clear'></div>
+                </div>
+            </div>
+            
+            <div class='push'>
+            </div>
+        </div>
+        <div class='footer container'>
+            {% include "footer.html" %}
+        </div>
+    </body>
+</html>

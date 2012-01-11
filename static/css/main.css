@@ -31,6 +31,11 @@ div.left p
     margin-top: 15px;
 }
 
+.right img
+{
+    margin: -15px -20px 0px 0px;
+}
+
 div.right div.block ul
 {
     list-style: none;

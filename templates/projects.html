@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ title|title }}</title>
+        {% include "head_common.html" %}
+        <link href="/css/main.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <div class='wrapper'>
+            <div id='header'>
+                {% include "header.html" %}
+            </div>
+
+            <div class='background'>
+                <img src='{{ 'blue.jpg'|imglink }}'/>
+            </div>
+
+            {% include "navigation.html" %}
+
+            <div id="feature" class="container">
+			    <div id="featuredcontent">
+			        <h2>FEATURED</h2>
+			        <h1> Araboth </h1>
+			        <p> 
+			        A modern multiplayer, 2D Shoot-em-up written in DirectX9, scripted with Lua.
+			        Designed to be extensible through user scripts, the game will be a visually striking
+			        throwback to classic shooter games.
+			        </p>
+			        <a href="/gallery/araboth">Gallery</a>
+			    </div>
+			</div>
+
+
+            <div id='content' class='lightbox container'>
+                <div class='left'>
+                    <h1>See some of my other projects</h1>
+                    <p>
+                    	Check them out on <a href="https://bitbucket.org/rraawwrr/">Bitbucket!</a> <br/><br/> Ranging 
+                    	from a custom built intrusive profiler designed for high-performance testing to 
+                    	the custom Virtual File System used in Araboth, most of my projects can be found
+                    	on bitbucket.
+                    </p>
+                    <div class='clear'></div>
+                </div>
+
+                <div class='right'>
+                	<img src="/img/arabothsample.png"/>
+                    <div class='clear'></div>
+                </div>
+
+                <div class='clear'></div>
+               
+                <div class='feed'>
+                    <div class='block no1'>
+                        <h1>Intrusive Profiler</h1>
+                        <p>
+                        A simple intrusive profiler that is designed for game usage. Outputs to a
+                        file that is easily parsed and viewable using the included tools.
+                        </p>
+                    </div>
+
+                    <div class='block no2'>
+                        <h1>IRawrC</h1>
+                        <p>
+                        A supposedly hardware accelerated IRC client, currently in the planning stages.
+                        </p>
+                    </div>
+
+                    <div class='clear'></div>
+                </div>
+            </div>
+            
+            <div class='push'>
+            </div>
+        </div>
+        <div class='footer container'>
+            {% include "footer.html" %}
+        </div>
+    </body>
+</html>
