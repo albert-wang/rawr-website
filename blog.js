@@ -18,10 +18,11 @@
                 {
                     common.navigation("Home", function(err, navcontents)
                     {
+						console.log(featured);
                         var data = {
                             title: "Rawr Productions", 
                             navigation_blocks: navcontents,
-                            feature: featured.rows ? featured.rows[0] : undefined,
+                            feature: featured ? featured[0] : undefined,
                             feed: other,
                             blocks: [
                                 {
