@@ -510,7 +510,8 @@
                      client.query({
                         name: "group posts by category name and by date with id", 
                         text: "SELECT COUNT(*) as count, DATE_PART('YEAR', time) AS year, " + 
-                            "DATE_PART('MONTH', time) AS month FROM blog_posts WHERE category = $1 GROUP BY month, year", 
+                            "DATE_PART('MONTH', time) AS month FROM blog_posts WHERE category = $1 GROUP BY month, year " + 
+                            "ORDER BY year DESC, month DESC" 
                         values: [optionalCategory]
                     }, function(err, posts)
                     {
@@ -534,7 +535,8 @@
                         client.query({
                             name: "group posts by category name and by date", 
                             text: "SELECT COUNT(*) as count, DATE_PART('YEAR', time) AS year, " + 
-                                "DATE_PART('MONTH', time) AS month FROM blog_posts WHERE category = $1 GROUP BY month, year", 
+                                "DATE_PART('MONTH', time) AS month FROM blog_posts WHERE category = $1 GROUP BY month, year " + 
+                                "ORDER BY year DESC, month DESC", 
                             values: [cid]
                         }, function(err, posts)
                         {
@@ -571,7 +573,7 @@
             {
                 client.query({
                     name: "get posts", 
-                    text: "SELECT id, title, category, content, time FROM blog_posts LIMIT $1 OFFSET $2", 
+                    text: "SELECT id, title, category, content, time FROM blog_posts ORDER BY time DESC LIMIT $1 OFFSET $2", 
                     values: [limit, page * POSTS_PER_PAGE]
                 }, this);
             } else 
@@ -587,7 +589,7 @@
                     client.query({
                         name: "get posts by category name", 
                         text: "SELECT id, title, category, content, time " + 
-                            "FROM blog_posts WHERE category = $1 LIMIT $2 OFFSET $3", 
+                            "FROM blog_posts WHERE category = $1 ORDER BY time DESC LIMIT $2 OFFSET $3", 
                         values: [cid, limit, page * POSTS_PER_PAGE]
                     }, function(err, posts)
                     {
@@ -622,7 +624,7 @@
                 client.query({
                     name: "get posts date", 
                     text: "SELECT id, title, category, content, time FROM blog_posts " +
-                        "WHERE DATE_PART('YEAR', time) = $1 AND DATE_PART('MONTH', time) = $2", 
+                        "WHERE DATE_PART('YEAR', time) = $1 AND DATE_PART('MONTH', time) = $2 ORDER BY time DESC", 
                     values: [year, month]
                 }, this);
             } else 
@@ -638,7 +640,8 @@
                     client.query({
                         name: "get posts by category name date", 
                         text: "SELECT id, title, category, content, time " + 
-                            "FROM blog_posts WHERE category = $1 AND DATE_PART('YEAR', time) = $2 AND DATE_PART('MONTH', time) = $3 ",
+                            "FROM blog_posts WHERE category = $1 AND DATE_PART('YEAR', time) = $2 AND DATE_PART('MONTH', time) = $3 " + 
+                            "ORDER BY time DESC",
                         values: [cid, year, month]
                     }, function(err, posts)
                     {
