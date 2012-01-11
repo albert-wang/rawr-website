@@ -259,6 +259,7 @@
                 if (err)
                 {
                     console.log(err);
+                    cb(err, undefined);
                     return undefined;
                 }
 

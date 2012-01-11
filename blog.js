@@ -194,7 +194,7 @@
             {
                 if (err)
                 {
-                    res.end("Failed to insert a post.");
+                    res.end("Failed to insert a post:" + err);
                 } else 
                 {
                     res.end("http://www.rawrrawr.com/post/" + id);
