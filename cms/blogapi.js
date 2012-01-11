@@ -511,7 +511,7 @@
                         name: "group posts by category name and by date with id", 
                         text: "SELECT COUNT(*) as count, DATE_PART('YEAR', time) AS year, " + 
                             "DATE_PART('MONTH', time) AS month FROM blog_posts WHERE category = $1 GROUP BY month, year " + 
-                            "ORDER BY year DESC, month DESC" 
+                            "ORDER BY year DESC, month DESC",
                         values: [optionalCategory]
                     }, function(err, posts)
                     {
