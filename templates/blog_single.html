@@ -29,9 +29,9 @@
                         <h3>Posted {{post.time|date("l, F jS")}} | 
                         {% for tag in tags %}{{tag.name|title}} {% endfor %}
                         </h3>
-                        <p>
-                            {{post.content|markdown|raw}}
-                        </p>
+						<div class='postcontent'>
+						{{post.content|markdown|raw}}
+						</div>
                     </div>
                     <div class='clear'></div>
 

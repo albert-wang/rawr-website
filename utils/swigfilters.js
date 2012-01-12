@@ -54,7 +54,7 @@
 
     function markdown(text)
     {
-        return mkd.markdown.toHTML(text);
+        return mkd.markdown.toHTML(text, "Maruku");
     }
 
     //Used for web images.

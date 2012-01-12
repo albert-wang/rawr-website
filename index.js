@@ -4,6 +4,18 @@ var admin     = require("./admin.js")
 var gallery   = require("./gallery.js")
 var statics   = require("./statics.js")
 
+function foo(req, res)
+{
+	var fs = require("fs")
+	fs.readFile("test.mkd", function(err, data)
+	{
+		console.log(data)
+		res.render("test.html", {
+			text: data.toString()
+		});
+	});
+}
+
 var app = setup.setup(function(app)
 {
     //Routing
@@ -15,6 +27,11 @@ var app = setup.setup(function(app)
 	    {
 	        blog.home(req, res, setup);
 	    });
+
+		app.get("/test/?", function(req, res)
+		{
+			foo(req, res);
+		});
 
 	    app.get("/blog/?", function(req, res)
 		{
