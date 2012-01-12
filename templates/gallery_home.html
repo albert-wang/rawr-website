@@ -17,11 +17,22 @@
 
             {% include "navigation.html" %}
 
-            {% if feature %}
-                {% include "featured.html" %}
-            {% endif %}
+			{% if feature %}
+			<div id="feature" class="container">
+				<div id="featuredcontent">
+					<h2>FEATURED</h2>
+					<h1> {{ feature.title|title }} </h1>
+					{{ feature.content|markdown|truncate|raw}}
+					{% if feature.link %}
+					<a href="{{feature.link}}">More...</a>
+					{% else %}
+					<a href="/post/{{feature.id}}/{{feature.title|linkify}}">More...</a>
+					{% endif %}
+				</div>
+			</div>
+			{% endif %}
 
-            <div id='content' class='lightbox container'>
+			<div id='content' class='lightbox container'>
                 {% for gallery in galleries %}
                 	<div class='gallery no{{forloop.index|stylenumber}}'>
 	                	<div class='gallery_block'>

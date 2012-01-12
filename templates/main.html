@@ -18,8 +18,20 @@
             {% include "navigation.html" %}
 
             {% if feature %}
-                {% include "featured.html" %}
-            {% endif %}
+			<div id="feature" class="container">
+				<div id="featuredcontent">
+					<h2>FEATURED</h2>
+					<h1> {{ feature.title|title }} </h1>
+					<p> {{ feature.content|markdown|truncate }} </p>
+					{% if feature.link %}
+					<a href="{{feature.link}}">More...</a>
+					{% else %}
+					<a href="/post/{{feature.id}}/{{feature.title|linkify}}">More...</a>
+					{% endif %}
+				</div>
+			</div>
+			{% endif %}
+
 
             <div id='content' class='lightbox container'>
                 <div class='left'>
@@ -49,7 +61,7 @@
                         <a href='/post/{{ post.id }}/{{ post.title|linkify }}'>
                             <h1>{{ post.title|title }}</h1>
                         </a>
-                        <p> {{ post.content|markdown|longtruncate|raw }} </p>
+                        <div class='postcontent'> {{ post.content|markdown|longtruncate|raw }} </div>
                     </div>
                     {% endfor %}
 
