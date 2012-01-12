@@ -18,7 +18,6 @@
                 {
                     common.navigation("Home", function(err, navcontents)
                     {
-						console.log(featured);
                         var data = {
                             title: "Rawr Productions", 
                             navigation_blocks: navcontents,

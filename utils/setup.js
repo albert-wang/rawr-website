@@ -45,6 +45,8 @@
 
     function setup(routes)
     {
+		console.log("Started at " + (new Date()));
+
         var app = express.createServer();
         swig.init({ root: "./templates", allowErrors: true, filters : require("../utils/swigfilters.js") });
 
@@ -54,15 +56,17 @@
         app.set("view options", { layout : false });
 
         //Middleware
-        app.use(express.logger({stream : fs.createWriteStream("./logs/http.log", { flags : "a" })}));
+        app.use(express.logger({
+			stream : fs.createWriteStream("./logs/http.log", { flags : "a" })
+		}));
         app.use(express.profiler());
-        app.use(express.static("./static/"), { maxAge: 1 });
+        app.use(express.static("./static/"), { maxAge: 1000 * 60 * 60 * 24 });
         app.use(express.cookieParser())
         app.use(express.session({ secret: "rawr nyancats. Takagamahara is observing you...", cookie: { maxAge: 60 * 1000 * 60 }}));
         app.use(express.bodyParser());
         app.use(express.router(routes));
 
-        setInterval(function() { downloadTweets(function(data){}) }, 1000 * 60 * 30);
+        setInterval(function() { downloadTweets(function(data){}) }, 1000 * 60 * 5);
 
         return app;
     }

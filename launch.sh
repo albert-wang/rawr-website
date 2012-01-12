@@ -8,7 +8,7 @@ mkdir -p cache
 if [ "$(ps -ef | grep -v grep | grep rraawwrr | grep node)" ]; then
 	echo "Node already running..."
 else
-	/home/rraawwrr/bin/node /home/rraawwrr/webapps/node/index.js &> log.txt
+	/home/rraawwrr/bin/node /home/rraawwrr/webapps/node/index.js &>> logs/usage.txt &
 fi
 
 if [ "$(ps -ef | grep -v grep | grep rraawwrr | grep memcached)" ]; then

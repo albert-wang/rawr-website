@@ -31,20 +31,14 @@
             day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
     }
 
-    function truncate(text, length)
+    function truncate(text)
     {
-        var len = length || TRUNCATE_LENGTH;
-        if (text.length > len)
-        {
-            var indexofspace = text.indexOf(" ", len);
-            return text.substr(0, indexofspace - 1) + "...";
-        }
-        return text;
+		return text.replace(/{:truncate}.*/, '');
     }
 
     function longtruncate(text)
     {
-        return truncate(text, 256);
+		return text.replace(/{:longtruncate}.*/, '');
     }
 
     function linkify(text)
@@ -52,9 +46,15 @@
         return text.replace(/\s/g, "-").toLowerCase();
     }
 
+	function sanitizeForMarkdown(text)
+	{
+		return text.replace(/{:truncate}/, '')
+			.replace(/{:longtruncate}/, '');
+	}
+
     function markdown(text)
     {
-        return mkd.markdown.toHTML(text, "Maruku");
+        return mkd.markdown.toHTML(sanitizeForMarkdown(text), "Maruku");
     }
 
     //Used for web images.

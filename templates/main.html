@@ -22,7 +22,7 @@
 				<div id="featuredcontent">
 					<h2>FEATURED</h2>
 					<h1> {{ feature.title|title }} </h1>
-					<p> {{ feature.content|markdown|truncate }} </p>
+					<div class='postcontent'> {{ feature.content|truncate|markdown|raw}} </div>
 					{% if feature.link %}
 					<a href="{{feature.link}}">More...</a>
 					{% else %}
@@ -61,7 +61,7 @@
                         <a href='/post/{{ post.id }}/{{ post.title|linkify }}'>
                             <h1>{{ post.title|title }}</h1>
                         </a>
-                        <div class='postcontent'> {{ post.content|markdown|longtruncate|raw }} </div>
+                        <div class='postcontent'> {{ post.content|longtruncate|markdown|raw }} </div>
                     </div>
                     {% endfor %}
 

@@ -7,9 +7,10 @@ var statics   = require("./statics.js")
 function foo(req, res)
 {
 	var fs = require("fs")
+	var filters = require("./utils/swigfilters.js")
+
 	fs.readFile("test.mkd", function(err, data)
 	{
-		console.log(data)
 		res.render("test.html", {
 			text: data.toString()
 		});

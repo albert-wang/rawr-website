@@ -22,7 +22,7 @@
 				<div id="featuredcontent">
 					<h2>FEATURED</h2>
 					<h1> {{ feature.title|title }} </h1>
-					{{ feature.content|markdown|truncate|raw}}
+					{{ feature.content|markdown|raw}}
 					{% if feature.link %}
 					<a href="{{feature.link}}">More...</a>
 					{% else %}
