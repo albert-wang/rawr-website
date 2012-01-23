@@ -108,6 +108,11 @@ var app = setup.setup(function(app)
 		{
 			admin.unauth(req, res);
 		});
+
+		app.post("/admin/edit/?", function(req, res)
+		{
+			admin.editpost(req, res);
+		});
 	})();
 
     //The API routes

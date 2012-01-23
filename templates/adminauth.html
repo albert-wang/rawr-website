@@ -37,6 +37,14 @@
                         .success(function() { location.reload(); })
                         .error(function() {});
                 })
+
+				$("#editpostbutton").click(function(e)
+				{
+					$.post("/admin/edit", {
+						id: $("#editid").val(),
+						content: $("#editcontent").val()
+					})
+				})
             })
         </script>
     </head>
@@ -60,7 +68,7 @@
                     {% if authed %}
                     <a id="upload_image" href="#">Upload an Image</a>
                     <a id="add_gallery" href="#">Add a Gallery</a>
-                    <a id="manage_post" href="#">Edit a Post</a>
+                    <a id="edit_post" href="#">Edit a Post</a>
                     <a id="manage_comment" href="#">Manage comments</a>
                     <a id="unauth" href="#">Log out</a>
                     {% else %}
@@ -103,6 +111,15 @@
                         <div class='clear'></div>
                     </form>
                 </div>
+
+				<div id="edit_post_div" class='operation'>
+					<p>Edit a post by ID</p>
+					<form>
+						<label>ID</label><input type='text' name='id' id='editid'/><div class='clear'/></div>
+						<label>Content</label><textarea name='content' id='editcontent'></textarea><div class='clear'/></div>
+						<input id='editpostbutton' type='button' value='Edit'/>
+					</form>
+				</div>
 
                 <div id="unauth_div" class='operation'>
                     <a href='#' id='unauth_button'>Really log out</a>

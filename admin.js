@@ -4,12 +4,12 @@
 	var common  = require("./common.js");
 	var setup   = require("./utils/setup.js");
 	var gapi    = require("./cms/galleryapi.js");
+	var api     = require("./cms/blogapi.js");
 	var fe      = require("flow").exec;
 	var util    = require("util");
 
 	function panel(req, res)
 	{
-
 		common.navigation("Admin", function(err, navcontents)
 		{
 			gapi.getGalleries(function(err, galleries)
@@ -82,6 +82,26 @@
 		});
 	}
 
+	function editpost(req, res)
+	{
+		if (!req.session.authenticated)
+		{
+			res.statusCode = 403;
+			res.end();
+			return; 
+		}
+
+		api.editpost({
+			id: req.body.id, 
+			content: req.body.content
+		}, function(err)
+		{
+			if (err) { console.log(err); }
+			res.statusCode = 302;
+			res.end();
+		});
+	}
+
 	function gallery(req, res)
 	{
 		if (!req.session.authenticated)
@@ -110,7 +130,8 @@
 		panel: panel, 
 		gallery: gallery, 
 		addGallery: addGallery,
-		unauth: unauth
+		unauth: unauth,
+		editpost: editpost
 	}
 
 

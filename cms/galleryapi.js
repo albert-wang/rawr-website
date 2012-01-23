@@ -159,14 +159,14 @@
 					{
 						img.convert(["./cache/" + name, "-resize", "120x180^", "-gravity", "center", "-extent", "120x180", "./cache/thumb-" + name], function(err, meta)
 						{
-							img.convert(["./cache/" + name, "-resize", "800x600", "./cache/med-" + name], outer);
+							img.convert(["./cache/" + name, "-resize", "400x300", "./cache/med-" + name], outer);
 						});		
 					});
 				} else 
 				{
 					img.convert(["./cache/" + name, "-resize", "120x180^", "-gravity", "center", "-extent", "120x180", "./cache/thumb-" + name], function(err, meta)
 					{
-						img.convert(["./cache/" + name, "-resize", "800x600", "./cache/med-" + name], outer);
+						img.convert(["./cache/" + name, "-resize", "400x300", "./cache/med-" + name], outer);
 					});		
 				}
 			}, function(err, meta)
@@ -307,7 +307,8 @@
 				text: "SELECT c.id, g.name as image, c.name, c.description FROM " +
 						"(SELECT i.category, MAX(i.id) as id FROM gallery_images i GROUP BY i.category) as m " +
 						"JOIN gallery_images g ON g.id = m.id " + 
-						"JOIN gallery_categories c ON g.category = c.id;"
+						"JOIN gallery_categories c ON g.category = c.id " + 
+						"WHERE c.name != 'hidden';"
 			}, function(err, results)
 			{
 				if (err)

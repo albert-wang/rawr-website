@@ -144,6 +144,26 @@
         });
     }
 
+	function editpost(params, cb)
+	{
+		setup.getConnection(function(err, client)
+		{
+			client.query({
+				name: "edit existing post", 
+				text: "UPDATE blog_posts SET content=$1 WHERE id=$2", 
+				values: [params.content, params.id]
+			}, function(err, results)
+			{
+				if (err)
+				{
+					cb(err);
+					return;
+				}
+				cb(undefined);
+			});
+		});
+	}
+
     function futurepost(params, time, cb)
     {
         /*
@@ -440,6 +460,12 @@
                     return undefined;
                 }
 
+				if (results.rowCount === 0)
+				{
+					cb("No values", undefined);
+					return undefined;
+				}
+
                 cb(undefined, results.rows[0]);
             });
         });
@@ -732,6 +758,7 @@
         post                    : post,
         postscheduled           : postscheduled,
         postsInCategory         : postsInCategory, 
+		editpost				: editpost,
         regenerateRSSFeedForPosts: regenerateRSSFeedForPosts,
         totalPostsInCategory    : totalPostsInCategory,
         postsInCategoryByMonth  : postsInCategoryByMonth,

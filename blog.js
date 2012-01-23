@@ -101,6 +101,14 @@
     {
         api.getPostWithId(pid, function(err, post)
         {
+			if (err)
+			{
+				console.log("Post with id: " + pid + " does not exist");
+				res.statusCode = 404;
+				res.end();
+				return;
+			}
+
             api.getTagsOnPost(post.id, function(err, tags)
             {
                 api.postsInCategoryByMonth(post.category, function(err, archives)

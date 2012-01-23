@@ -8,6 +8,9 @@
     var tweet   = require("backuptweets");
     var knox    = require("knox");
     var img     = require("imagemagick")
+	var log     = require("logging").from("webapp");
+
+	console.log = log;
 
     var connectionString = "tcp://rraawwrr:password@localhost";
     var memoryTweets = null;
@@ -102,8 +105,15 @@
                     downloadTweets(cb);
                     return undefined;
                 }
-                memoryTweets = JSON.parse(input)[0];
-                cb(memoryTweets);
+
+				try
+				{
+                	memoryTweets = JSON.parse(input)[0];
+					cb(memoryTweets);
+				} catch(err)
+				{
+					cb(memoryTweets);
+				}
             });
         } else 
         {

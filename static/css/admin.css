@@ -36,12 +36,17 @@ div#content .operation label
 	margin-bottom: 12px;
 }
 
-div#content .operation input,select
+div#content .operation input,select,textarea
 {
 	font-size: 1.4em;
 	width: 80%;
 	border: none;
 	background-color: #DFDFDF;
+}
+
+div#content .operation textarea
+{
+	height: 600px;
 }
 
 div#content .operation input[type=submit], input[type=button]

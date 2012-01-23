@@ -85,7 +85,8 @@ CREATE TABLE IF NOT EXISTS gallery_categories
 
 INSERT INTO gallery_categories(name, description) VALUES
     ('uncategorized', 'Uncategorized Images'), 
-    ('araboth', 'Araboth')
+    ('araboth', 'Araboth'),
+	('hidden', 'hidden')
     ;
 
 CREATE TABLE IF NOT EXISTS gallery_images

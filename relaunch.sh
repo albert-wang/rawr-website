@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-killall node
+killall /home/rraawwrr/bin/node
 ./launch.sh &> /dev/null &
 

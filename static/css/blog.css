@@ -78,3 +78,15 @@ div#content .thinright div.block a
 {
 	color: white;
 }
+
+div#content .postcontent a.imglink
+{
+	display: block;
+}
+
+div#content .postcontent img
+{
+	display: block;
+	border: 0;
+	margin: 0 auto 0 auto;
+}

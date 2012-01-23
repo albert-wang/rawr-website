@@ -23,7 +23,9 @@ Some h2 text
 
 This is a [link](www.rawrrawr.com) to the homepage
 
-![This is an image](/img/downloadssample.png){: class='nyan' }
+<a href="www.rawrrawr.com/img/downloadssample.png">
+	<img src="//www.rawrrawr.com/img/downloadssample.png"/>
+</a>
 
 * Here
 * is 

@@ -33,12 +33,13 @@
 
     function truncate(text)
     {
-		return text.replace(/{:truncate}.*/, '');
+		var ret = text.replace(/{:truncate}[\s\S]*/, '');
+		return ret;
     }
 
     function longtruncate(text)
     {
-		return text.replace(/{:longtruncate}.*/, '');
+		return text.replace(/{:longtruncate}[\s\S]*/, '');
     }
 
     function linkify(text)
