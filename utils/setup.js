@@ -9,23 +9,64 @@
     var knox    = require("knox");
     var img     = require("imagemagick")
 	var log     = require("logging").from("webapp");
+	var passport= require("passport");
+	var ghstrat = require("passport-google-oauth").OAuth2Strategy;
 
 	console.log = log;
-
+	
+	//Network connection string
     var connectionString = "tcp://rraawwrr:password@localhost";
     var memoryTweets = null;
 
+	//Amazon s3 connection tokens.
     var s3 = new knox.createClient({
         key: "AKIAJTIODAJRLODKOZFA", 
         secret: "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", 
         bucket: "img.rawrrawr.com"
     });
 
+	//Passport authentication settings.
+	passport.serializeUser(function(user, done) {
+		done(null, user);
+	});
+
+	passport.deserializeUser(function(obj, done) {
+		done(null, obj);
+	});
+	
+	passport.use(new ghstrat({
+		clientID: "639107364587.apps.googleusercontent.com", 
+		clientSecret: "yEXoXfQDTFEulSOKTCcNSvI6",
+		callbackURL: "http://rawrrawr.com/oauth2callback"
+	}, function(access, refresh, profile, done)
+	{
+		for (id in profile.emails)
+		{
+			var email = profile.emails[id].value;
+			if (email === "albertywang@gmail.com" || 
+				email === "bobofjoe@gmail.com")
+			{
+				return done(null, profile);
+			}
+		}
+		return done(false, null);
+	}));
+
+	//Imagemagic paths.
     if (require("os").type() !== "Linux")
     {
         img.convert.path = "imgconvert";
         img.identify.path = "imgidentify";   
     }
+
+	function requiresAuth(req, res, next)
+	{
+		if (req.isAuthenticated())
+		{
+			return next();
+		}
+		res.redirect("/admin/login/");
+	}
 
     function downloadTweets(cb)
     {
@@ -34,15 +75,21 @@
             "max"  : 3
         }, function(tweets)
         {
-            memoryTweets = JSON.parse(tweets.json)[0];
-            cb(memoryTweets);
-            fs.writeFile("./cache/tweets.json", tweets.json, function(err)
-            {
-                if (err)
-                {
-                    console.log("Failed to save tweets to disk");
-                }
-            });
+			if (tweets)
+			{
+				memoryTweets = JSON.parse(tweets.json)[0];
+				cb(memoryTweets);
+				fs.writeFile("./cache/tweets.json", tweets.json, function(err)
+				{
+					if (err)
+					{
+						console.log("Failed to save tweets to disk");
+					}
+				});
+			} else 
+			{
+				cb(memoryTweets);
+			}
         });
     }
 
@@ -66,6 +113,8 @@
         app.use(express.static("./static/"), { maxAge: 1000 * 60 * 60 * 24 });
         app.use(express.cookieParser())
         app.use(express.session({ secret: "rawr nyancats. Takagamahara is observing you...", cookie: { maxAge: 60 * 1000 * 60 }}));
+		app.use(passport.initialize());
+		app.use(passport.session());
         app.use(express.bodyParser());
         app.use(express.router(routes));
 
@@ -127,7 +176,8 @@
         getConnection   : getConnection,
         getTweets       : getTweets, 
         swig            : swig,
-        s3              : s3
+        s3              : s3,
+		requiresAuth    : requiresAuth
     };
 })();
 

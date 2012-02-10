@@ -45,6 +45,23 @@
 						content: $("#editcontent").val()
 					})
 				})
+
+				$("#editid").change(function(e)
+				{
+					var postIndex = $("#editid").val();
+					if (postIndex !== 0)
+					{
+						$.post("/admin/post/" + postIndex)
+							.success(function(data) {
+								if (typeof data === "string")
+								{
+									data = JSON.parse(data);
+								}
+
+								$("#editcontent").val(data["content"]);
+							}, "json");
+					}
+				});
             })
         </script>
     </head>

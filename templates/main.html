@@ -61,7 +61,7 @@
                         <a href='/post/{{ post.id }}/{{ post.title|linkify }}'>
                             <h1>{{ post.title|title }}</h1>
                         </a>
-                        <div class='postcontent'> {{ post.content|longtruncate|markdown|raw }} </div>
+                        <div class='postcontent'> {{ post.content|truncate|markdown|raw }} </div>
                     </div>
                     {% endfor %}
 

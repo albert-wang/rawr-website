@@ -22,7 +22,7 @@
 				}
 
 				res.render("adminauth.html", {
-					authed : req.session.authenticated,
+					authed : req.isAuthenticated(),
 					title: "Admin Panel", 
 					navigation_blocks: navcontents, 
 					categories: galleries
@@ -31,36 +31,9 @@
 		});
 	}
 
-	function auth(req, res)
-	{
-		if (req.session.authenticated)
-		{
-			res.statusCode = 200;
-			res.end();
-			return;
-		}
-
-		if (req.body.password === "{4DB39B9D-F800-409A-A75F-F365B8704D8B}")
-		{
-			req.session.authenticated = true;
-			res.statusCode = 200;
-			res.end();	
-		} else 
-		{
-			res.statusCode = 403;
-			res.end();
-		}
-	}
-
-	function unauth(req, res)
-	{
-		req.session.authenticated = false;
-		res.end();
-	}
-
 	function addGallery(req, res)
 	{
-		if (!req.session.authenticated)
+		if (!req.isAuthenticated())
 		{
 			res.statusCode = 403;
 			res.end();
@@ -82,9 +55,26 @@
 		});
 	}
 
+	function getpost(req, res, id)
+	{
+		if (!req.isAuthenticated())
+		{
+			res.statusCode = 403;
+			res.end();
+			return;
+		}
+
+		api.getPostWithId(id, function(err, data)
+		{
+			res.end(JSON.stringify({
+				content: data.content
+			}));
+		});
+	}
+
 	function editpost(req, res)
 	{
-		if (!req.session.authenticated)
+		if (!req.isAuthenticated())
 		{
 			res.statusCode = 403;
 			res.end();
@@ -104,7 +94,7 @@
 
 	function gallery(req, res)
 	{
-		if (!req.session.authenticated)
+		if (!req.isAuthenticated())
 		{
 			res.statusCode = 403;
 			res.end();
@@ -126,12 +116,11 @@
 	}
 
 	module.exports = {
-		auth : auth,
 		panel: panel, 
 		gallery: gallery, 
 		addGallery: addGallery,
-		unauth: unauth,
-		editpost: editpost
+		editpost: editpost,
+		getpost: getpost
 	}
 
 

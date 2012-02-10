@@ -3,6 +3,7 @@ var blog      = require("./blog.js")
 var admin     = require("./admin.js")
 var gallery   = require("./gallery.js")
 var statics   = require("./statics.js")
+var passport  = require("passport")
 
 function foo(req, res)
 {
@@ -84,32 +85,53 @@ var app = setup.setup(function(app)
 
     //The admin routes
     (function(){
-	    app.get("/admin/?", function(req, res)
+	    app.get("/admin/?", setup.requiresAuth, function(req, res)
 		{
 			admin.panel(req, res);
 		});
 
-		app.post("/admin/authenticate/?", function(req, res)
+		app.get("/admin/login/", passport.authenticate('google', 
+			{
+				scope: [
+					'https://www.googleapis.com/auth/userinfo.profile', 
+					'https://www.googleapis.com/auth/userinfo.email'
+				]
+			}), function(req, res)
+		{
+			res.redirect("/");
+		});
+
+		app.get("/oauth2callback", passport.authenticate('google', { failureRedirect: '/' }), function(req, res)
+		{
+			res.redirect("/admin/");
+		});
+
+		app.post("/admin/post/:index/?", setup.requiresAuth, function(req, res)
+		{
+			admin.getpost(req, res, req.params.index);
+		});
+
+		app.post("/admin/authenticate/?", setup.requiresAuth, function(req, res)
 		{
 			admin.auth(req, res);
 		});
 
-		app.post("/admin/addgallery/?", function(req, res)
+		app.post("/admin/addgallery/?", setup.requiresAuth, function(req, res)
 		{
 			admin.addGallery(req, res);
 		})
 
-		app.post("/admin/gallery/?", function(req, res)
+		app.post("/admin/gallery/?", setup.requiresAuth, function(req, res)
 		{
 			admin.gallery(req, res);
 		})
 
-		app.post("/admin/unauth/?", function(req, res)
+		app.post("/admin/unauth/?", setup.requiresAuth, function(req, res)
 		{
 			admin.unauth(req, res);
 		});
 
-		app.post("/admin/edit/?", function(req, res)
+		app.post("/admin/edit/?", setup.requiresAuth, function(req, res)
 		{
 			admin.editpost(req, res);
 		});
