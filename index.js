@@ -128,7 +128,8 @@ var app = setup.setup(function(app)
 
 		app.post("/admin/unauth/?", setup.requiresAuth, function(req, res)
 		{
-			admin.unauth(req, res);
+			req.logout();
+			res.redirect("/");
 		});
 
 		app.post("/admin/edit/?", setup.requiresAuth, function(req, res)
