@@ -98,7 +98,7 @@ var app = setup.setup(function(app)
 				]
 			}), function(req, res)
 		{
-			res.redirect("/");
+			res.redirect("/admin");
 		});
 
 		app.get("/oauth2callback", passport.authenticate('google', { failureRedirect: '/' }), function(req, res)
