@@ -177,7 +177,7 @@
 
     function postapi(req, res, env)
     {
-        if (req.body.key !== "{81D6B2F2-1983-4583-9CDE-DA9F6A3B66B7}")
+        if (req.body.key !== config.API_KEY)
         {
             res.statusCode = 403;
             res.end();

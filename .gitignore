@@ -1,4 +1,6 @@
 *.swp
 logs/*
 node_modules/*
+static/rss/*
 config.js
+
