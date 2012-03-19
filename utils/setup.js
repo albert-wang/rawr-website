@@ -11,19 +11,16 @@
 	var log     = require("logging").from("webapp");
 	var passport= require("passport");
 	var ghstrat = require("passport-google-oauth").OAuth2Strategy;
+	var config  = require("../config.js");
 
 	console.log = log;
 	
 	//Network connection string
-    var connectionString = "tcp://rraawwrr:password@localhost";
+    var connectionString = config.PSqlConnectionString;
     var memoryTweets = null;
 
 	//Amazon s3 connection tokens.
-    var s3 = new knox.createClient({
-        key: "AKIAJTIODAJRLODKOZFA", 
-        secret: "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", 
-        bucket: "img.rawrrawr.com"
-    });
+    var s3 = new knox.createClient(config.S3);
 
 	//Passport authentication settings.
 	passport.serializeUser(function(user, done) {
@@ -34,17 +31,12 @@
 		done(null, obj);
 	});
 	
-	passport.use(new ghstrat({
-		clientID: "639107364587.apps.googleusercontent.com", 
-		clientSecret: "yEXoXfQDTFEulSOKTCcNSvI6",
-		callbackURL: "http://rawrrawr.com/oauth2callback"
-	}, function(access, refresh, profile, done)
+	passport.use(new ghstrat(config.OAuth2Google, function(access, refresh, profile, done)
 	{
 		for (id in profile.emails)
 		{
 			var email = profile.emails[id].value;
-			if (email === "albertywang@gmail.com" || 
-				email === "bobofjoe@gmail.com")
+			if (config.AllowedEmails.indexOf(email) != -1)
 			{
 				return done(null, profile);
 			}
@@ -71,7 +63,7 @@
     function downloadTweets(cb)
     {
         tweet({
-            "user" : "rraawwrr", 
+            "user" : config.TwitterUser,
             "max"  : 3
         }, function(tweets)
         {
