@@ -5,19 +5,6 @@ var gallery   = require("./gallery.js")
 var statics   = require("./statics.js")
 var passport  = require("passport")
 
-function foo(req, res)
-{
-	var fs = require("fs")
-	var filters = require("./utils/swigfilters.js")
-
-	fs.readFile("test.mkd", function(err, data)
-	{
-		res.render("test.html", {
-			text: data.toString()
-		});
-	});
-}
-
 var app = setup.setup(function(app)
 {
     //Routing
