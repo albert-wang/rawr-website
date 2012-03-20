@@ -11,7 +11,7 @@
                 res.render(file, {
                     navigation_blocks : navigationblocks
                 });
-            }
+            });
         };
     }
 
