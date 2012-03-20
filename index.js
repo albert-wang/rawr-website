@@ -17,11 +17,6 @@ var app = setup.setup(function(app)
 	        blog.home(req, res, setup);
 	    });
 
-		app.get("/test/?", function(req, res)
-		{
-			foo(req, res);
-		});
-
 	    app.get("/blog/?", function(req, res)
 		{
 			blog.category(req, res, "all");
