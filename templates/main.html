@@ -57,7 +57,7 @@
                
                 <div class='feed'>
                     {% for post in feed %}
-                    <div class='block no{{forloop.index|stylenumber}}'>
+                    <div class='block no{{loop.index|stylenumber}}'>
                         <a href='/post/{{ post.id }}/{{ post.title|linkify }}'>
                             <h1>{{ post.title|title }}</h1>
                         </a>

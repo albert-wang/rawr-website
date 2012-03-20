@@ -25,7 +25,7 @@
             </div>
             <div id='content' class='container'>
                 <div class='thinleft'>
-                    <div class='lightbox no{{ forloop.index|stylenumber}}'>
+                    <div class='lightbox no{{ loop.index|stylenumber}}'>
                         <h3>Posted {{post.time|date("l, F jS")}} | 
                         {% for tag in tags %}{{tag.name|title}} {% endfor %}
                         </h3>
@@ -40,7 +40,7 @@
                 <div class='thinright'>
                     <h2>ARCHIVES</h2>
                     {% for arch in archives %}
-                    <div class='block {% if forloop.first %}first{% endif %}'>
+                    <div class='block {% if loop.first %}first{% endif %}'>
                         <h1><a href="/blog/{{cat.name}}">{{arch|archiveToDate|date("F Y")}}</a></h1>
                     </div>
                     {% endfor %}

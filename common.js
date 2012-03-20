@@ -5,6 +5,11 @@
 	{
 		 
         var navigation = [
+			{
+				link: '/',
+				title: 'Home',
+				text: 'The Frontpage'
+			},
             {
                 link: '/blog/all', 
                 title: 'Blog', 

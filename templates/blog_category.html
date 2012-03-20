@@ -30,7 +30,7 @@
             <div id='content' class='container'>
                 <div class='thinleft'>
                     {% for post in feed %}
-                    <div class='lightbox no{{ forloop.index|stylenumber}}'>
+                    <div class='lightbox no{{loop.index|stylenumber}}'>
                         <h1>
                             <a href="/post/{{post.id}}/{{post.title|linkify}}">{{post.title|title}}</a>
                         </h1>
@@ -58,7 +58,7 @@
                 <div class='thinright'>
                     <h2>CATEGORIES</h2>
                     {% for cat in categories %}
-                    <div class='block {% if forloop.first %}first{% endif %}'>
+                    <div class='block {% if loop.first %}first{% endif %}'>
                         <h1><a href="/blog/{{cat.name}}">{{cat.name|title}}</a></h1>
                     </div>
                     {% endfor %}
@@ -66,7 +66,7 @@
                     <div class='spacer'> </div>
                     <h2>ARCHIVES</h2>
                     {% for arch in archives %}
-                    <div class='block {% if forloop.first %}first{% endif %}'>
+                    <div class='block {% if loop.first %}first{% endif %}'>
                         <h1>
                         {% if actual_category %}
                         <a href="/blog/archive/{{arch.year}}/{{arch.month}}/{{actual_category}}">

@@ -212,12 +212,14 @@ div#feature h1
 
 div#feature a
 {
+	font-size: 1.2em;
     color: #36D792;
 }
 
 div#feature a:visited
 {
-    color: #007241;
+	font-size: 1.2em;
+    color: ##36D792;
 }
 
 div#feature p
