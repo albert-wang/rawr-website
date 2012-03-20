@@ -6,11 +6,11 @@
     var flow    = require("flow");
 	var config  = require("./config.js");
 
+    var twitterblock = env.swig.compileFile("tweet_block.html");
+    var rssblock = env.swig.compileFile("rss_block.html");
+
     function home(req, res, env)
     {
-        var twitterblock = env.swig.compileFile("tweet_block.html");
-        var rssblock = env.swig.compileFile("rss_block.html");
-
         env.getTweets(function(tweets)
         {
             api.postsInCategory("featured", 1, 0, function(err, featured)

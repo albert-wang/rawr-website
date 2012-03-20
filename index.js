@@ -38,20 +38,9 @@ var app = setup.setup(function(app)
 		});
 
 		//Static page routes
-		app.get("/projects/?", function(req, res)
-		{
-			statics.projects(req, res);
-		});
-
-		app.get("/downloads/?", function(req, res)
-		{
-			statics.downloads(req, res);
-		});
-
-		app.get("/about/?", function(req, res)
-		{
-			statics.about(req, res);
-		});
+		app.get("/projects/?", statics.projects);
+		app.get("/downloads/?", statics.downloads);
+		app.get("/about/?", statics.about);
 
 		//Gallery routes
 	    app.get("/gallery/?", function(req, res)
