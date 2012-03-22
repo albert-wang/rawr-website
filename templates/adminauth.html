@@ -9,8 +9,10 @@
             $(window).ready(function()
             {
                 $(".operation").hide();
+
                 $("#admin_nav a").click(function(e)
                 {
+                    $(".operation").hide();
                     var id = $(this).attr("id") + "_div";
                     $("#" + id).toggle();   
                 })

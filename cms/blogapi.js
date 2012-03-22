@@ -370,6 +370,8 @@
         });
     }
 
+    //Takes in a post ID and a list of tags, and then
+    //inserts them all into the tag bridge.
     function associateTagsWithPost(postID, tags, cb)
     {
         fe(function()
@@ -388,6 +390,7 @@
                 var inner = this;
                 fe(function()
                 {
+                    //To be honest, I think this can be done through a single query, though i'm not sure what it would be.
                     getOrCreateTagIDByName(tag, this);
                 }, function(err, tid)
                 {
