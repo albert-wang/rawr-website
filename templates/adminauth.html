@@ -4,13 +4,14 @@
         <title>{{ title|title }}</title>
         {% include "head_common.html" %}
         <link href="/css/blog.css" rel="stylesheet" type="text/css"/>
+		<link href="/css/admin.css" rel="stylesheet" type="text/css"/>
 
         <script type="text/javascript">
             $(window).ready(function()
             {
                 $(".operation").hide();
 
-                $("#admin_nav a").click(function(e)
+                $(".admin_nav").click(function(e)
                 {
                     $(".operation").hide();
                     var id = $(this).attr("id") + "_div";
@@ -87,62 +88,58 @@
 			</div>
 
             <div id='content' class='container'>
-
                 <div class='thinleft'>
 					<div class='lightbox no1'>
-                    {% if authed %}
-                    <div id="add_gallery_div" class="operation">
-                        <p> Add a gallery </p>
-                        <form>
-                            <label>Gallery Name</label><input id="newgalname" type='text' name='name'/><div class='clear'></div>
-                            <label>Display Name</label><input id="newgaldesc" type='text' name='name'/><div class='clear'></div>
-                            <input id='gallerybutton' type='button' value='Add'/>
-                        </form>
-                    </div>
+						<div id="add_gallery_div" class="operation">
+							<p> Add a gallery </p>
+							<form>
+								<label>Gallery Name</label><input id="newgalname" type='text' name='name'/><div class='clear'></div>
+								<label>Display Name</label><input id="newgaldesc" type='text' name='name'/><div class='clear'></div>
+								<input id='gallerybutton' type='button' value='Add'/>
+							</form>
+						</div>
 
-                    <div id="upload_image_div" class='operation'>
-                        <p> Choose an image to upload, along with its metadata </p>
-                        <form action='/admin/gallery' method='POST' enctype="multipart/form-data">
-                            <label>File </label>        <input type='file' name='image'/><div class='clear'></div>
-                            <label>Title </label>       <input type='text' name='title'/><div class='clear'></div>
-                            <label>Description</label>  <input type='text' name='desc'/><div class='clear'></div>
-                            <label>Gallery </label>     <select name='gallery'>
-                                {% for cat in categories %}
-                                <option value='{{cat.id}}'>{{cat.name|title}}</option>
-                                {% endfor %}
-                            </select>
-                            <div class='clear'></div>
-                            <input id="imgupbutton" type='submit' value='Upload' />
-                            <div class='clear'></div>
-                        </form>
-                    </div>
+						<div id="upload_image_div" class='operation'>
+							<p> Choose an image to upload, along with its metadata </p>
+							<form action='/admin/gallery' method='POST' enctype="multipart/form-data">
+								<label>File </label>        <input type='file' name='image'/><div class='clear'></div>
+								<label>Title </label>       <input type='text' name='title'/><div class='clear'></div>
+								<label>Description</label>  <input type='text' name='desc'/><div class='clear'></div>
+								<label>Gallery </label>     <select name='gallery'>
+									{% for cat in categories %}
+									<option value='{{cat.id}}'>{{cat.name|title}}</option>
+									{% endfor %}
+								</select>
+								<div class='clear'></div>
+								<input id="imgupbutton" type='submit' value='Upload' />
+								<div class='clear'></div>
+							</form>
+						</div>
 
-				    <div id="edit_post_div" class='operation'>
-					    <p>Edit a post by ID</p>
-					    <form>
-						    <label>ID</label><input type='text' name='id' id='editid'/><div class='clear'/><div class='clear'></div>
-						    <label>Content</label><textarea name='content' id='editcontent'></textarea><div class='clear'></div>
-						    <input id='editpostbutton' type='button' value='Edit'/>
-					    </form>
-				    </div>
+						<div id="edit_post_div" class='operation'>
+							<p>Edit a post by ID</p>
+							<form>
+								<label>ID</label><input type='text' name='id' id='editid'/><div class='clear'/><div class='clear'></div>
+								<label>Content</label><textarea name='content' id='editcontent'></textarea><div class='clear'></div>
+								<input id='editpostbutton' type='button' value='Edit'/>
+							</form>
+						</div>
 
-                    <div id="unauth_div" class='operation'>
-                        <a href='#' id='unauth_button'>Really log out</a>
-                    </div>
-                    {% endif %}
+						<div id="unauth_div" class='operation'>
+							<a href='#' id='unauth_button'>Really log out</a>
+						</div>
 					</div>
                 </div>
+				<div class='clear'></div>
             </div>
 
             <div class='thinright'>
                 <h2>ADMINISTRATION</h2>
-                {% if authed %}
-                <div class='block first'><h1><a id="upload_image" class='admin_auth' href="#">Upload an Image</a></h1></div>
-                <div class='block'><h1><a id="add_gallery" class='admin_auth' href="#">Add a gallery</a></h1></div>
-                <div class='block'><h1><a id="edit_post" class='admin_auth' href="#">Edit Post</a></h1></div>
-                <div class='block'><h1><a id="manage_comment" class='admin_auth' href="#">Manage Comments</a></h1></div>
-                <div class='block'><h1><a id="unauth" class='admin_auth' href="#">Log out</a></h1></div>
-                {% endif %}
+                <div class='block first'><h1><a id="upload_image" class='admin_nav' href="#">Upload Image</a></h1></div>
+                <div class='block'><h1><a id="add_gallery" class='admin_nav' href="#">Add gallery</a></h1></div>
+                <div class='block'><h1><a id="edit_post" class='admin_nav' href="#">Edit post</a></h1></div>
+                <div class='block'><h1><a id="manage_comment" class='admin_nav' href="#">Comments</a></h1></div>
+                <div class='block'><h1><a id="unauth" class='admin_nav' href="#">Log out</a></h1></div>
                 <div class='clear'> </div>
             </div>
             
