@@ -4,7 +4,6 @@
         <title>{{ title|title }}</title>
         {% include "head_common.html" %}
         <link href="/css/blog.css" rel="stylesheet" type="text/css"/>
-        <link href="/css/admin.css" rel="stylesheet" type="text/css"/>
 
         <script type="text/javascript">
             $(window).ready(function()
@@ -80,10 +79,17 @@
 
             {% include "navigation.html" %}
 
-            <div id='content' class='lightbox container'>
-                <h1>What would you like to do?</h1>
+			<div id="feature" class='container'>
+				<div id='featuredcontent'>
+					<h2>ADMIN PANEL</h2>
+					<h1>Admin Panel</h1>
+				</div>
+			</div>
+
+            <div id='content' class='container'>
 
                 <div class='thinleft'>
+					<div class='lightbox no1'>
                     {% if authed %}
                     <div id="add_gallery_div" class="operation">
                         <p> Add a gallery </p>
@@ -93,6 +99,7 @@
                             <input id='gallerybutton' type='button' value='Add'/>
                         </form>
                     </div>
+
                     <div id="upload_image_div" class='operation'>
                         <p> Choose an image to upload, along with its metadata </p>
                         <form action='/admin/gallery' method='POST' enctype="multipart/form-data">
@@ -123,6 +130,7 @@
                         <a href='#' id='unauth_button'>Really log out</a>
                     </div>
                     {% endif %}
+					</div>
                 </div>
             </div>
 
