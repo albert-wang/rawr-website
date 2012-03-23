@@ -9,7 +9,7 @@
         <script type="text/javascript">
             $(window).ready(function()
             {
-                $(".operation").hide();
+                //$(".operation").hide();
 
                 $(".admin_nav").click(function(e)
                 {
@@ -112,14 +112,13 @@
 								</select>
 								<div class='clear'></div>
 								<input id="imgupbutton" type='submit' value='Upload' />
-								<div class='clear'></div>
 							</form>
 						</div>
 
 						<div id="edit_post_div" class='operation'>
 							<p>Edit a post by ID</p>
 							<form>
-								<label>ID</label><input type='text' name='id' id='editid'/><div class='clear'/><div class='clear'></div>
+								<label>ID</label><input type='text' name='id' id='editid'/><div class='clear'></div>
 								<label>Content</label><textarea name='content' id='editcontent'></textarea><div class='clear'></div>
 								<input id='editpostbutton' type='button' value='Edit'/>
 							</form>
@@ -129,22 +128,22 @@
 							<a href='#' id='unauth_button'>Really log out</a>
 						</div>
 					</div>
+					<div class='clear'></div>
                 </div>
-				<div class='clear'></div>
-            </div>
 
-            <div class='thinright'>
-                <h2>ADMINISTRATION</h2>
-                <div class='block first'><h1><a id="upload_image" class='admin_nav' href="#">Upload Image</a></h1></div>
-                <div class='block'><h1><a id="add_gallery" class='admin_nav' href="#">Add gallery</a></h1></div>
-                <div class='block'><h1><a id="edit_post" class='admin_nav' href="#">Edit post</a></h1></div>
-                <div class='block'><h1><a id="manage_comment" class='admin_nav' href="#">Comments</a></h1></div>
-                <div class='block'><h1><a id="unauth" class='admin_nav' href="#">Log out</a></h1></div>
-                <div class='clear'> </div>
-            </div>
-            
-            <div class='push'>
-            </div>
+				<div class='thinright'>
+					<h2>ADMINISTRATION</h2>
+					<div class='block first'><h1><a id="upload_image" class='admin_nav' href="#">Upload Image</a></h1></div>
+					<div class='block'><h1><a id="add_gallery" class='admin_nav' href="#">Add gallery</a></h1></div>
+					<div class='block'><h1><a id="edit_post" class='admin_nav' href="#">Edit post</a></h1></div>
+					<div class='block'><h1><a id="manage_comment" class='admin_nav' href="#">Comments</a></h1></div>
+					<div class='block'><h1><a id="unauth" class='admin_nav' href="#">Log out</a></h1></div>
+					<div class='clear'> </div>
+				</div>
+				<div class='clear'></div>
+			</div>
+
+			<div class='push'></div>
         </div>
         <div class='footer container'>
             {% include "footer.html" %}

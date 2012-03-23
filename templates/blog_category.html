@@ -24,9 +24,9 @@
                     {% if archive_date %}
                     <p>Archives for {{archive_date|date("F Y")}}</p>
                     {% endif %}
-
                 </div>
             </div>
+
             <div id='content' class='container'>
                 <div class='thinleft'>
                     {% for post in feed %}
@@ -41,7 +41,6 @@
 						{{post.content|markdown|raw}}
 						</div>
                     </div>
-                    <div class='clear'></div>
 					{% else %}
 					<div class='lightbox no1'>
 						<h1>
