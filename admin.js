@@ -25,7 +25,13 @@
 					authed : req.isAuthenticated(),
 					title: "Admin Panel", 
 					navigation_blocks: navcontents, 
-					categories: galleries
+					categories: galleries, 
+                    stats: {
+                        published: 4, 
+                        ideas: 10,
+                        galleries: 40,
+                        totalImages: 45
+                    }
 				});
 			});
 		});

@@ -102,10 +102,8 @@
 			stream : fs.createWriteStream("./logs/http.log", { flags : "a" })
 		}));
 
-        var oneDay = 1000 * 60 * 60 * 24;
-
         app.use(express.profiler());
-        app.use(express.static("./static/"), { maxAge: 1 });
+        app.use(express.static("./static/"), { maxAge: 0 });
         app.use(express.cookieParser())
         app.use(express.session({ secret: "rawr nyancats. Takagamahara is observing you...", cookie: { maxAge: 60 * 1000 * 60 }}));
 		app.use(passport.initialize());
@@ -114,6 +112,16 @@
         app.use(express.router(routes));
 
         setInterval(function() { downloadTweets(function(data){}) }, 1000 * 60 * 5);
+
+        //Observe the templates directory, and then reset the swig cache every time something changes in it.
+        fs.watchFile("./templates/adminauth.html", function(curr, prev)
+        {
+            if (curr.mtime !== prev.m_time)
+            {
+                console.log("A template changed. Resetting the swig caches...");
+                swig.init({ root: "./templates", allowErrors: true, filters : require("../utils/swigfilters.js") });
+            }
+        });
 
         return app;
     }
