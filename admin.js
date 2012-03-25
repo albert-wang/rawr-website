@@ -86,22 +86,26 @@
 		{
 			gapi.getGalleries(function(err, galleries)
 			{
-                getStatistics(function(err, statistics)
+                api.getAllCategories(function(err, cats)
                 {
-				    if (err)
-				    {
-					    console.log(err);
-					    res.end();
-					    return undefined;
-				    }
+                    getStatistics(function(err, statistics)
+                    {
+				        if (err)
+				        {
+					        console.log(err);
+					        res.end();
+					        return undefined;
+				        }
 
-				    res.render("adminauth.html", {
-					    authed : req.isAuthenticated(),
-					    title: "Admin Panel", 
-					    navigation_blocks: navcontents, 
-					    categories: galleries, 
-                        stats: statistics
-				    });
+				        res.render("adminauth.html", {
+					        authed : req.isAuthenticated(),
+					        title: "Admin Panel", 
+					        navigation_blocks: navcontents, 
+					        galllery_categories: galleries, 
+                            post_categories: cats.rows,
+                            stats: statistics
+				        });
+                    });
                 });
 			});
 		});
@@ -130,7 +134,7 @@
 
 	        fe(function ()
 	        {
-	            client.query("SELECT id, title, content FROM blog_ideas WHERE is_visible=1;", this)
+	            client.query("SELECT id, title, content FROM blog_ideas WHERE is_visible=1 ORDER BY id DESC", this)
 	        }, function (err, results)
 	        {
 	            if (err)
@@ -144,6 +148,55 @@
 	        });
 	    });
 	}
+
+    function publishIdea(req, res)
+    {
+        setup.getConnection(function (err, client)
+        {
+            if (err)
+            {
+                res.statusCode = 403;
+                res.end();
+                return;
+            }
+
+            fe(function ()
+            {
+                client.query({
+                    name: "delete idea",
+                    text: "UPDATE blog_ideas SET is_visible=0 WHERE id=$1",
+                    values: [req.body.id]
+                }, this);
+                
+            }, function (err, results)
+            {
+                client.query({
+                    name: "Get idea",
+                    text: "SELECT id, title, content FROM blog_ideas WHERE id=$1;",
+                    values: [req.body.id]
+                }, this);
+            }, function(err, results)
+            {
+                api.post({
+                    category: req.body.category, 
+                    content: results.rows[0].content,
+                    title: results.rows[0].title,
+                    tags: req.body.tags.split(",")
+                }, this);
+            }, function(err)
+            {
+                if (err)
+                {
+                    res.statusCode = 502;
+                    res.end();
+                    return;
+                }
+
+                res.end();
+                return;
+            });
+        });
+    };
 
     function saveIdea(req, res)
     {
@@ -282,7 +335,7 @@
 
             fe(function()
             {
-                client.query("SELECT id, title FROM blog_posts;", this)
+                client.query("SELECT id, title, content FROM blog_posts ORDER BY time ASC;", this)
             }, function(err, results)
             {
                 if (err)
@@ -329,10 +382,31 @@
 		}, function(err)
 		{
 			if (err) { console.log(err); }
-			res.statusCode = 302;
 			res.end();
 		});
 	}
+    
+    function removePost(req, res)
+    {
+        setup.getConnection(function(err, client)
+        {
+            client.query({
+                name: "Delete referenced tags",
+                text: "DELETE FROM blog_tag_bridge WHERE post=$1",
+                values: [req.body.id]
+            }, function(err, results)
+            {
+                client.query({
+                    name: "Delete post",
+                    text: "DELETE FROM blog_post WHERE id=$1", 
+                    values: [req.body.id]
+                }, function(err, results)
+                {
+                    res.end();
+                });
+            });
+        });
+    }
 
     //Gallery stuff
 	function gallery(req, res)
@@ -411,12 +485,14 @@
 		addGallery: addGallery,
 		editpost: editpost,
 		getpost: getpost,
+        removepost: removePost,
         getPostTitles: getPostTitles,
         getIdeaTitles: getIdeaTitles,
 
         addIdea: addIdea,
         removeIdea:removeIdea,
-        saveIdea: saveIdea
+        saveIdea: saveIdea,
+        publishIdea:publishIdea
 	}
 
 })();

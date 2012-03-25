@@ -20,7 +20,7 @@ div#content .operation label
 	margin-bottom: 15px;
 }
 
-div#content .operation input,select,textarea
+div#content .operation input,textarea
 {
 	font-size: 1.4em;
 	width: 100%;
@@ -30,7 +30,18 @@ div#content .operation input,select,textarea
 
 div#content .operation textarea
 {
+    font-size: 0.8em;
 	height: 600px;
+}
+
+div#content .operation select
+{
+    margin-top: 20px;
+	background-color: black;
+	width: 100%;
+	border: none;
+	color: white;
+	font-size: 1.4em;
 }
 
 div#content .operation input[type=submit]

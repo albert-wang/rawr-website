@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>{{ title|title }}</title>
-        {% set context = { nosyntax: true, notracking: true } %}
+        {% set context = { notracking: true } %}
         {% include "head_common.html" with context %}
         <link href="/css/blog.css" rel="stylesheet" type="text/css"/>
 		<link href="/css/admin.css" rel="stylesheet" type="text/css"/>
@@ -12,6 +12,7 @@
             {
                 $(".operation").hide();
                 $(".post_div").show();
+                $("#edit_publish_full").hide();
 
                 function updatePostsAndIdeas()
                 {
@@ -36,11 +37,50 @@
                                 var link = $("<a>");
                                 link.html(data[i].title);
                                 link.click(function(e)
+                                {   
+                                    $(".operation").hide();
+                                    $("#edit_post_title").val(data[i].title);
+                                    $("#edit_post_content").val(data[i].content);
+                                    $("#edit_post_id").val(data[i].id);
+
+                                    $("#edit_post").show();
+                                });
+
+                                
+                                var rm = $("<a>");
+                                rm.attr("href", "#");
+                                rm.css("float", "right");
+                                rm.html("Delete");
+
+                                function hoverin()
                                 {
-                                    alert("!");
+                                    inner.addClass("selected");
+                                }
+
+                                function hoverout()
+                                {
+                                    inner.removeClass("selected");
+                                }
+
+                                link.hover(hoverin, hoverout);
+                                rm.hover(hoverin, hoverout);
+
+                                rm.click(function(e)
+                                {
+                                    var r = confirm("ARE YOU SURE YOU WANT TO DELETE THIS?");
+                                    if (r === true)
+                                    {
+                                        $.post("/admin/removepost", { id: data[i].id })
+                                            .success(function()
+                                            {
+                                                updatePostsAndIdeas();
+                                            });
+                                    }
+                                        return false;
                                 });
 
                                 inner.append(link)
+                                inner.append(rm);
                                 outer.prepend(inner);
                             }
                         }
@@ -134,6 +174,7 @@
                         $("#preview_area").html(
                             "<h1>" + $("#edit_idea_title").val() + "</h1>" + d
                         );
+                        SyntaxHighlighter.highlight();
                     });
 
                     //Also, save the thing.
@@ -141,6 +182,51 @@
                         id: $("#edit_idea_id").val(), 
                         content: $("#edit_idea_content").val(), 
                         title: $("#edit_idea_title").val(), 
+                    });
+                });
+
+                //Preview
+                $("#edit_post_preview").click(function(e)
+                {
+                    $.post("/admin/preview", {
+                        content: $("#edit_post_content").val(), 
+                        tags: "unpublished, idea"
+                    }).success(function(d)
+                    {
+                        $("#preview_area").show();
+                        $("#preview_area").html(
+                            "<h1>" + $("#edit_post_title").val() + "</h1>" + d
+                        );
+                        SyntaxHighlighter.highlight();
+                    });
+                });
+
+                //Publish
+                $("#edit_idea_publish").click(function(e)
+                {
+                    $.post("/admin/saveidea", {
+                        id: $("#edit_idea_id").val(), 
+                        content: $("#edit_idea_content").val(), 
+                        title: $("#edit_idea_title").val(), 
+                    }).success(function()
+                    {
+                        $("#edit_publish_full").show();
+                    });
+
+                    return false;
+                });
+
+                $("#idea_full_publish").click(function(e)
+                {
+                    $.post("/admin/publishidea", {
+                        id: $("#edit_idea_id").val(),
+                        tags: $("#edit_idea_tags").val(),
+                        category: $("#edit_publish_full").val()
+                    }).success(function()
+                    {
+                        updatePostsAndIdeas();
+                        $(".operation").hide();
+                        $(".post_div").show();
                     });
                 });
 
@@ -159,9 +245,23 @@
 
                     req.success(function(data)
                     {
-                        //Activate the edit UI.
                         updatePostsAndIdeas();
                         $("#idea_title").val("");
+                    });
+
+                    return false;
+                });
+
+                $("#edit_post_publish").click(function()
+                {
+                    $.post("/admin/edit", {
+                        id: $("#edit_post_id").val(), 
+                        content: $("#edit_post_content").val()
+                    }).success(function()
+                    {
+                         $(".operation").hide();
+                         updatePostsAndIdeas();
+                         $(".post_div").show();
                     });
 
                     return false;
@@ -247,17 +347,29 @@
                             <input type='button' id='edit_idea_preview' value='Preview'/>
                             <a href='#' id='edit_idea_publish' class='formlink'>Publish</a>
                         </form>
+
+                        <form id='edit_publish_full'>
+                            <label>Tags</label> <input type='text' id='edit_idea_tags' class='focus' /><br />
+                            <select id='edit_idea_category'> 
+                                {% for c in post_categories %}
+                                <option value={{ c.name }}>{{c.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <a href='#' id='idea_full_publish' class='formlink'>Complete</a>
+                        </form>
                     </div>
 
-                    <div class='lightbox no1 operation' id='preview_area'>
-                        <h3>Posted {{post.time|date("l, F jS")}} | 
-                        {% for tag in tags %}{{tag.name|title}} {% endfor %}
-                        </h3>
-						<div class='postcontent'>
-						{{post.content|markdown|raw}}
-						</div>
-                        <div class='clear'></div>
+                    <div class='lightbox no1 operation' id="edit_post">
+                        <form id='Form1'>
+                            <label>Title</label> <input type='text' id='edit_post_title' class='focus' /><br />
+                            <textarea id='edit_post_content' class='focus invisible'></textarea><br />
+                            <input type='hidden' id='edit_post_id' />
+                            <input type='button' id='edit_post_preview' value='Preview'/>
+                            <a href='#' id='edit_post_publish' class='formlink'>Publish</a>
+                        </form>
                     </div>
+
+                    <div class='lightbox no1 operation' id='preview_area'></div>
 
                     <div class='lightbox no1 operation post_div'>
                         <h1>Ideas</h1>

@@ -87,6 +87,11 @@ var app = setup.setup(function(app)
 			admin.getpost(req, res, req.params.index);
 		});
 
+        app.post("/admin/removepost", setup.requiresAuth, function(req, res)
+        {
+            admin.removepost(req, res);
+        });
+
 		app.post("/admin/authenticate/?", setup.requiresAuth, function(req, res)
 		{
 			admin.auth(req, res);
@@ -126,6 +131,11 @@ var app = setup.setup(function(app)
         app.post("/admin/saveidea/?", setup.requiresAuth, function(req, res)
         {
             admin.saveIdea(req, res);
+        });
+
+        app.post("/admin/publishidea/?", setup.requiresAuth, function(req, res)
+        {
+            admin.publishIdea(req, res);
         });
         
 		app.post("/admin/unauth/?", setup.requiresAuth, function(req, res)
