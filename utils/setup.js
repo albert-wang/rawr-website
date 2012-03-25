@@ -101,8 +101,11 @@
         app.use(express.logger({
 			stream : fs.createWriteStream("./logs/http.log", { flags : "a" })
 		}));
+
+        var oneDay = 1000 * 60 * 60 * 24;
+
         app.use(express.profiler());
-        app.use(express.static("./static/"), { maxAge: 1000 * 60 * 60 * 24 });
+        app.use(express.static("./static/"), { maxAge: 1 });
         app.use(express.cookieParser())
         app.use(express.session({ secret: "rawr nyancats. Takagamahara is observing you...", cookie: { maxAge: 60 * 1000 * 60 }}));
 		app.use(passport.initialize());
