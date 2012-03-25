@@ -11,10 +11,13 @@ div#content .operation form
 
 div#content .operation label
 {
+    display: block;
+    float: left;
 	font-size: 1.4em;
-	width: 150px;
-	float: left;
-	margin-bottom: 12px;
+	width: 70px;
+	height: 10px;
+	margin-right: 10px;
+	margin-bottom: 15px;
 }
 
 div#content .operation input,select,textarea
@@ -30,7 +33,7 @@ div#content .operation textarea
 	height: 600px;
 }
 
-div#content .operation input[type=submit], input[type=button]
+div#content .operation input[type=submit]
 {
 	font-size: 1.4em;
 	margin-left: 150px;
@@ -39,11 +42,59 @@ div#content .operation input[type=submit], input[type=button]
 	background-color: #DFDFDF;
 }
 
-div#content .operation input.focus 
+div#content .operation input[type=button]
 {
+    margin-top: 10px;
+    width: 25%;
+}
+
+div#content .operation input.focus[type=text]
+{
+    width: 75%;
     border-left: 3px solid #305eb2;
     padding-left: 5px;
     background-color: transparent;
     color: white;
     font-weight: lighter;
+}
+
+div#content .operation a.formlink
+{
+    margin-top: 10px;
+    float: right;
+}
+
+div#content .operation textarea.focus 
+{
+    border-left: 3px solid #305eb2;
+    margin-top: 10px;
+    padding-left: 5px;
+    background-color: transparent;
+    color: white;
+    font-weight: lighter;
+}
+
+
+div#content .operation .current p
+{
+    border-left: 3px solid transparent;
+    margin-top: 5px;
+    padding-left: 8px;
+}
+
+div#content .operation .current p.selected
+{
+    border-left: 3px solid #66A3D2;
+}
+
+div#content .operation .current a
+{
+    text-decoration: none;
+    color: white;
+}
+
+div#content .operation .current a:hover
+{
+    text-decoration: underline;
+    color: white;
 }

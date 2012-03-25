@@ -77,6 +77,11 @@ var app = setup.setup(function(app)
 			res.redirect("/admin/");
 		});
 
+        app.post("/admin/preview/?", setup.requiresAuth, function(req, res)
+        {
+            admin.preview(req, res);
+        });
+
 		app.post("/admin/post/:index/?", setup.requiresAuth, function(req, res)
 		{
 			admin.getpost(req, res, req.params.index);
@@ -102,11 +107,27 @@ var app = setup.setup(function(app)
             admin.getPostTitles(req, res);
         })
 
+        //Ideas
         app.post("/admin/ideatitles/?", setup.requiresAuth, function(req, res)
         {
             admin.getIdeaTitles(req, res);
         });
 
+        app.post("/admin/addidea/?", setup.requiresAuth, function(req, res)
+        {
+            admin.addIdea(req, res);
+        });
+
+        app.post("/admin/removeidea/?", setup.requiresAuth, function (req, res)
+        {
+            admin.removeIdea(req, res);
+        });
+
+        app.post("/admin/saveidea/?", setup.requiresAuth, function(req, res)
+        {
+            admin.saveIdea(req, res);
+        });
+        
 		app.post("/admin/unauth/?", setup.requiresAuth, function(req, res)
 		{
 			req.logout();

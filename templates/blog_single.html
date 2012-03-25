@@ -26,15 +26,9 @@
             <div id='content' class='container'>
                 <div class='thinleft'>
                     <div class='lightbox no{{ loop.index|stylenumber}}'>
-                        <h3>Posted {{post.time|date("l, F jS")}} | 
-                        {% for tag in tags %}{{tag.name|title}} {% endfor %}
-                        </h3>
-						<div class='postcontent'>
-						{{post.content|markdown|raw}}
-						</div>
+                        {% include "post.html" %}
                     </div>
                     <div class='clear'></div>
-
                 </div>
 
                 <div class='thinright'>

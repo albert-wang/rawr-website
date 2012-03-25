@@ -43,7 +43,7 @@
                 }
         
                 result.comments = results.rows[0].count;
-                client.query("SELECT COUNT(*) AS count FROM blog_ideas", this);
+                client.query("SELECT COUNT(*) AS count FROM blog_ideas where is_visible=1", this);
             }, function (err, results)
             {
                 if (err)
@@ -107,30 +107,160 @@
 		});
 	}
 
-	function addGallery(req, res)
+	
+    //Idea stuff
+	function getIdeaTitles(req, res)
 	{
-		if (!req.isAuthenticated())
-		{
-			res.statusCode = 403;
-			res.end();
-			return;
-		}
+	    if (!req.isAuthenticated())
+	    {
+	        res.statusCode = 403;
+	        res.end();
+	        return;
+	    }
 
-		gapi.gallery({
-			name: req.body.name,
-			desc: req.body.desc
-		}, function(err)
-		{
-			if (err)
-			{
-				res.statusCode = 500;
-				res.end();
-			}
-			res.statusCode = 200;
-			res.end();
-		});
+	    setup.getConnection(function (err, client)
+	    {
+	        if (err)
+	        {
+	            res.statusCode = 404;
+	            res.end();
+	            console.log(err);
+	            return;
+	        }
+
+	        fe(function ()
+	        {
+	            client.query("SELECT id, title, content FROM blog_ideas WHERE is_visible=1;", this)
+	        }, function (err, results)
+	        {
+	            if (err)
+	            {
+	                res.statusCode = 403;
+	                res.end();
+	                return;
+	            }
+
+	            res.end(JSON.stringify(results.rows));
+	        });
+	    });
 	}
+
+    function saveIdea(req, res)
+    {
+        if (!req.isAuthenticated())
+        {
+            res.statusCode = 403;
+            res.end();
+            return;
+        }
+
+        setup.getConnection(function (err, client)
+        {
+            if (err)
+            {
+                res.statusCode = 403;
+                res.end();
+                return;
+            }
+
+            fe(function ()
+            {
+                client.query({
+                    name: "Insert idea",
+                    text: "UPDATE blog_ideas SET title=$1, content=$2 WHERE id=$3",
+                    values: [req.body.title, req.body.content, req.body.id]
+                }, this);
+            }, function (err, results)
+            {
+                if (err)
+                {
+                    res.statusCode = 502;
+                    res.end();
+                    return;
+                }
+
+                res.end();
+                return;
+            });
+        });
+    }
+
+    function addIdea(req, res)
+    {
+        if (!req.isAuthenticated())
+        {
+            res.statusCode = 403;
+            res.end();
+            return;
+        }
+
+        setup.getConnection(function(err, client)
+        {
+            if (err)
+            {
+                res.statusCode = 403;
+                res.end();
+                return;
+            }
+
+            fe(function()
+            {
+                client.query({
+                    name: "Insert idea", 
+                    text: "INSERT INTO blog_ideas (title, category, content, is_visible) VALUES" + 
+                        "($1, 1, '', 1) RETURNING id;",
+                    values: [req.body.title]
+                }, this);
+            }, function(err, results)
+            {
+                if (err)
+                {
+                    res.statusCode = 502;
+                    res.end();
+                    return;
+                }
+
+                res.end(JSON.stringify({ id: results.rows[0].id }));
+                return;
+            });
+        });
+    }
+
+    function removeIdea(req, res)
+    {
+        if (!req.isAuthenticated())
+        {
+            res.statusCode = 403;
+            res.end();
+            return;
+        }
+
+        setup.getConnection(function (err, client)
+        {
+            if (err)
+            {
+                res.statusCode = 403;
+                res.end();
+                return;
+            }
+
+            fe(function ()
+            {
+                client.query({
+                    name: "delete idea",
+                    text: "UPDATE blog_ideas SET is_visible=0 WHERE id=$1",
+                    values: [req.body.id]
+                }, this);
+            }, function (err, results)
+            {
+                res.end();
+                return;
+            });
+        });
+    }
     
+
+    //Post stuff
     function getPostTitles(req, res)
     {
         if (!req.isAuthenticated())
@@ -152,44 +282,8 @@
 
             fe(function()
             {
-                client.query("SELECT title FROM blog_posts;", this)
+                client.query("SELECT id, title FROM blog_posts;", this)
             }, function(err, results)
-            {
-                if (err)
-                {
-                    res.statusCode = 403;
-                    res.end();
-                    return;
-                }
-
-                res.end(JSON.stringify(results.rows));
-            });
-        });
-    }
-
-    function getIdeaTitles(req, res)
-    {
-        if (!req.isAuthenticated())
-        {
-            res.statusCode = 403;
-            res.end();
-            return;
-        }
-
-        setup.getConnection(function (err, client)
-        {
-            if (err)
-            {
-                res.statusCode = 404;
-                res.end();
-                console.log(err);
-                return;
-            }
-
-            fe(function ()
-            {
-                client.query("SELECT title FROM blog_ideas;", this)
-            }, function (err, results)
             {
                 if (err)
                 {
@@ -240,6 +334,7 @@
 		});
 	}
 
+    //Gallery stuff
 	function gallery(req, res)
 	{
 		if (!req.isAuthenticated())
@@ -263,14 +358,65 @@
 		});
 	}
 
+	function addGallery(req, res)
+	{
+	    if (!req.isAuthenticated())
+	    {
+	        res.statusCode = 403;
+	        res.end();
+	        return;
+	    }
+
+	    gapi.gallery({
+	        name: req.body.name,
+	        desc: req.body.desc
+	    }, function (err)
+	    {
+	        if (err)
+	        {
+	            res.statusCode = 500;
+	            res.end();
+	        }
+	        res.statusCode = 200;
+	        res.end();
+	    });
+	}
+
+    function preview(req, res)
+    {
+        var postTemplate = setup.swig.compileFile("post.html");
+
+        //Get the data!
+        var context = {};
+        context.post = {};
+        context.post.time = new Date();
+        context.post.content = req.body.content; 
+        context.tags = [];
+
+        var tags = req.body.tags.split(",");
+        for(var i in tags)
+        {
+            context.tags.push({ name: tags[i] });
+        }
+
+        res.end(postTemplate.render(context));
+    }
+
+
 	module.exports = {
+        preview: preview, 
+
 		panel: panel, 
 		gallery: gallery, 
 		addGallery: addGallery,
 		editpost: editpost,
 		getpost: getpost,
         getPostTitles: getPostTitles,
-        getIdeaTitles: getIdeaTitles
+        getIdeaTitles: getIdeaTitles,
+
+        addIdea: addIdea,
+        removeIdea:removeIdea,
+        saveIdea: saveIdea
 	}
 
 })();

@@ -10,27 +10,16 @@
         <script type="text/javascript">
             $(window).ready(function()
             {
-                function cancel(e)
-                {
-                    var env = e || window.event;
-
-                    if (env.stopPropagation)
-                    {
-                        env.stopPropagation();
-                    }
-
-                    if (env.cancelBubble !== undefined)
-                    {
-                        env.cancelBubble = true;
-                    }
-                }
-
-
                 $(".operation").hide();
                 $(".post_div").show();
 
-                function updateIdeas()
+                function updatePostsAndIdeas()
                 {
+                    function style(e)
+                    {
+                        return e;
+                    }
+
                     //Download all the posts.
                     var postRequest = $.post("/admin/posttitles");
                     postRequest.success(function (data)
@@ -43,16 +32,88 @@
                             data = JSON.parse(data);
                             for (var i in data)
                             {
-                                var inner = $("<p>");
-                                inner.html(data[i].title);
+                                var inner = style($("<p>"));
+                                var link = $("<a>");
+                                link.html(data[i].title);
+                                link.click(function(e)
+                                {
+                                    alert("!");
+                                });
+
+                                inner.append(link)
                                 outer.prepend(inner);
-                                console.log(data[i]);
                             }
                         }
                     }, "json");
+
+                    var ideaRequest = $.post("/admin/ideatitles");
+                    ideaRequest.success(function(data)
+                    {
+                        var outer = $(".current_ideas");
+                        outer.html("");
+
+                        if (typeof data === "string")
+                        {
+                            data = JSON.parse(data);
+                            for (var i in data)
+                            {
+                                (function()
+                                {
+                                    var inner = style($("<p>"));
+                                    var link = $("<a>");
+                                    link.attr("href", "#");
+                                    link.html(data[i].title);
+
+                                    link.click(function(e)
+                                    {
+                                        $(".operation").hide();
+
+                                        $("#edit_idea_title").val(data[i].title);
+                                        $("#edit_idea_content").val(data[i].content);
+                                        $("#edit_idea_id").val(data[i].id);
+
+                                        $("#edit_idea").show();
+                                    });
+
+                                    inner.append(link);
+
+                                    var rm = $("<a>");
+                                    rm.attr("href", "#");
+                                    rm.css("float", "right");
+                                    rm.html("Delete");
+
+                                    function hoverin()
+                                    {
+                                        inner.addClass("selected");
+                                    }
+
+                                    function hoverout()
+                                    {
+                                        inner.removeClass("selected");
+                                    }
+
+                                    link.hover(hoverin, hoverout);
+                                    rm.hover(hoverin, hoverout);
+
+                                    rm.click(function(e)
+                                    {
+                                        $.post("/admin/removeidea", { id: data[i].id })
+                                         .success(function()
+                                         {
+                                            updatePostsAndIdeas();
+                                         });
+                                         return false;
+                                    });
+                                
+                                    inner.append(rm);
+                                    outer.prepend(inner);
+                                }());
+                            }
+                        }
+                    });
                 }
 
-                updateIdeas();
+                updatePostsAndIdeas();
 
                 $(".admin_nav").click(function(e)
                 {
@@ -61,16 +122,48 @@
                     $("." + id).toggle();
                 })
 
+                //Preview
+                $("#edit_idea_preview").click(function(e)
+                {
+                    $.post("/admin/preview", {
+                        content: $("#edit_idea_content").val(), 
+                        tags: "unpublished, idea"
+                    }).success(function(d)
+                    {
+                        $("#preview_area").show();
+                        $("#preview_area").html(
+                            "<h1>" + $("#edit_idea_title").val() + "</h1>" + d
+                        );
+                    });
+
+                    //Also, save the thing.
+                    $.post("/admin/saveidea", {
+                        id: $("#edit_idea_id").val(), 
+                        content: $("#edit_idea_content").val(), 
+                        title: $("#edit_idea_title").val(), 
+                    });
+                });
+
                 //Post shenanigans
                 $("#post").click(function(e)
                 {
-                    updateIdeas();
+                    updatePostsAndIdeas();
                     return false;
                 });
 
                 $("#ideainput").submit(function(e)
                 {
-                    alert("!");
+                    var req = $.post("/admin/addidea", {
+                        title: $("#idea_title").val()
+                    });
+
+                    req.success(function(data)
+                    {
+                        //Activate the edit UI.
+                        updatePostsAndIdeas();
+                        $("#idea_title").val("");
+                    });
+
                     return false;
                 });
 
@@ -146,14 +239,34 @@
 
             <div id='content' class='container'>
                 <div class='thinleft'>
+                    <div class='lightbox no1 operation' id="edit_idea">
+                        <form id='edit_idea'>
+                            <label>Title</label> <input type='text' id='edit_idea_title' class='focus' /><br />
+                            <textarea id='edit_idea_content' class='focus invisible'></textarea><br />
+                            <input type='hidden' id='edit_idea_id' />
+                            <input type='button' id='edit_idea_preview' value='Preview'/>
+                            <a href='#' id='edit_idea_publish' class='formlink'>Publish</a>
+                        </form>
+                    </div>
+
+                    <div class='lightbox no1 operation' id='preview_area'>
+                        <h3>Posted {{post.time|date("l, F jS")}} | 
+                        {% for tag in tags %}{{tag.name|title}} {% endfor %}
+                        </h3>
+						<div class='postcontent'>
+						{{post.content|markdown|raw}}
+						</div>
+                        <div class='clear'></div>
+                    </div>
+
                     <div class='lightbox no1 operation post_div'>
                         <h1>Ideas</h1>
 
                         <form id="ideainput"> 
-                            <input type='text' class='focus invisible'/>
+                            <input type='text' id='idea_title' class='focus'/>
                         </form>
 
-                        <div class='current_ideas'>
+                        <div class='current_ideas current'>
                             
                         </div>
                     </div>
@@ -161,7 +274,7 @@
                         <!-- Download the titles of all the posts and ideas -->
                         <h1>Posts</h1>
 
-                        <div class='current_posts'>
+                        <div class='current_posts current'>
                         </div>
                     </div>
 
