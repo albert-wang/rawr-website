@@ -97,6 +97,16 @@ var app = setup.setup(function(app)
 			admin.gallery(req, res);
 		})
 
+        app.post("/admin/posttitles/?", setup.requiresAuth, function(req, res)
+        {
+            admin.getPostTitles(req, res);
+        })
+
+        app.post("/admin/ideatitles/?", setup.requiresAuth, function(req, res)
+        {
+            admin.getIdeaTitles(req, res);
+        });
+
 		app.post("/admin/unauth/?", setup.requiresAuth, function(req, res)
 		{
 			req.logout();

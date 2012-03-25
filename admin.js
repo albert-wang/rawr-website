@@ -8,31 +8,101 @@
 	var fe      = require("flow").exec;
 	var util    = require("util");
 
+    function getStatistics(cb)
+    {
+        var result = {};
+
+        setup.getConnection(function(err, client)
+        {
+            fe(function(err)
+            {
+                if (err)
+                {
+                    cb(err, undefined);
+                    return undefined;
+                }
+
+                client.query("SELECT COUNT(*) AS count FROM blog_posts", this);
+            }, function(err, results)
+            {
+                if (err)
+                {
+                    cb(err, undefined);
+                    return undefined;
+                }
+
+                result.published = results.rows[0].count;
+
+                client.query("SELECT COUNT(*) AS count FROM blog_comments", this);
+            }, function(err, results)
+            {
+                if (err)
+                {
+                    cb(err, undefined);
+                    return undefined;
+                }
+        
+                result.comments = results.rows[0].count;
+                client.query("SELECT COUNT(*) AS count FROM blog_ideas", this);
+            }, function (err, results)
+            {
+                if (err)
+                {
+                    cb(err, undefined);
+                }
+
+                result.ideas = results.rows[0].count;
+                client.query("SELECT COUNT(*) AS count FROM gallery_categories", this);
+            }, function(err, results)
+            {
+                if (err)
+                {
+                    cb(err, undefined);
+                    return undefined; 
+                }
+
+                result.galleries = results.rows[0].count;
+                client.query("SELECT COUNT(*) AS count FROM gallery_images", this);
+            }, function (err, results)
+            {
+                if (err)
+                {
+                    cb(err, undefined);
+                    return undefined;
+                }
+
+                result.totalImages = results.rows[0].count;
+                this();
+            }, function()
+            {
+                cb(undefined, result);
+            });
+        });
+    }
+
 	function panel(req, res)
 	{
 		common.navigation("Admin", function(err, navcontents)
 		{
 			gapi.getGalleries(function(err, galleries)
 			{
-				if (err)
-				{
-					console.log(err);
-					res.end();
-					return undefined;
-				}
+                getStatistics(function(err, statistics)
+                {
+				    if (err)
+				    {
+					    console.log(err);
+					    res.end();
+					    return undefined;
+				    }
 
-				res.render("adminauth.html", {
-					authed : req.isAuthenticated(),
-					title: "Admin Panel", 
-					navigation_blocks: navcontents, 
-					categories: galleries, 
-                    stats: {
-                        published: 4, 
-                        ideas: 10,
-                        galleries: 40,
-                        totalImages: 45
-                    }
-				});
+				    res.render("adminauth.html", {
+					    authed : req.isAuthenticated(),
+					    title: "Admin Panel", 
+					    navigation_blocks: navcontents, 
+					    categories: galleries, 
+                        stats: statistics
+				    });
+                });
 			});
 		});
 	}
@@ -60,6 +130,78 @@
 			res.end();
 		});
 	}
+    
+    function getPostTitles(req, res)
+    {
+        if (!req.isAuthenticated())
+        {
+            res.statusCode = 403;
+            res.end();
+            return;
+        }
+        
+        setup.getConnection(function(err, client)
+        {
+            if (err)
+            {
+                res.statusCode = 404;
+                res.end();
+                console.log(err);
+                return;
+            }
+
+            fe(function()
+            {
+                client.query("SELECT title FROM blog_posts;", this)
+            }, function(err, results)
+            {
+                if (err)
+                {
+                    res.statusCode = 403;
+                    res.end();
+                    return;
+                }
+
+                res.end(JSON.stringify(results.rows));
+            });
+        });
+    }
+
+    function getIdeaTitles(req, res)
+    {
+        if (!req.isAuthenticated())
+        {
+            res.statusCode = 403;
+            res.end();
+            return;
+        }
+
+        setup.getConnection(function (err, client)
+        {
+            if (err)
+            {
+                res.statusCode = 404;
+                res.end();
+                console.log(err);
+                return;
+            }
+
+            fe(function ()
+            {
+                client.query("SELECT title FROM blog_ideas;", this)
+            }, function (err, results)
+            {
+                if (err)
+                {
+                    res.statusCode = 403;
+                    res.end();
+                    return;
+                }
+
+                res.end(JSON.stringify(results.rows));
+            });
+        });
+    }
 
 	function getpost(req, res, id)
 	{
@@ -126,9 +268,10 @@
 		gallery: gallery, 
 		addGallery: addGallery,
 		editpost: editpost,
-		getpost: getpost
+		getpost: getpost,
+        getPostTitles: getPostTitles,
+        getIdeaTitles: getIdeaTitles
 	}
-
 
 })();
 

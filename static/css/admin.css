@@ -20,7 +20,7 @@ div#content .operation label
 div#content .operation input,select,textarea
 {
 	font-size: 1.4em;
-	width: 80%;
+	width: 100%;
 	border: none;
 	background-color: #DFDFDF;
 }
@@ -37,4 +37,13 @@ div#content .operation input[type=submit], input[type=button]
 	width: 25%;
 	border: none;
 	background-color: #DFDFDF;
+}
+
+div#content .operation input.focus 
+{
+    border-left: 3px solid #305eb2;
+    padding-left: 5px;
+    background-color: transparent;
+    color: white;
+    font-weight: lighter;
 }
