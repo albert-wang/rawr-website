@@ -398,7 +398,7 @@
             {
                 client.query({
                     name: "Delete post",
-                    text: "DELETE FROM blog_post WHERE id=$1", 
+                    text: "DELETE FROM blog_posts WHERE id=$1", 
                     values: [req.body.id]
                 }, function(err, results)
                 {
