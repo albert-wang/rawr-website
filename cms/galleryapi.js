@@ -283,7 +283,7 @@
 			{
 				client.query({
 					name : "select galleries", 
-					text : "SELECT id, name FROM gallery_categories"
+					text : "SELECT id, name, description FROM gallery_categories WHERE visible = 1"
 				}, this);
 			}, function(err, results)
 			{
@@ -298,6 +298,35 @@
 		})
 	}
 
+	function getGalleriesWithHidden(cb)
+	{
+	    setup.getConnection(function (err, client)
+	    {
+	        if (err)
+	        {
+	            cb(err, undefined);
+	            return undefined;
+	        }
+
+	        fe(function ()
+	        {
+	            client.query({
+	                name: "select galleries hidden",
+	                text: "SELECT id, name, description, visible FROM gallery_categories"
+	            }, this);
+	        }, function (err, results)
+	        {
+	            if (err)
+	            {
+	                cb(err, undefined);
+	                return undefined;
+	            }
+
+	            cb(undefined, results.rows);
+	        });
+	    })
+	}
+
 	function getAllGalleriesWithOneImage(cb)
 	{
 		setup.getConnection(function(err, client)
@@ -308,7 +337,7 @@
 						"(SELECT i.category, MAX(i.id) as id FROM gallery_images i GROUP BY i.category) as m " +
 						"JOIN gallery_images g ON g.id = m.id " + 
 						"JOIN gallery_categories c ON g.category = c.id " + 
-						"WHERE c.name != 'hidden';"
+						"WHERE c.visible = 1;"
 			}, function(err, results)
 			{
 				if (err)
@@ -370,11 +399,84 @@
 		})
 	}
 
+	function toggleGallery(galleryID, cb)
+    {
+        setup.getConnection(function(err, client)
+        {
+            client.query(
+            {
+                name: "Get visibility status", 
+                text: "SELECT visible FROM gallery_categories WHERE id = $1",
+                values: [galleryID]
+            }, function(err, results)
+            {
+                if (err)
+                {
+                    console.log(err);
+                    cb(err);
+                    return;
+                }
+
+                if (!results.rows || results.rows.length == 0)
+                {
+                    cb("Not enough rows returned");
+                }
+                var value = 0;
+                if (results.rows[0].visible === 0)
+                {
+                    value = 1;
+                }
+
+                client.query(
+                {
+                    name: "Make gallery invisible",
+                    text: "UPDATE gallery_categories SET visible = $2 WHERE id = $1", 
+                    values: [galleryID, value]
+                }, function(err, results)
+                {
+                    cb(err);
+                });
+            });
+        });
+    }
+
+    function removeGallery(galleyID, cb)
+    {
+        setup.getConnection(function (err, client)
+        {
+            client.query(
+            {
+                name: "Remove images", 
+                text: "DELETE FROM gallery_images WHERE category=$1", 
+                values: [galleyID]
+            }, function(err, results)
+            {
+                if (err)
+                {
+                    console.log(err);
+                }
+
+                client.query(
+                {
+                    name: "Remove Gallery",
+                    text: "DELETE FROM gallery_categories WHERE id=$1",
+                    values: [galleyID]
+                }, function (err, results)
+                {
+                    cb(err);
+                });
+            });
+        });
+    }
+
 	module.exports = {
 		gallery:gallery,
 		getAllGalleriesWithOneImage:getAllGalleriesWithOneImage,
 		getGalleries : getGalleries,
+        getGalleriesWithHidden : getGalleriesWithHidden,
 		getImagesInGallery:getImagesInGallery,
+        toggleGallery : toggleGallery,
+        removeGallery : removeGallery,
 		image: image,
 		regenerateRSSFeedForImages: regenerateRSSFeedForImages
 	};

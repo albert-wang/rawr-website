@@ -10,6 +10,11 @@
 		{
 			gapi.getAllGalleriesWithOneImage(function(err, galleries)
 			{
+                if (err)
+                {
+                    console.log(err);
+                }
+
 				res.render("gallery_home.html", {
 					navigation_blocks: nav,
 					galleries: galleries,

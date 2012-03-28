@@ -301,7 +301,7 @@
             {
                 client.query({
                     name: "delete idea",
-                    text: "UPDATE blog_ideas SET is_visible=0 WHERE id=$1",
+                    text: "DELETE FROM blog_ideas WHERE id=$1",
                     values: [req.body.id]
                 }, this);
             }, function (err, results)
@@ -409,28 +409,43 @@
     }
 
     //Gallery stuff
-	function gallery(req, res)
-	{
-		if (!req.isAuthenticated())
-		{
-			res.statusCode = 403;
-			res.end();
-			return;
-		}
+    function gallery(req, res)
+    {
+        if (!req.isAuthenticated())
+        {
+            res.statusCode = 403;
+            res.end();
+            return;
+        }
 
-		gapi.image({
-			image: req.files.image.path, 
-			title: req.body.title, 
-			desc : req.body.desc, 
-			gallery : req.body.gallery,
-			type : req.files.image.type
-		}, function(err)
-		{
-			if (err) { console.log(err); }
-			res.writeHead(302, { 'Location' : '/admin' });
-			res.end();
-		});
-	}
+        gapi.image({
+            image: req.files.image.path,
+            title: req.body.title,
+            desc: req.body.desc,
+            gallery: req.body.gallery,
+            type: req.files.image.type
+        }, function (err)
+        {
+            if (err) { console.log(err); }
+            res.writeHead(302, { 'Location': '/admin' });
+            res.end();
+        });
+    }
+
+    function getGalleries(req, res)
+    {
+        gapi.getGalleriesWithHidden(function(err, galleries)
+        {
+            if (err)
+            {
+                console.log(err);
+                res.statusCode = 403;
+                res.end();
+                return undefined;
+            }
+            res.end(JSON.stringify(galleries));
+        });
+    }
 
 	function addGallery(req, res)
 	{
@@ -455,6 +470,37 @@
 	        res.end();
 	    });
 	}
+
+    function toggleGallery(req, res)
+    {
+        gapi.toggleGallery(req.body.id, function(err)
+        {
+            if (err)
+            {
+                console.log(err);
+                res.statusCode = 500;
+                res.end();
+            }
+
+            res.statusCode = 200;
+            res.end();
+        });
+    }
+
+    function removeGallery(req, res)
+    {
+        gapi.removeGallery(req.body.id, function (err)
+        {
+            if (err)
+            {
+                res.statusCode = 500;
+                res.end();
+            }
+
+            res.statusCode = 200;
+            res.end();
+        });
+    }
 
     function preview(req, res)
     {
@@ -481,8 +527,6 @@
         preview: preview, 
 
 		panel: panel, 
-		gallery: gallery, 
-		addGallery: addGallery,
 		editpost: editpost,
 		getpost: getpost,
         removepost: removePost,
@@ -492,7 +536,13 @@
         addIdea: addIdea,
         removeIdea:removeIdea,
         saveIdea: saveIdea,
-        publishIdea:publishIdea
+        publishIdea:publishIdea,
+
+        gallery: gallery, 
+		addGallery: addGallery,
+        getGalleries: getGalleries,
+        toggleGallery: toggleGallery,
+        removeGallery: removeGallery
 	}
 
 })();

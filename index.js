@@ -97,16 +97,6 @@ var app = setup.setup(function(app)
 			admin.auth(req, res);
 		});
 
-		app.post("/admin/addgallery/?", setup.requiresAuth, function(req, res)
-		{
-			admin.addGallery(req, res);
-		})
-
-		app.post("/admin/gallery/?", setup.requiresAuth, function(req, res)
-		{
-			admin.gallery(req, res);
-		})
-
         app.post("/admin/posttitles/?", setup.requiresAuth, function(req, res)
         {
             admin.getPostTitles(req, res);
@@ -148,6 +138,32 @@ var app = setup.setup(function(app)
 		{
 			admin.editpost(req, res);
 		});
+
+        //Galleries
+        app.post("/admin/addgallery/?", setup.requiresAuth, function (req, res)
+        {
+            admin.addGallery(req, res);
+        });
+
+        app.post("/admin/gallery/?", setup.requiresAuth, function (req, res)
+        {
+            admin.gallery(req, res);
+        });
+
+        app.post("/admin/getgalleries/?", setup.requiresAuth, function(req, res)
+        {
+            admin.getGalleries(req, res);
+        })
+
+        app.post("/admin/togglegallery/?", setup.requiresAuth, function(req, res)
+        {
+            admin.toggleGallery(req, res);
+        });
+
+        app.post("/admin/removegallery/?", setup.requiresAuth, function (req, res)
+        {
+            admin.removeGallery(req, res);
+        });
 	})();
 
     //The API routes

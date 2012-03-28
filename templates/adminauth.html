@@ -14,113 +14,322 @@
                 $(".post_div").show();
                 $("#edit_publish_full").hide();
 
-                function updatePostsAndIdeas()
+                //Post and ideas
+                (function()
                 {
-                    function style(e)
+                    function updatePostsAndIdeas()
                     {
-                        return e;
-                    }
-
-                    //Download all the posts.
-                    var postRequest = $.post("/admin/posttitles");
-                    postRequest.success(function (data)
-                    {
-                        var outer = $(".current_posts");
-                        outer.html("");
-
-                        if (typeof data === "string")
+                        function style(e)
                         {
-                            data = JSON.parse(data);
-                            for (var i in data)
-                            {
-                                var inner = style($("<p>"));
-                                var link = $("<a>");
-                                link.html(data[i].title);
-                                link.click(function(e)
-                                {   
-                                    $(".operation").hide();
-                                    $("#edit_post_title").val(data[i].title);
-                                    $("#edit_post_content").val(data[i].content);
-                                    $("#edit_post_id").val(data[i].id);
+                            return e;
+                        }
 
-                                    $("#edit_post").show();
-                                });
+                        //Download all the posts.
+                        var postRequest = $.post("/admin/posttitles");
+                        postRequest.success(function (data)
+                        {
+                            var outer = $(".current_posts");
+                            outer.html("");
+
+                            if (typeof data === "string")
+                            {
+                                data = JSON.parse(data);
+                                for (var i in data)
+                                {
+                                    (function()
+                                    {
+                                        var inner = style($("<p>"));
+                                        var link = $("<a>");
+                                        link.attr("href", "#");
+                                        link.html(data[i].title);
+                                        link.click(function(e)
+                                        {   
+                                            $(".operation").hide();
+                                            $("#edit_post_title").val(data[i].title);
+                                            $("#edit_post_content").val(data[i].content);
+                                            $("#edit_post_id").val(data[i].id);
+
+                                            $("#edit_post").show();
+                                        });
 
                                 
-                                var rm = $("<a>");
-                                rm.attr("href", "#");
-                                rm.css("float", "right");
-                                rm.html("Delete");
+                                        var rm = $("<a>");
+                                        rm.attr("href", "#");
+                                        rm.css("float", "right");
+                                        rm.html("Delete");
 
-                                function hoverin()
-                                {
-                                    inner.addClass("selected");
-                                }
+                                        function hoverin()
+                                        {
+                                            inner.addClass("selected");
+                                        }
 
-                                function hoverout()
-                                {
-                                    inner.removeClass("selected");
-                                }
+                                        function hoverout()
+                                        {
+                                            inner.removeClass("selected");
+                                        }
 
-                                link.hover(hoverin, hoverout);
-                                rm.hover(hoverin, hoverout);
+                                        link.hover(hoverin, hoverout);
+                                        rm.hover(hoverin, hoverout);
 
-                                rm.click(function(e)
-                                {
-                                    var r = confirm("ARE YOU SURE YOU WANT TO DELETE THIS?");
-                                    if (r === true)
-                                    {
-                                        $.post("/admin/removepost", { id: data[i].id })
-                                            .success(function()
+                                        rm.click(function(e)
+                                        {
+                                            var r = confirm("ARE YOU SURE YOU WANT TO DELETE THIS?");
+                                            if (r === true)
                                             {
-                                                updatePostsAndIdeas();
-                                            });
-                                    }
-                                        return false;
-                                });
+                                                $.post("/admin/removepost", { id: data[i].id })
+                                                    .success(function()
+                                                    {
+                                                        updatePostsAndIdeas();
+                                                    });
+                                            }
+                                            return false;
+                                        });
 
-                                inner.append(link)
-                                inner.append(rm);
-                                outer.prepend(inner);
+                                        inner.append(link)
+                                        inner.append(rm);
+                                        outer.prepend(inner);
+                                    }());
+                                }
                             }
-                        }
-                    }, "json");
+                        }, "json");
 
-                    var ideaRequest = $.post("/admin/ideatitles");
-                    ideaRequest.success(function(data)
-                    {
-                        var outer = $(".current_ideas");
-                        outer.html("");
-
-                        if (typeof data === "string")
+                        var ideaRequest = $.post("/admin/ideatitles");
+                        ideaRequest.success(function(data)
                         {
+                            var outer = $(".current_ideas");
+                            outer.html("");
+
+                            if (typeof data === "string")
+                            {
+                                data = JSON.parse(data);
+                                for (var i in data)
+                                {
+                                    (function()
+                                    {
+                                        var inner = style($("<p>"));
+                                        var link = $("<a>");
+                                        link.attr("href", "#");
+                                        link.html(data[i].title);
+
+                                        link.click(function(e)
+                                        {
+                                            $(".operation").hide();
+
+                                            $("#edit_idea_title").val(data[i].title);
+                                            $("#edit_idea_content").val(data[i].content);
+                                            $("#edit_idea_id").val(data[i].id);
+
+                                            $("#edit_idea").show();
+                                        });
+
+                                        inner.append(link);
+
+                                        var rm = $("<a>");
+                                        rm.attr("href", "#");
+                                        rm.css("float", "right");
+                                        rm.html("Delete");
+
+                                        function hoverin()
+                                        {
+                                            inner.addClass("selected");
+                                        }
+
+                                        function hoverout()
+                                        {
+                                            inner.removeClass("selected");
+                                        }
+
+                                        link.hover(hoverin, hoverout);
+                                        rm.hover(hoverin, hoverout);
+
+                                        rm.click(function(e)
+                                        {
+                                            $.post("/admin/removeidea", { id: data[i].id })
+                                             .success(function()
+                                             {
+                                                updatePostsAndIdeas();
+                                             });
+                                             return false;
+                                        });
+                                
+                                        inner.append(rm);
+                                        outer.prepend(inner);
+                                    }());
+                                }
+                            }
+                        });
+                    }
+
+                    updatePostsAndIdeas();
+
+                    $(".admin_nav").click(function(e)
+                    {
+                        $(".operation").hide();
+                        var id = $(this).attr("id") + "_div";
+                        $("." + id).toggle();
+                    })
+
+                    //Preview
+                    $("#edit_idea_preview").click(function(e)
+                    {
+                        $.post("/admin/preview", {
+                            content: $("#edit_idea_content").val(), 
+                            tags: "unpublished, idea"
+                        }).success(function(d)
+                        {
+                            $("#preview_area").show();
+                            $("#preview_area").html(
+                                "<h1>" + $("#edit_idea_title").val() + "</h1>" + d
+                            );
+                            SyntaxHighlighter.highlight();
+                        });
+
+                        //Also, save the thing.
+                        $.post("/admin/saveidea", {
+                            id: $("#edit_idea_id").val(), 
+                            content: $("#edit_idea_content").val(), 
+                            title: $("#edit_idea_title").val(), 
+                        });
+                    });
+
+                    //Preview
+                    $("#edit_post_preview").click(function(e)
+                    {
+                        $.post("/admin/preview", {
+                            content: $("#edit_post_content").val(), 
+                            tags: "unpublished, idea"
+                        }).success(function(d)
+                        {
+                            $("#preview_area").show();
+                            $("#preview_area").html(
+                                "<h1>" + $("#edit_post_title").val() + "</h1>" + d
+                            );
+                            SyntaxHighlighter.highlight();
+                        });
+                    });
+
+                    //Publish
+                    $("#edit_idea_publish").click(function(e)
+                    {
+                        $.post("/admin/saveidea", {
+                            id: $("#edit_idea_id").val(), 
+                            content: $("#edit_idea_content").val(), 
+                            title: $("#edit_idea_title").val(), 
+                        }).success(function()
+                        {
+                            $("#edit_publish_full").show();
+                        });
+
+                        return false;
+                    });
+
+                    $("#idea_full_publish").click(function(e)
+                    {
+                        $.post("/admin/publishidea", {
+                            id: $("#edit_idea_id").val(),
+                            tags: $("#edit_idea_tags").val(),
+                            category: $("#edit_publish_full").val()
+                        }).success(function()
+                        {
+                            updatePostsAndIdeas();
+                            $(".operation").hide();
+                            $(".post_div").show();
+                        });
+                    });
+
+                    //Post shenanigans
+                    $("#post").click(function(e)
+                    {
+                        updatePostsAndIdeas();
+                        return false;
+                    });
+
+                    $("#ideainput").submit(function(e)
+                    {
+                        var req = $.post("/admin/addidea", {
+                            title: $("#idea_title").val()
+                        });
+
+                        req.success(function(data)
+                        {
+                            updatePostsAndIdeas();
+                            $("#idea_title").val("");
+                        });
+
+                        return false;
+                    });
+
+                    $("#edit_post_publish").click(function()
+                    {
+                        $.post("/admin/edit", {
+                            id: $("#edit_post_id").val(), 
+                            content: $("#edit_post_content").val()
+                        }).success(function()
+                        {
+                             $(".operation").hide();
+                             updatePostsAndIdeas();
+                             $(".post_div").show();
+                        });
+
+                        return false;
+                    });
+                }());
+
+                //Unauthentication 
+                (function()
+                {
+                    $("#unauth_button").click(function(e)
+                    {
+                        $.post('/admin/unauth')
+                            .success(function() { window.location = "/"; });
+                    })
+                }());
+
+                //Gallery
+                (function()
+                {
+                    function updateGalleries()
+                    {
+                        $.post("/admin/getgalleries").success(function(data)
+                        {
+                            if (typeof(data) !== "string")
+                            {
+                                return;
+                            }
                             data = JSON.parse(data);
+
+                            var outer = $(".current_galleries");
+                            outer.html("");
                             for (var i in data)
                             {
                                 (function()
                                 {
-                                    var inner = style($("<p>"));
+                                    var inner = $("<p>");
                                     var link = $("<a>");
+
                                     link.attr("href", "#");
-                                    link.html(data[i].title);
-
+                                    link.html(data[i].name + " - " + data[i].description);
                                     link.click(function(e)
-                                    {
-                                        $(".operation").hide();
-
-                                        $("#edit_idea_title").val(data[i].title);
-                                        $("#edit_idea_content").val(data[i].content);
-                                        $("#edit_idea_id").val(data[i].id);
-
-                                        $("#edit_idea").show();
+                                    {   
+                                        return false;
                                     });
 
-                                    inner.append(link);
-
+                                    var hid = $("<a>");
+                                    hid.attr("href", "#");
+                                    hid.css("float", "right");
+                                    hid.css("width", "100px");
+                                    hid.html("Deactivate");
+                                
                                     var rm = $("<a>");
                                     rm.attr("href", "#");
                                     rm.css("float", "right");
                                     rm.html("Delete");
+
+                                    if (data[i].visible === 0)
+                                    {
+                                        hid.html("Activate");
+                                        inner.addClass("hidden");
+                                    }
 
                                     function hoverin()
                                     {
@@ -133,166 +342,82 @@
                                     }
 
                                     link.hover(hoverin, hoverout);
+                                    hid.hover(hoverin, hoverout);
                                     rm.hover(hoverin, hoverout);
+
+                                    hid.click(function(e)
+                                    {
+                                        $.post("/admin/togglegallery", { id: data[i].id })
+                                        .success(function()
+                                        {
+                                            updateGalleries();
+                                        });
+                                        return false;
+                                    });
 
                                     rm.click(function(e)
                                     {
-                                        $.post("/admin/removeidea", { id: data[i].id })
-                                         .success(function()
-                                         {
-                                            updatePostsAndIdeas();
-                                         });
-                                         return false;
+                                        var r = confirm("ARE YOU SURE YOU WANT TO DELETE THIS?");
+                                        if (r === true)
+                                        {
+                                            $.post("/admin/removegallery", { id: data[i].id })
+                                                .success(function()
+                                                {
+                                                    updateGalleries();
+                                                });
+                                        }
+                                        return false;
                                     });
-                                
+
+                                    inner.append(link)
                                     inner.append(rm);
+                                    inner.append(hid);
                                     outer.prepend(inner);
                                 }());
                             }
+                        });
+                    }
+
+                    updateGalleries();
+                    $("#gallerydesc").hide();
+                    $("#gallery_title").bind('change keypress set', function(e)
+                    {
+                        var title = $("#gallery_title").val();
+                        if (/\S/.test(title))
+                        {
+                            $("#gallerydesc").show("fast");
+                        } else 
+                        {
+                            $("#gallerydesc").hide("fast");
                         }
                     });
-                }
 
-                updatePostsAndIdeas();
-
-                $(".admin_nav").click(function(e)
-                {
-                    $(".operation").hide();
-                    var id = $(this).attr("id") + "_div";
-                    $("." + id).toggle();
-                })
-
-                //Preview
-                $("#edit_idea_preview").click(function(e)
-                {
-                    $.post("/admin/preview", {
-                        content: $("#edit_idea_content").val(), 
-                        tags: "unpublished, idea"
-                    }).success(function(d)
+                    $("#gallery_desc").keypress(function(e)
                     {
-                        $("#preview_area").show();
-                        $("#preview_area").html(
-                            "<h1>" + $("#edit_idea_title").val() + "</h1>" + d
-                        );
-                        SyntaxHighlighter.highlight();
+                        if (e.which == 13) // Enter
+                        {
+                            if (/\S/.test($("#gallery_desc").val()))
+                            {
+                                $("#newgallery").submit();
+                            }
+                        }
                     });
 
-                    //Also, save the thing.
-                    $.post("/admin/saveidea", {
-                        id: $("#edit_idea_id").val(), 
-                        content: $("#edit_idea_content").val(), 
-                        title: $("#edit_idea_title").val(), 
-                    });
-                });
-
-                //Preview
-                $("#edit_post_preview").click(function(e)
-                {
-                    $.post("/admin/preview", {
-                        content: $("#edit_post_content").val(), 
-                        tags: "unpublished, idea"
-                    }).success(function(d)
+                    $("#newgallery").submit(function(e)
                     {
-                        $("#preview_area").show();
-                        $("#preview_area").html(
-                            "<h1>" + $("#edit_post_title").val() + "</h1>" + d
-                        );
-                        SyntaxHighlighter.highlight();
+                        $.post("/admin/addgallery", {
+                            name: $("#gallery_title").val(),
+                            desc: $("#gallery_desc").val()
+                        }).success(function()
+                        {
+                            $("#gallery_title").val("");
+                            $("#gallerydesc").val("");
+                            $("#gallerydesc").hide("fast");
+                            updateGalleries();
+                        });
                     });
-                });
-
-                //Publish
-                $("#edit_idea_publish").click(function(e)
-                {
-                    $.post("/admin/saveidea", {
-                        id: $("#edit_idea_id").val(), 
-                        content: $("#edit_idea_content").val(), 
-                        title: $("#edit_idea_title").val(), 
-                    }).success(function()
-                    {
-                        $("#edit_publish_full").show();
-                    });
-
-                    return false;
-                });
-
-                $("#idea_full_publish").click(function(e)
-                {
-                    $.post("/admin/publishidea", {
-                        id: $("#edit_idea_id").val(),
-                        tags: $("#edit_idea_tags").val(),
-                        category: $("#edit_publish_full").val()
-                    }).success(function()
-                    {
-                        updatePostsAndIdeas();
-                        $(".operation").hide();
-                        $(".post_div").show();
-                    });
-                });
-
-                //Post shenanigans
-                $("#post").click(function(e)
-                {
-                    updatePostsAndIdeas();
-                    return false;
-                });
-
-                $("#ideainput").submit(function(e)
-                {
-                    var req = $.post("/admin/addidea", {
-                        title: $("#idea_title").val()
-                    });
-
-                    req.success(function(data)
-                    {
-                        updatePostsAndIdeas();
-                        $("#idea_title").val("");
-                    });
-
-                    return false;
-                });
-
-                $("#edit_post_publish").click(function()
-                {
-                    $.post("/admin/edit", {
-                        id: $("#edit_post_id").val(), 
-                        content: $("#edit_post_content").val()
-                    }).success(function()
-                    {
-                         $(".operation").hide();
-                         updatePostsAndIdeas();
-                         $(".post_div").show();
-                    });
-
-                    return false;
-                });
-
-                //Unauthentication 
-                $("#unauth_button").click(function(e)
-                {
-                    $.post('/admin/unauth')
-                        .success(function() { window.location = "/"; });
-                })
-
-
-                $("#gallerybutton").click(function(e)
-                {
-                    $.post("/admin/addgallery", { 
-                        name: $("#newgalname").val(),
-                        desc: $("#newgaldesc").val()
-                    })
-                        .success(function() { location.reload(); })
-                        .error(function() {});
-                })
-
-				$("#editpostbutton").click(function(e)
-				{
-					$.post("/admin/edit", {
-						id: $("#editid").val(),
-						content: $("#editcontent").val()
-					})
-				})
-
+                }());
+         
 				$("#editid").change(function(e)
 				{
 					var postIndex = $("#editid").val();
@@ -339,6 +464,7 @@
 
             <div id='content' class='container'>
                 <div class='thinleft'>
+                    <!-- Start Post administration region -->
                     <div class='lightbox no1 operation' id="edit_idea">
                         <form id='edit_idea'>
                             <label>Title</label> <input type='text' id='edit_idea_title' class='focus' /><br />
@@ -389,42 +515,20 @@
                         <div class='current_posts current'>
                         </div>
                     </div>
+                    <!-- Start gallery management area -->
 
 					<div class='lightbox no3 operation gallery_div'>
-						<div id="gallery_div" class="operation">
-							<p> Add a gallery </p>
-							<form>
-								<label>Gallery Name</label><input id="newgalname" type='text' name='name'/><div class='clear'></div>
-								<label>Display Name</label><input id="newgaldesc" type='text' name='name'/><div class='clear'></div>
-								<input id='gallerybutton' type='button' value='Add'/>
-							</form>
-						</div>
+					    <h1>Galleries</h1>
+                        <form id='newgallery'>
+                            <input type='text' id='gallery_title' class='focus' /> <br />
+                            <div id='gallerydesc'>
+                                <label>Desc:</label> <input type='text' id='gallery_desc' class='focus' />
+                            </div>
+                        </form>
 
-						<div id="gallery_div_2" class='operation'>
-							<p> Choose an image to upload, along with its metadata </p>
-							<form action='/admin/gallery' method='POST' enctype="multipart/form-data">
-								<label>File </label>        <input type='file' name='image'/><div class='clear'></div>
-								<label>Title </label>       <input type='text' name='title'/><div class='clear'></div>
-								<label>Description</label>  <input type='text' name='desc'/><div class='clear'></div>
-								<label>Gallery </label>     <select name='gallery'>
-									{% for cat in categories %}
-									<option value='{{cat.id}}'>{{cat.name|title}}</option>
-									{% endfor %}
-								</select>
-								<div class='clear'></div>
-								<input id="imgupbutton" type='submit' value='Upload' />
-								<div class='clear'></div>
-							</form>
-						</div>
-
-						<div id="edit_post_div" class='operation'>
-							<p>Edit a post by ID</p>
-							<form>
-								<label>ID</label><input type='text' name='id' id='editid'/><div class='clear'></div>
-								<label>Content</label><textarea name='content' id='editcontent'></textarea><div class='clear'></div>
-								<input id='editpostbutton' type='button' value='Edit'/>
-							</form>
-						</div>
+                        <div class='current_galleries current'>
+                            
+                        </div>
                     </div>
                     
                     <div class='lightbox no4 operation comments_div'>
