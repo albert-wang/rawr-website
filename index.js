@@ -155,9 +155,29 @@ var app = setup.setup(function(app)
             admin.getGalleries(req, res);
         })
 
+        app.post("/admin/getimages/?", setup.requiresAuth, function(req, res)
+        {
+            admin.getGalleryImages(req, res);
+        });
+
         app.post("/admin/togglegallery/?", setup.requiresAuth, function(req, res)
         {
             admin.toggleGallery(req, res);
+        });
+
+        app.post("/admin/gallery/addimage/?", setup.requiresAuth, function(req, res)
+        {
+            admin.addImage(req, res);
+        });
+
+        app.post("/admin/gallery/removeimage/?", setup.requiresAuth, function(req, res)
+        {
+            admin.removeImage(req, res);
+        });
+
+        app.post("/admin/gallery/editimage/?", setup.requiresAuth, function(req, res)
+        {
+            admin.editImage(req, res);
         });
 
         app.post("/admin/removegallery/?", setup.requiresAuth, function (req, res)

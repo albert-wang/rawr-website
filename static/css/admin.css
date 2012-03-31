@@ -46,10 +46,10 @@ div#content .operation select
 
 div#content .operation input[type=submit]
 {
-	font-size: 1.4em;
-	margin-left: 150px;
+    border-left: 3px solid #305eb2;
+    padding-left: 5px;
+	margin-left: 70px;
 	width: 25%;
-	border: none;
 	background-color: #DFDFDF;
 }
 
@@ -59,7 +59,7 @@ div#content .operation input[type=button]
     width: 25%;
 }
 
-div#content .operation input.focus[type=text]
+div#content .operation input.focus
 {
     width: 75%;
     border-left: 3px solid #305eb2;
@@ -85,7 +85,6 @@ div#content .operation textarea.focus
     font-weight: lighter;
 }
 
-
 div#content .operation .current p
 {
     border-left: 3px solid transparent;
@@ -108,4 +107,47 @@ div#content .operation .current a:hover
 {
     text-decoration: underline;
     color: white;
+}
+
+.invisibleiframe
+{
+    width: 0px;
+    height: 0px;
+    border: none;
+}
+
+img.not-selected
+{
+    border: none;
+    margin: 10px;
+}
+
+img.selected
+{
+    border: 3px solid #66A3D2;
+    padding: 3px;
+    margin: 4px;
+}
+
+.link-container > a
+{
+    margin-right: 50px;
+}
+
+.image-container 
+{
+    width: 140px;
+    float: left;
+}
+
+.image-container > a
+{
+    padding-left: 20px;
+    float: left;
+}
+
+.image-container >a.no-margin
+{
+    margin: 0px;
+    padding: 0px;
 }

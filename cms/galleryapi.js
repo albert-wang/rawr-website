@@ -469,6 +469,38 @@
         });
     }
 
+    function removeImage(imageID, cb)
+    {
+        setup.getConnection(function(err, client)
+        {
+            client.query(
+            {
+                name: "Remove Image by ID", 
+                text: "DELETE FROM gallery_images WHERE id=$1", 
+                values: [imageID]
+            }, function(err, results)
+            {
+                cb(err);
+            });
+        });
+    }
+
+    function editImage(imageID, title, desc, cb)
+    {
+        setup.getConnection(function (err, client)
+        {
+            client.query(
+            {
+                name: "Edit Image by ID",
+                text: "UPDATE gallery_images SET title=$1, description=$2 WHERE id=$3",
+                values: [title, desc, imageID]
+            }, function (err, results)
+            {
+                cb(err);
+            });
+        });
+    }
+
 	module.exports = {
 		gallery:gallery,
 		getAllGalleriesWithOneImage:getAllGalleriesWithOneImage,
@@ -478,6 +510,8 @@
         toggleGallery : toggleGallery,
         removeGallery : removeGallery,
 		image: image,
+        removeImage: removeImage,
+        editImage: editImage,
 		regenerateRSSFeedForImages: regenerateRSSFeedForImages
 	};
 })();

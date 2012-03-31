@@ -10,6 +10,21 @@
         <script type="text/javascript">
             $(window).ready(function()
             {
+                function stringNullOrEmpty(s)
+                {
+                    if (!s)
+                    {
+                        return true;
+                    }
+
+                    if (/\S/.test(s))
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+
+
                 $(".operation").hide();
                 $(".post_div").show();
                 $("#edit_publish_full").hide();
@@ -309,8 +324,14 @@
 
                                     link.attr("href", "#");
                                     link.html(data[i].name + " - " + data[i].description);
+
+                                    var name = data[i].name;
+                                    var id = data[i].id;
+
+
                                     link.click(function(e)
                                     {   
+                                        showGallery(name, id);
                                         return false;
                                     });
 
@@ -378,8 +399,109 @@
                         });
                     }
 
+                    function removeImage(e)
+                    {
+                        var r = confirm("ARE YOU SURE YOU WANT TO DELETE THIS?");
+                        if (r === true)
+                        {
+                            $.post("/admin/gallery/removeimage", { id: $(this).data("data").id }, function()
+                            {
+                                var data = $("#gallery_images").data('data');
+                                if (data)
+                                {
+                                    showGallery(data.name, data.id);
+                                }
+                            });
+                        }
+                        return false;
+                    }
+
+                    function editImage(e)
+                    {
+                        $("#edit_image_form").show();
+                        var data = $(this).data("data");
+
+                        $("#edit_image_form > input[name='title']").val(data.title);
+                        $("#edit_image_form > input[name='desc']").val(data.description);
+                        $("#edit_image_form > input[name='id']").val(data.id);
+
+                        return false;
+                    }
+
+                    $("#submit_image_edit").click(function(e)
+                    {
+                        var title = $("#edit_image_form > input[name='title']").val();
+                        var desc = $("#edit_image_form > input[name='desc']").val();
+                        var id = $("#edit_image_form > input[name='id']").val();
+
+                        $.post("/admin/gallery/editimage", {
+                            title: title, 
+                            desc: desc, 
+                            id: id
+                        }, function()
+                        {
+                            var data = $("#gallery_images").data('data');
+                            if (data)
+                            {
+                                showGallery(data.name, data.id);
+                                $("#edit_image_form").hide();
+                            }
+                        });
+
+                        return false;
+                    });
+                    
+                    function showGallery(name, id)
+                    {
+                        $.post("/admin/getimages", { id: name })
+                         .success(function(data)
+                         {
+                            if (typeof(data) === "string")
+                            {
+                                var outer = $("#gallery_images");
+                                outer.html("")
+
+                                outer.data("data", { name: name, id: id });
+                                
+                                $("#new_image_form > input[name='gallery']").val(id);
+
+                                data = JSON.parse(data);
+                                
+                                for(var i in data)
+                                {
+                                    (function()
+                                    {
+                                        var container = $("<p>").addClass("image-container")
+                                        var d = data[i];
+
+                                        container.append($("<a>").attr("href", "#").html("Delete").data("data", d).click(removeImage));
+                                        container.append($("<a>").attr("href", "#").html("Edit").data("data", d).click(editImage));
+                                        container.append($("<br/>"))
+
+                                        var link = $("<a>");
+                                        link.addClass("no-margin");
+                                        link.attr("href", "//img.rawrrawr.com/gallery/" + data[i].name);
+
+                                        var img = $("<img>");
+
+                                        img.attr("src", "//img.rawrrawr.com/gallery/thumb-" + data[i].name);
+                                        img.addClass("not-selected");
+                                        img.data("data", data[i]);
+
+                                        link.append(img);
+                                        container.append(link);
+                                        outer.append(container);
+                                     }())
+                                }
+                                $("#gallery_image_container").show()
+                            }
+                         });
+                    }
+
                     updateGalleries();
                     $("#gallerydesc").hide();
+                    $("#edit_image_form").hide();
+
                     $("#gallery_title").bind('change keypress set', function(e)
                     {
                         var title = $("#gallery_title").val();
@@ -396,7 +518,7 @@
                     {
                         if (e.which == 13) // Enter
                         {
-                            if (/\S/.test($("#gallery_desc").val()))
+                            if (!stringNullOrEmpty($("#gallery_desc").val()))
                             {
                                 $("#newgallery").submit();
                             }
@@ -416,6 +538,28 @@
                             updateGalleries();
                         });
                     });
+
+                    $("#upload_target").load(function()
+                    {
+                        var data = $("#gallery_images").data('data');
+                        if (data)
+                        {
+                            showGallery(data.name, data.id);
+                        }
+                    });
+
+                    $("#submit_image").click(function(e)
+                    {
+                        if (stringNullOrEmpty($("#new_image_form > input[name='image']").val()) ||
+                            stringNullOrEmpty($("#new_image_form > input[name='title']").val()) || 
+                            stringNullOrEmpty($("#new_image_form > input[name='desc']").val()))
+                        {
+                            return false;
+                        }
+
+                        $("#new_image_form").submit();
+                        return false;
+                    });
                 }());
          
 				$("#editid").change(function(e)
@@ -424,14 +568,15 @@
 					if (postIndex !== 0)
 					{
 						$.post("/admin/post/" + postIndex)
-							.success(function(data) {
-								if (typeof data === "string")
-								{
-									data = JSON.parse(data);
-								}
+						 .success(function(data) 
+                        {
+						    if (typeof data === "string")
+							{
+							    data = JSON.parse(data);
+							}
 
-								$("#editcontent").val(data["content"]);
-							}, "json");
+							$("#editcontent").val(data["content"]);
+						}, "json");
 					}
 				});
             })
@@ -528,6 +673,34 @@
 
                         <div class='current_galleries current'>
                             
+                        </div>
+                    </div>
+
+                    <div class='lightbox no3 operation' id='gallery_image_container'>
+                        <form id='new_image_form' action='/admin/gallery/addimage' method='POST' enctype='multipart/form-data' target="upload_target">
+                            <label>Upload</label><input type='file' class='focus' name='image'/><br />
+                            <label>Title</label><input type='text' class='focus' name='title'/><br />
+                            <label>Desc</label><input type='text' class='focus' name='desc'/><br />
+                            <input type='hidden' name='gallery' />
+                            <br />
+
+                            <iframe id='upload_target' name='upload_target' class='invisibleiframe'></iframe>
+                            <a href='#' id='submit_image'>Add Image</a>
+                        </form>
+
+                        <form id='edit_image_form'>
+                            <label>Title</label><input type='text' class='focus' name='title' /><br />
+                            <label>Desc</label><input type='text' class='focus' name='desc' /><br />
+                            <input type='hidden' name='id'/>
+                            <br />
+
+                            <a href='#' id='submit_image_edit'>Edit Image</a>
+                        </form>
+
+                        <br />
+                        <h1>Images</h1>
+
+                        <div id='gallery_images'>
                         </div>
                     </div>
                     

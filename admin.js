@@ -408,30 +408,6 @@
         });
     }
 
-    //Gallery stuff
-    function gallery(req, res)
-    {
-        if (!req.isAuthenticated())
-        {
-            res.statusCode = 403;
-            res.end();
-            return;
-        }
-
-        gapi.image({
-            image: req.files.image.path,
-            title: req.body.title,
-            desc: req.body.desc,
-            gallery: req.body.gallery,
-            type: req.files.image.type
-        }, function (err)
-        {
-            if (err) { console.log(err); }
-            res.writeHead(302, { 'Location': '/admin' });
-            res.end();
-        });
-    }
-
     function getGalleries(req, res)
     {
         gapi.getGalleriesWithHidden(function(err, galleries)
@@ -444,6 +420,22 @@
                 return undefined;
             }
             res.end(JSON.stringify(galleries));
+        });
+    }
+
+    function getGalleryImages(req, res)
+    {
+        gapi.getImagesInGallery(req.body.id, function(err, images)
+        {
+            if (err)
+            {
+                console.log(err);
+                res.statusCode = 403;
+                res.end();
+                return undefined;
+            }
+
+            res.end(JSON.stringify(images))
         });
     }
 
@@ -502,6 +494,61 @@
         });
     }
 
+    function addImage(req, res)
+    {
+        gapi.image({
+            title: req.body.title,
+            desc: req.body.desc, 
+            image: req.files.image.path, 
+            gallery: req.body.gallery,
+            type: req.files.image.type
+        }, function(err)
+        {
+            if (err)
+            {
+                console.log(err);
+                res.statusCode = 403;
+                res.end();
+                return undefined;
+            }
+
+            res.writeHead(302, { 'Location': '/admin' });
+            res.end();
+        });
+    }
+
+    function removeImage(req, res)
+    {
+        gapi.removeImage(req.body.id, function(err)
+        {
+            if (err)
+            {
+                console.log(err);
+                res.statusCode = 403;
+                return res();
+                return undefined;
+            }
+
+            res.end();
+        });
+    }
+    
+    function editImage(req, res)
+    {
+        gapi.editImage(req.body.id, req.body.title, req.body.desc, function(err)
+        {
+            if (err)
+            {
+                console.log(err);
+                res.statusCode = 403;
+                return res();
+                return undefined;
+            }
+
+            res.end();
+        });
+    }
+
     function preview(req, res)
     {
         var postTemplate = setup.swig.compileFile("post.html");
@@ -538,11 +585,14 @@
         saveIdea: saveIdea,
         publishIdea:publishIdea,
 
-        gallery: gallery, 
 		addGallery: addGallery,
         getGalleries: getGalleries,
         toggleGallery: toggleGallery,
-        removeGallery: removeGallery
+        removeGallery: removeGallery,
+        getGalleryImages: getGalleryImages,
+        addImage : addImage,
+        removeImage : removeImage,
+        editImage : editImage
 	}
 
 })();
