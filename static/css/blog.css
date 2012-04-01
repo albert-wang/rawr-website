@@ -39,7 +39,6 @@ div#content div.thinleft h3 img
 div#content div.lightbox
 {
 	padding: 16px;
-	text-align: justify;
 	margin-bottom: 60px;
 	background-image: url("/img/darkbox.png");
 }
