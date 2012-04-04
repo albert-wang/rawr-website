@@ -98,14 +98,22 @@
         app.set("view options", { layout : false });
 
         //Middleware
+		var loggerFormat = 
+			':req[x-forwarded-for] -- [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"';
+
+
+
         app.use(express.logger({
+			format : loggerFormat,
 			stream : fs.createWriteStream("./logs/http.log", { flags : "a" })
 		}));
 
+		var hour = 60 * 1000 * 60;
+
         app.use(express.profiler());
-        app.use(express.static("./static/"), { maxAge: 0 });
+        app.use(express.static("./static/"), { maxAge: hour * 24 });
         app.use(express.cookieParser())
-        app.use(express.session({ secret: "rawr nyancats. Takagamahara is observing you...", cookie: { maxAge: 60 * 1000 * 60 }}));
+        app.use(express.session({ secret: "rawr nyancats. Takagamahara is observing you...", cookie: { maxAge: hour }}));
 		app.use(passport.initialize());
 		app.use(passport.session());
         app.use(express.bodyParser());
