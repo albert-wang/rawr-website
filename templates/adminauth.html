@@ -57,12 +57,14 @@
                                         var link = $("<a>");
                                         link.attr("href", "#");
                                         link.html(data[i].title);
+
+										var innerI = i;
                                         link.click(function(e)
                                         {   
                                             $(".operation").hide();
-                                            $("#edit_post_title").val(data[i].title);
-                                            $("#edit_post_content").val(data[i].content);
-                                            $("#edit_post_id").val(data[i].id);
+                                            $("#edit_post_title").val(data[innerI].title);
+                                            $("#edit_post_content").val(data[innerI].content);
+                                            $("#edit_post_id").val(data[innerI].id);
 
                                             $("#edit_post").show();
                                         });
@@ -91,7 +93,7 @@
                                             var r = confirm("ARE YOU SURE YOU WANT TO DELETE THIS?");
                                             if (r === true)
                                             {
-                                                $.post("/admin/removepost", { id: data[i].id })
+                                                $.post("/admin/removepost", { id: data[innerI].id })
                                                     .success(function()
                                                     {
                                                         updatePostsAndIdeas();
@@ -126,13 +128,14 @@
                                         link.attr("href", "#");
                                         link.html(data[i].title);
 
+										var innerI = i;
                                         link.click(function(e)
                                         {
                                             $(".operation").hide();
 
-                                            $("#edit_idea_title").val(data[i].title);
-                                            $("#edit_idea_content").val(data[i].content);
-                                            $("#edit_idea_id").val(data[i].id);
+                                            $("#edit_idea_title").val(data[innerI].title);
+                                            $("#edit_idea_content").val(data[innerI].content);
+                                            $("#edit_idea_id").val(data[innerI].id);
 
                                             $("#edit_idea").show();
                                         });
@@ -159,7 +162,7 @@
 
                                         rm.click(function(e)
                                         {
-                                            $.post("/admin/removeidea", { id: data[i].id })
+                                            $.post("/admin/removeidea", { id: data[innerI].id })
                                              .success(function()
                                              {
                                                 updatePostsAndIdeas();
