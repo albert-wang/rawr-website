@@ -11,7 +11,7 @@
         "flow"          : "0.2.x",
         "imagemagick"   : "0.1.x",
         "knox"          : "0.0.9",
-		"logging"		: "*",
+		"nogg"			: "*",
         "markdown"      : "0.3.1", 
         "memcached"     : "0.0.x",
 		"passport"      : "0.1.x", 

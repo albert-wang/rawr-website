@@ -4,7 +4,7 @@
     var api     = require("./cms/blogapi.js")
     var common  = require("./common.js");
     var flow    = require("flow");
-	var config  = require("./config.js");
+	var config  = require("config");
 
     function home(req, res, env)
     {

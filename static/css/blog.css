@@ -45,8 +45,9 @@ div#content div.lightbox
 
 div#content div.lightbox p
 {
-	line-height: 1.45em;
-	margin-bottom: 10px;
+	font-size: 14px;
+	line-height: 1.4em;
+	margin-bottom: 14px;
 }
 
 div#content .thinright

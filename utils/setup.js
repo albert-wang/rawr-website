@@ -8,12 +8,28 @@
     var tweet   = require("backuptweets");
     var knox    = require("knox");
     var img     = require("imagemagick")
-	var log     = require("logging").from("webapp");
+	var log     = require("nogg").logger("webapp")
 	var passport= require("passport");
 	var ghstrat = require("passport-google-oauth").OAuth2Strategy;
-	var config  = require("../config.js");
+	var config  = require("config");
 
-	console.log = log;
+	console.log = log.debug;
+	console.info = log.info;
+	console.error = log.error;
+	console.warn = log.warn;
+
+	var memoryTimers = {};
+	console.time = function(label) {
+		memoryTimers[label] = new Date();
+	}
+
+	console.timeEnd = function(label) {
+		var val = memoryTimers[label];
+		if (val) {
+			var diff = (new Date()).valueOf() - val.valueOf();
+			console.info(label + ": " + diff + "ms");
+		}
+	}
 	
 	//Network connection string
     var connectionString = config.PSqlConnectionString;
@@ -88,6 +104,7 @@
     function setup(routes)
     {
 		console.log("Started at " + (new Date()));
+		console.time("setup");
 
         var app = express.createServer();
         swig.init({ root: "./templates", allowErrors: true, filters : require("../utils/swigfilters.js") });
@@ -116,18 +133,19 @@
         app.use(express.bodyParser());
         app.use(express.router(routes));
 
-        setInterval(function() { downloadTweets(function(data){}) }, 1000 * 60 * 5);
+        setInterval(function() { downloadTweets(function(data){ console.log("Finished downloading tweets at" + (new Date()))}) }, 1000 * 60 * 5);
 
         //Observe the templates directory, and then reset the swig cache every time something changes in it.
         fs.watchFile("./templates/adminauth.html", function(curr, prev)
         {
             if (curr.mtime !== prev.m_time)
             {
-                console.log("A template changed. Resetting the swig caches...");
+                console.log("Admin template changed. Resetting the swig caches...");
                 swig.init({ root: "./templates", allowErrors: true, filters : require("../utils/swigfilters.js") });
             }
         });
 
+        console.timeEnd("setup");
         return app;
     }
 
@@ -159,6 +177,7 @@
             {
                 if (err || input.length == 0)
                 {
+                	console.log("Failed to read cached tweets, downloading them instead.");
                     downloadTweets(cb);
                     return undefined;
                 }

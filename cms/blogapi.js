@@ -372,8 +372,14 @@
 
     //Takes in a post ID and a list of tags, and then
     //inserts them all into the tag bridge.
-    function associateTagsWithPost(postID, tags, cb)
+    function associateTagsWithPost(postID, tags, callback)
     {
+    	console.time("tag association");
+    	var cb = function(err, rows) {
+    		console.timeEnd("tag association");
+    		callback(err, rows);
+    	}
+
         fe(function()
         {
             setup.getConnection(this);
@@ -418,8 +424,14 @@
         });
     }
 
-    function getTagsOnPost(id, cb)
+    function getTagsOnPost(id, callback)
     {
+    	console.time("tags on post");
+    	var cb = function(err, rows) {
+    		console.timeEnd("tags on post");
+    		callback(err, rows);
+    	}
+
         setup.getConnection(function(err, client)
         {
             fe(function()
@@ -441,8 +453,14 @@
         });
     }
 
-    function getPostWithId(pid, cb)
+    function getPostWithId(pid, callback)
     {
+    	console.time("post with id");
+    	var cb = function(err, rows) {
+    		console.timeEnd("post with id");
+    		callback(err, rows);
+    	}
+
         setup.getConnection(function(err, client)
         {
             if (err)
@@ -474,8 +492,14 @@
         });
     }
 
-    function totalPostsInCategory(optionalCategory, cb)
+    function totalPostsInCategory(optionalCategory, callback)
     {
+    	console.time("posts in category count");
+    	var cb = function(err, rows) {
+    		console.timeEnd("posts in category count");
+    		callback(err, rows);
+    	}
+
         setup.getConnection(function(err, client)
         {
             if (err)
@@ -513,8 +537,14 @@
         });
     }
 
-    function postsInCategoryByMonth(optionalCategory, cb)
+    function postsInCategoryByMonth(optionalCategory, callback)
     {
+    	console.time("posts in category by month");
+    	var cb = function(err, rows) {
+    		console.timeEnd("posts in category by month");
+    		callback(err, rows);
+    	}
+
         setup.getConnection(function(err, client)
         {
             if (!optionalCategory)
@@ -582,9 +612,15 @@
         });
     }
 
-    function postsInCategory(optionalCategory, optionalMaximum, optionalPage, cb)
+    function postsInCategory(optionalCategory, optionalMaximum, optionalPage, callback)
     {
         var page = optionalPage || 0;
+
+        console.time("posts in category");
+    	var cb = function(err, rows) {
+    		console.timeEnd("posts in category");
+    		callback(err, rows);
+    	}
 
         fe(function()
         {
@@ -635,8 +671,14 @@
         });
     }
 
-    function postsInCategoryByDate(optionalCategory, year, month, cb)
+    function postsInCategoryByDate(optionalCategory, year, month, callback)
     {
+    	console.time("posts in category by date");
+    	var cb = function(err, rows) {
+    		console.timeEnd("posts in category by date");
+    		callback(err, rows);
+    	}
+
         fe(function()
         {
             setup.getConnection(this);
@@ -680,12 +722,14 @@
             }
         }, function(err, posts, cid)
         {
+        	console.log("Querying for posts in " + optionalCategory + " at " + year + "/" + month + " returned " + posts.rows.length + " entries.");
             cb(err, posts.rows);
         });
     }
 
     function regenerateRSSFeedForPosts(cb)
     {
+    	console.time("RSS Generation");
         var feed = new rss({
             title        : "Rawr Productions Blog Posts", 
             description  : "Most recent blog updates", 
@@ -737,7 +781,9 @@
                 var xml = feed.xml();
                 fs.writeFile("./static/rss/blog.rss", xml, function(err)
                 {
-                    cb(err, xml);     
+                	console.log("Finished regenerating RSS feeds.")
+                	console.timeEnd("RSS Generation");
+                    cb(err, xml);
                 });
             });
         });
