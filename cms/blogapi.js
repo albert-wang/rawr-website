@@ -552,7 +552,8 @@
                 client.query({
                     name: "group posts by date", 
                     text: "SELECT COUNT(*) AS count, DATE_PART('YEAR', time) AS year, " + 
-                        "DATE_PART('MONTH', time) AS month FROM blog_posts GROUP BY month,year",
+                        "DATE_PART('MONTH', time) AS month FROM blog_posts GROUP BY month,year " + 
+						"ORDER BY year DESC, month DESC"
                 }, function(err, results)
                 {
                     if (err)
