@@ -3,7 +3,6 @@
 {
 	function navigation(active, cb)
 	{
-		 
         var navigation = [
 			{
 				link: '/',

@@ -456,8 +456,9 @@
 	        if (err)
 	        {
 	            res.statusCode = 500;
-	            res.end();
+	            return res.end();
 	        }
+
 	        res.statusCode = 200;
 	        res.end();
 	    });
@@ -471,7 +472,7 @@
             {
                 console.log(err);
                 res.statusCode = 500;
-                res.end();
+                return res.end();
             }
 
             res.statusCode = 200;
@@ -486,7 +487,7 @@
             if (err)
             {
                 res.statusCode = 500;
-                res.end();
+                return res.end();
             }
 
             res.statusCode = 200;
@@ -509,7 +510,7 @@
                 console.log(err);
                 res.statusCode = 403;
                 res.end();
-                return undefined;
+				return;
             }
 
             res.writeHead(302, { 'Location': '/admin' });

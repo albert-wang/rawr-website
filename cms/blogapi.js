@@ -618,10 +618,10 @@
         var page = optionalPage || 0;
 
         console.time("posts in category");
-    	var cb = function(err, rows) {
+    	var cb = function(err, rows, count) {
     		console.timeEnd("posts in category");
-    		callback(err, rows);
-    	}
+    		callback(err, rows, count);
+    	};
 
         fe(function()
         {

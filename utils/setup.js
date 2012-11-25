@@ -86,7 +86,7 @@
 			if (tweets)
 			{
 				memoryTweets = JSON.parse(tweets.json)[0];
-				cb(memoryTweets);
+				cb(undefined, memoryTweets);
 				fs.writeFile("./cache/tweets.json", tweets.json, function(err)
 				{
 					if (err)
@@ -96,7 +96,7 @@
 				});
 			} else 
 			{
-				cb(memoryTweets);
+				cb(undefined, memoryTweets);
 			}
         });
     }
@@ -124,7 +124,8 @@
 		}));
 
 		var hour = 60 * 1000 * 60;
-
+		
+		app.use(express.staticCache());
         app.use(express.static("./static/"), { maxAge: hour * 24 });
         app.use(express.cookieParser())
         app.use(express.session({ secret: "rawr nyancats. Takagamahara is observing you...", cookie: { maxAge: hour }}));
@@ -158,14 +159,14 @@
 
     function getConnection(cb)
     {
-        pg.connect(connectionString, function(err, client)
+        return pg.connect(connectionString, function(err, client)
         {
             if (err)
             {
                 console.log(err);
             }
 
-            cb(err, client);
+            return cb(err, client);
         });
     }
     
@@ -185,15 +186,15 @@
 				try
 				{
                 	memoryTweets = JSON.parse(input)[0];
-					cb(memoryTweets);
+					cb(undefined, memoryTweets);
 				} catch(err)
 				{
-					cb(memoryTweets);
+					cb(err, memoryTweets);
 				}
             });
         } else 
         {
-            cb(memoryTweets);
+            cb(undefined, memoryTweets);
         }
     }
 
