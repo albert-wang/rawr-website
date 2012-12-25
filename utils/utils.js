@@ -17,6 +17,12 @@
 			var key = keys[current];
 			var target = obj[key];
 
+			if (!target || typeof(target) !== "function") 
+			{
+				console.log("The key " + key + " was not a function.");
+				console.log("This is a fatal error.");
+			}
+
 			return target(function() 
 			{
 				var e = arguments[0];

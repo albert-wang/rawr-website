@@ -108,7 +108,7 @@
 
 			utils.combine({
 				"tags"       : api.getTagsOnPost.bind(api, post.id), 
-				"archives"   : api.postsInCategoryByMonth(api, post.category),
+				"archives"   : api.postsInCategoryByMonth.bind(api, post.category),
 				"navigation" : common.navigation.bind(common, "Blog")
 			}, function(err, d)
 			{

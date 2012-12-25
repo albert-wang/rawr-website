@@ -426,7 +426,7 @@
 
     function getTagsOnPost(id, callback)
     {
-    	console.time("tags on post");
+        console.time("tags on post");
     	var cb = function(err, rows) {
     		console.timeEnd("tags on post");
     		callback(err, rows);
