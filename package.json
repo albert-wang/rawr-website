@@ -4,6 +4,7 @@
 	
     "dependencies" : 
     {
+        "gen-run"       : "*",
         "express"       : "2.5.x", 
         "swig"          : "*",
         "backuptweets"  : "0.1.x",
