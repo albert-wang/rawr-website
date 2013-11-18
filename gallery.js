@@ -3,12 +3,12 @@
 {
 	var gapi 	= require("./cms/galleryapi.js");
 	var common 	= require("./common.js");
-	var utils   = require("./utils/utils");
-	var envrun  = require("env-run");
+	var utils	= require("./utils/utils");
+	var genrun	= require("gen-run");
 
 	function home(req, res, setup)
 	{
-		envrun(function*(run) {
+		genrun(function*(run) {
 			navigation = yield common.navigation("Gallery", run());
 			galleries = yield gapi.getAllGalleriesWithOneImage(run());
 
