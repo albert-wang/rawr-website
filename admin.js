@@ -552,7 +552,7 @@
 
     function preview(req, res)
     {
-        var postTemplate = setup.swig.compileFile("post.html");
+        var postTemplate = setup.swig.compileFile("./templates/post.html");
 
         //Get the data!
         var context = {};

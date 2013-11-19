@@ -30,26 +30,28 @@
             <div id='content' class='container'>
                 <div class='thinleft'>
                     {% for post in feed %}
-                    <div class='lightbox no{{loop.index|stylenumber}}'>
-                        <h1>
-                            <a href="/post/{{post.id}}/{{post.title|linkify}}">{{post.title|title}}</a>
-                        </h1>
-                        <h3>Posted {{post.time|date("l, F jS")}} | 
-                        {% for tag in post.tags %}{{tag.name|title}} {% endfor %}
-                        </h3>
-						<div class='postcontent'>
-						{{post.content|markdown|raw}}
-						</div>
-                    </div>
-					{% else %}
-					<div class='lightbox no1'>
-						<h1>
-							Theres nothing here!
-						</h1>
-						<div class='postcontent'>
-							&nbsp;
-						</div>
-					</div>
+						{% if post %}
+							<div class='lightbox no{{loop.index|stylenumber}}'>
+								<h1>
+									<a href="/post/{{post.id}}/{{post.title|linkify}}">{{post.title|title}}</a>
+								</h1>
+								<h3>Posted {{post.time|date("l, F jS")}} | 
+								{% for tag in post.tags %}{{tag.name|title}} {% endfor %}
+								</h3>
+								<div class='postcontent'>
+								{{post.content|markdown|raw}}
+								</div>
+							</div>
+						{% else %}
+							<div class='lightbox no1'>
+								<h1>
+									Theres nothing here!
+								</h1>
+								<div class='postcontent'>
+									&nbsp;
+								</div>
+							</div>
+						{% endif %}
                     {% endfor %}
                     <div class='clear'></div>
                 </div>

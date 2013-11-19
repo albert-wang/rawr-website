@@ -106,13 +106,17 @@
 		console.log("Started at " + (new Date()));
 		console.time("setup");
 
-        var app = express.createServer();
-        swig.init({ root: "./templates", allowErrors: true, filters : require("../utils/swigfilters.js") });
+        var app = express();
+		var filters = require("../utils/swigfilters.js");
 
-        app.register(".html", swig);
-        app.set("view engine", "html");
-        app.set("views", "./templates");
-        app.set("view options", { layout : false });
+		for (var k in filters) 
+		{
+			swig.setFilter(k, filters[k])
+		}
+
+		app.engine("html", swig.renderFile);
+		app.set("view engine", "html");
+		app.set("views",  __dirname + "/../templates");
 
         //Middleware
 		var loggerFormat = 
@@ -125,26 +129,15 @@
 
 		var hour = 60 * 1000 * 60;
 		
-		app.use(express.staticCache());
         app.use(express.static("./static/"), { maxAge: hour * 24 });
         app.use(express.cookieParser())
         app.use(express.session({ secret: "rawr nyancats. Takagamahara is observing you...", cookie: { maxAge: hour }}));
 		app.use(passport.initialize());
 		app.use(passport.session());
         app.use(express.bodyParser());
-        app.use(express.router(routes));
+		routes(app);
 
-        setInterval(function() { downloadTweets(function(data){ console.log("Finished downloading tweets at" + (new Date()))}) }, 1000 * 60 * 5);
-
-        //Observe the templates directory, and then reset the swig cache every time something changes in it.
-        fs.watchFile("./templates/adminauth.html", function(curr, prev)
-        {
-            if (curr.mtime !== prev.m_time)
-            {
-                console.log("Admin template changed. Resetting the swig caches...");
-                swig.init({ root: "./templates", allowErrors: true, filters : require("../utils/swigfilters.js") });
-            }
-        });
+        setInterval(function() { downloadTweets(function(data){ console.log("Finished downloading tweets at " + (new Date()))}) }, 1000 * 60 * 5);
 
         console.timeEnd("setup");
         return app;

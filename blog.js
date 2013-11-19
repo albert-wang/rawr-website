@@ -6,35 +6,33 @@
     var flow    = require("flow");
 	var config  = require("config");
 	var utils   = require("./utils/utils");
+	var genrun  = require("gen-run");
 
     function home(req, res, env)
     {
-        var twitterblock = env.swig.compileFile("tweet_block.html");
-        var rssblock = env.swig.compileFile("rss_block.html");
-
-		utils.combine({
-			"tweets"    : env.getTweets.bind(env),
-			"featured"  : api.postsInCategory.bind(api, "featured", 1, 0), 
-			"other"     : api.postsInCategory.bind(api, null, 4, 0),
-			"navigation": common.navigation.bind(common, "home")
-		}, function(err, result)
+		genrun(function*(run) 
 		{
-			if (err) {
-				console.log(err); 
-			}
+			var twitterblock = env.swig.compileFile("./templates/tweet_block.html");
+			var rssblock = env.swig.compileFile("./templates/rss_block.html");
+
+			var tweets = yield env.getTweets(run());
+			var featured = yield api.postsInCategory("featured", 1, 0, run());
+			var other = yield api.postsInCategory(null, 4, 0, run());
+			var navigation = yield common.navigation("home", run());
+
 			var data = {
 				title: "Rawr Productions", 
-				navigation_blocks: result.navigation,
-				feature: result.featured[0] ? result.featured[0][0] : undefined, 
-				feed: result.other[0], 
+				navigation_blocks: navigation,
+				feature: featured ? featured[0] : undefined, 
+				feed: other, 
 				blocks: [
 					{
 						title: "Twitter", 
-						content: twitterblock.render({ tweets : [result.tweets[0]]})
+						content: twitterblock({ tweets : [tweets]})
 					}, 
 					{ 
 						title: "RSS", 
-						content: rssblock.render({ feeds: [
+						content: rssblock({ feeds: [
 							{ url: "/rss/blog.rss", text: "Blog Posts" }, 
 							{ url: "/rss/gallery.rss", text: "Gallery Updates" },
 						]})
@@ -96,31 +94,22 @@
 
     function singlepost(req, res, pid)
     {
-        api.getPostWithId(pid, function(err, post)
-        {
-			if (err)
-			{
-				console.log("Post with id: " + pid + " does not exist");
-				res.statusCode = 404;
-				res.end();
-				return;
-			}
+		genrun(function*(run)
+		{
+			var id = pid || 0;
+			var post = yield api.getPostWithId(id, run());
+			var tags = yield api.getTagsOnPost(post.id, run());
+			var archives = yield api.postsInCategoryByMonth(post.category, run());
+			var navigation = yield common.navigation("Blog", run());
 
-			utils.combine({
-				"tags"       : api.getTagsOnPost.bind(api, post.id), 
-				"archives"   : api.postsInCategoryByMonth.bind(api, post.category),
-				"navigation" : common.navigation.bind(common, "Blog")
-			}, function(err, d)
-			{
-				return res.render("blog_single.html", {
-					navigation_blocks: d.navigation, 
-					title: post.title, 
-					post: post, 
-					tags: d.tags, 
-					archives: d.archives
-				});
+			return res.render("blog_single.html", {
+				navigation_blocks: navigation, 
+				title: post.title, 
+				post: post, 
+				tags: tags, 
+				archives: archives
 			});
-        });
+		});
     }
 
     function archives(req, res, cat, year, month)

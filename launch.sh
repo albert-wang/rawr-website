@@ -8,7 +8,7 @@ mkdir -p cache
 if [ "$(ps -ef | grep -v grep | grep rraawwrr | grep forever)" ]; then 
 	echo "Forever running..."
 else
-	/home/rraawwrr/node_modules/forever/bin/forever -c "/home/rraawwrr/bin/node-harmony" -ao logs/console.log -ae logs/error.log start index.js 
+	/home/rraawwrr/bin/forever -c "/home/rraawwrr/bin/node-harmony" -ao logs/console.log -ae logs/error.log start index.js 
 fi
 
 if [ "$(ps -ef | grep -v grep | grep rraawwrr | grep memcached)" ]; then

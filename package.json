@@ -5,7 +5,7 @@
     "dependencies" : 
     {
         "gen-run"       : "*",
-        "express"       : "2.5.x", 
+        "express"       : "*", 
         "swig"          : "*",
         "backuptweets"  : "0.1.x",
         "datejs"        : "*", 

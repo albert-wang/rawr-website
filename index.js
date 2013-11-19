@@ -4,6 +4,7 @@ var admin     = require("./admin.js")
 var gallery   = require("./gallery.js")
 var statics   = require("./statics.js")
 var passport  = require("passport")
+var genrun    = require("gen-run")
 
 var app = setup.setup(function(app)
 {

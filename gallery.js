@@ -26,23 +26,16 @@
 
 	function category(req, res, gallery, i)
 	{
-		var index = i || 0;
-		utils.combine({
-			"navigation" : common.navigation.bind(common, "Gallery"), 
-			"images"     : gapi.getImagesInGallery.bind(gapi, gallery)
-		}, 
-		function(err, d) 
+		genrun(function*(run) 
 		{
-			if (err)
-			{
-				console.log(err);
-				return res.end();
-			}
+			var index = i || 0;
+			var navigation = yield common.navigation("Gallery", run());
+			var images = yield gapi.getImagesInGallery(gallery, run());
 
 			res.render("gallery_category.html", {
-				navigation_blocks: d.navigation, 
-				category         : d.images[1], 
-				images           : d.images[0], 
+				navigation_blocks: navigation, 
+				category         : images[0], 
+				images           : images[1], 
 				start_index      : index
 			});
 		});
