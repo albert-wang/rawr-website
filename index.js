@@ -13,54 +13,56 @@ var app = setup.setup(function(app)
     //Basic website routes
     (function(){
     	//Blog routes
-	    app.get("/", function(req, res)
-	    {
-	        blog.home(req, res, setup);
-	    });
-
-	    app.get("/blog/?", function(req, res)
+		app.harmony.get("/", function*(req, res, run)
 		{
-			blog.category(req, res, "all");
+			yield* blog.home(req, res, setup, run);
 		});
 
-		app.get("/blog/:category/?", function(req, res)
+		app.harmony.get("/blog/?", function*(req, res, run)
 		{
-			blog.category(req, res, req.params.category);	
+			yield* blog.category(req, res, "all", undefined, run);
 		});
 
-		app.get("/blog/archive/:year/:month/:category?", function(req, res)
+	    app.harmony.get("/blog/?", function*(req, res, run)
 		{
-			blog.archives(req, res, req.params.category, req.params.year, req.params.month);
+			yield* blog.category(req, res, "all", undefined, run);
 		});
 
-		app.get("/post/:id/:title/?", function(req, res)
+		app.harmony.get("/blog/:category/?", function*(req, res, run)
 		{
-			blog.singlepost(req, res, req.params.id);
+			yield* blog.category(req, res, req.params.category, undefined, run);
+		});
+
+		app.harmony.get("/blog/archive/:year/:month/:category?", function*(req, res, run)
+		{
+			yield* blog.archives(req, res, req.params.category, req.params.year, req.params.month, run);
+		});
+
+		app.harmony.get("/post/:id/:title/?", function*(req, res, run)
+		{
+			yield* blog.singlepost(req, res, req.params.id, run);
 		});
 
 		//Static page routes
-		app.get("/projects/?", statics.projects);
-		app.get("/downloads/?", statics.downloads);
-		app.get("/about/?", statics.about);
+		app.harmony.get("/projects/?", statics.projects);
+		app.harmony.get("/downloads/?", statics.downloads);
+		app.harmony.get("/about/?", statics.about);
 
 		//Gallery routes
-	    app.get("/gallery/?", function(req, res)
+	    app.harmony.get("/gallery/?", function*(req, res, run)
 	    {
-	    	gallery.home(req, res, setup);
+	    	yield* gallery.home(req, res, setup, run);
 	    });
 
-	    app.get("/gallery/:gallery/:index?", function(req, res)
+	    app.harmony.get("/gallery/:gallery/:index?", function*(req, res, run)
 	    {
-	    	gallery.category(req, res, req.params.gallery, req.params.index ? req.params.index : 0);
+	    	yield* gallery.category(req, res, req.params.gallery, req.params.index ? req.params.index : 0, run);
 	    });
 	})();
 
     //The admin routes
     (function(){
-	    app.get("/admin/?", setup.requiresAuth, function(req, res)
-		{
-			admin.panel(req, res);
-		});
+	    app.harmony.get("/admin/?", setup.requiresAuth, admin.panel);
 
 		app.get("/admin/login/", passport.authenticate('google', 
 			{
@@ -189,9 +191,9 @@ var app = setup.setup(function(app)
 
     //The API routes
     (function() {
-	    app.post("/api/?", function(req, res)
+	    app.harmony.post("/api/?", function*(req, res, run)
 		{
-			blog.postapi(req, res, setup);
+			yield* blog.postapi(req, res, setup, run);
 		})
 	})();
 });

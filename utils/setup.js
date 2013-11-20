@@ -12,6 +12,7 @@
 	var passport= require("passport");
 	var ghstrat = require("passport-google-oauth").OAuth2Strategy;
 	var config  = require("config");
+	var genrun  = require("gen-run");
 
 	console.log = log.debug;
 	console.info = log.info;
@@ -135,6 +136,56 @@
 		app.use(passport.initialize());
 		app.use(passport.session());
         app.use(express.bodyParser());
+
+		var captured = function(cb)
+		{
+			return function(req, res) 
+			{
+				return genrun(function*(run)
+				{
+					yield* cb(req, res, run);
+				});
+			}
+		}
+
+
+		app.harmony = {};
+		app.harmony.get = function(path, auth, done) 
+		{
+			if (done == undefined)
+			{
+				done = auth;
+				auth = undefined;
+			}
+
+			if (auth === undefined)
+			{
+				return app.get(path, captured(done));
+			} 
+			else
+			{
+				return app.get(path, auth, captured(done));
+			}
+		}
+
+		app.harmony.post = function(path, auth, done)
+		{
+			if (done == undefined)
+			{
+				done = auth;
+				auth = undefined;
+			}
+
+			if (auth === undefined)
+			{
+				return app.post(path, captured(done));
+			} 
+			else
+			{
+				return app.post(path, auth, captured(done));
+			}
+		}
+
 		routes(app);
 
         setInterval(function() { downloadTweets(function(data){ console.log("Finished downloading tweets at " + (new Date()))}) }, 1000 * 60 * 5);

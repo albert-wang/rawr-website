@@ -9,109 +9,34 @@
 	var util    = require("util");
 	var genrun  = require("gen-run");
 
-    function getStatistics(cb)
+    function* getStatistics(run)
     {
         var result = {};
-
-        setup.getConnection(function(err, client)
-        {
-            fe(function(err)
-            {
-                if (err)
-                {
-                    cb(err, undefined);
-                    return undefined;
-                }
-
-                client.query("SELECT COUNT(*) AS count FROM blog_posts", this);
-            }, function(err, results)
-            {
-                if (err)
-                {
-                    cb(err, undefined);
-                    return undefined;
-                }
-
-                result.published = results.rows[0].count;
-
-                client.query("SELECT COUNT(*) AS count FROM blog_comments", this);
-            }, function(err, results)
-            {
-                if (err)
-                {
-                    cb(err, undefined);
-                    return undefined;
-                }
-        
-                result.comments = results.rows[0].count;
-                client.query("SELECT COUNT(*) AS count FROM blog_ideas where is_visible=1", this);
-            }, function (err, results)
-            {
-                if (err)
-                {
-                    cb(err, undefined);
-                }
-
-                result.ideas = results.rows[0].count;
-                client.query("SELECT COUNT(*) AS count FROM gallery_categories", this);
-            }, function(err, results)
-            {
-                if (err)
-                {
-                    cb(err, undefined);
-                    return undefined; 
-                }
-
-                result.galleries = results.rows[0].count;
-                client.query("SELECT COUNT(*) AS count FROM gallery_images", this);
-            }, function (err, results)
-            {
-                if (err)
-                {
-                    cb(err, undefined);
-                    return undefined;
-                }
-
-                result.totalImages = results.rows[0].count;
-                this();
-            }, function()
-            {
-                cb(undefined, result);
-            });
-        });
+		var client = yield setup.getConnection(run());
+		result.published = (yield client.query("SELECT COUNT(*) AS count FROM blog_posts", run())).rows[0].count;
+		result.comments = (yield client.query("SELECT COUNT(*) AS count FROM blog_comments", run())).rows[0].count;
+		result.ideas = (yield client.query("SELECT COUNT(*) AS count FROM blog_ideas where is_visible=1", run())).rows[0].count;
+		result.galleries = (yield client.query("SELECT COUNT(*) AS count FROM gallery_categories", run())).rows[0].count;
+		result.totalImages = (yield client.query("SELECT COUNT(*) AS count FROM gallery_images", run())).rows[0].count;
+		return result;
     }
 
-	function panel(req, res)
+	function* panel(req, res, run)
 	{
-		common.navigation("Admin", function(err, navcontents)
-		{
-			gapi.getGalleries(function(err, galleries)
-			{
-                api.getAllCategories(function(err, cats)
-                {
-                    getStatistics(function(err, statistics)
-                    {
-				        if (err)
-				        {
-					        console.log(err);
-					        res.end();
-					        return undefined;
-				        }
+		var nav = yield common.navigation("Admin", run());
+		var galleries = yield gapi.getGalleries(run());
+		var cats = yield api.getAllCategories(run());
+		var stats = yield* getStatistics(run);
 
-				        res.render("adminauth.html", {
-					        authed : req.isAuthenticated(),
-					        title: "Admin Panel", 
-					        navigation_blocks: navcontents, 
-					        galllery_categories: galleries, 
-                            post_categories: cats.rows,
-                            stats: statistics
-				        });
-                    });
-                });
-			});
+		res.render("adminauth.html", {
+			authed : req.isAuthenticated(),
+			title: "Admin Panel", 
+			navigation_blocks: nav, 
+			galllery_categories: galleries, 
+			post_categories: cats.rows,
+			stats: stats
 		});
 	}
-
 	
     //Idea stuff
 	function getIdeaTitles(req, res)

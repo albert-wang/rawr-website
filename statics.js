@@ -4,14 +4,12 @@
 
     function renderStaticPage(navigationName, file)
     {
-        return function(req, res)
+        return function*(req, res, run)
         {
-            common.navigation(navigationName, function(err, navigationblocks)
-            {
-                res.render(file, {
-                    navigation_blocks : navigationblocks
-                });
-            });
+			var nav = yield common.navigation(navigationName, run());
+			res.render(file, {
+				navigation_blocks: nav
+			});
         };
     }
 
