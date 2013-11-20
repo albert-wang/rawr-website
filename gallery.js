@@ -12,7 +12,7 @@
 			navigation = yield common.navigation("Gallery", run());
 			galleries = yield gapi.getAllGalleriesWithOneImage(run());
 
-			res.render("gallery_home.html", {
+			return res.render("gallery_home.html", {
 				navigation_blocks: navigation, 
 				galleries: galleries, 
 				feature: {
@@ -32,7 +32,7 @@
 			var navigation = yield common.navigation("Gallery", run());
 			var images = yield gapi.getImagesInGallery(gallery, run());
 
-			res.render("gallery_category.html", {
+			return res.render("gallery_category.html", {
 				navigation_blocks: navigation, 
 				category         : images[0], 
 				images           : images[1], 

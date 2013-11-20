@@ -101,91 +101,70 @@
 
     function archives(req, res, cat, year, month)
     {
-		utils.combine({
-			"categories" : api.getAllCategories.bind(api), 
-			"posts"      : api.postsInCategoryByDate.bind(api, cat, year, month), 
-			"archives"   : api.postsInCategoryByMonth.bind(api, cat), 
-			"navigation" : common.navigation.bind(common, "Blog")
-		}, function(err, d) 
+		genrun(function*(run) 
 		{
-			if (err || !d.posts)
+			var category = yield api.getAllCategories(run());
+			var posts = yield api.postsInCategoryByDate(cat, year, month, run());
+			var archives = yield api.postsInCategoryByMonth(cat, run());
+			var navigation = yield common.navigation("Blog", run());
+
+			if (!posts)
 			{
-				console.log(err);
 				return res.end();
 			}
 
-			flow.serialForEach(d.posts, function(post)
+			for (var i in posts)
 			{
-				var outer = this;
-				api.getTagsOnPost(post.id, function(err, tags)
-				{
-					post.tags = tags;
-					outer();
-				});
-			}, function()
-			{
-			}, function()
-			{
-				res.render("blog_category.html", {
-				   navigation_blocks: d.navigation, 
-				   title: cat || "Anything and Everything", 
-				   actual_category: cat,
-				   archive_date: new Date(year, month - 1, 1),
-				   feed: d.posts, 
-				   categories : d.categories.rows, 
-				   archives: d.archives,
-				});
+				var post = posts[i];
+				post.tags = yield api.getTagsOnPost(post.id, run());
+			}
+
+			return res.render("blog_category.html", {
+				navigation_blocks: navigation, 
+				title: cat || "Anything and Everything", 
+				actual_category: cat, 
+				archive_date: new Date(year, month - 1, 1),
+				feed: posts, 
+				categories: category.rows, 
+				archives: archives
 			});
 		});
     }
 
     function postapi(req, res, env)
     {
-        if (req.body.key !== config.API_KEY)
-        {
-            res.statusCode = 403;
-            res.end();
-            return undefined;
-        }
+		genrun(function*(run) 
+		{
+			if (req.body.key !== config.API_KEY)
+			{
+				res.statusCode = 403;
+				res.end();
+				return undefined;
+			}
 
-        var postContent = {
-            title   : api.base64Decode(req.body.title).toLowerCase(), 
-            content : api.base64Decode(req.body.post),
-            category: api.base64Decode(req.body.category),
-            tags    : api.base64Decode(req.body.tags).split(',')
-        }
+			var postContent = {
+				title   : api.base64Decode(req.body.title).toLowerCase(), 
+				content : api.base64Decode(req.body.post),
+				category: api.base64Decode(req.body.category),
+				tags    : api.base64Decode(req.body.tags).split(',')
+			}
 
-        var date = null;
-        if (req.body.date)
-        {
-            date = api.base64Decode(req.body.date);
-        }
+			var date = null;
+			if (req.body.date)
+			{
+				date = api.base64Decode(req.body.date);
+			}
 
-        if (!date)
-        {
-            api.post(postContent, function(err, id)
-            {
-                if (err)
-                {
-                    res.end("Failed to insert a post:" + err);
-                } else 
-                {
-                    res.end("http://www.rawrrawr.com/post/" + id);
-                }
-            });
-        } else 
-        {
-            api.futurepost(postContent, date, function(err)
-            {
-                if (err)
-                {
-                    res.end("Failed to insert a future post.");
-                } else 
-                {
-                    res.end("http://www.rawrrawr.com");
-                }
-            });
-        }
+			if (!date)
+			{
+				var id = yield api.post(postContent, run());
+				return res.end("http://www.rawrrawr.com/post/" + id);
+			} else 
+			{
+				yield api.futurepost(postContent, date, run());
+				return res.end("http://www.rawrrawr.com");
+			}
+		});
     }
 
     module.exports = {
