@@ -7,6 +7,7 @@
 	var api     = require("./cms/blogapi.js");
 	var fe      = require("flow").exec;
 	var util    = require("util");
+	var genrun  = require("gen-run");
 
     function getStatistics(cb)
     {

@@ -46,48 +46,35 @@
 
     function category(req, res, category, page)
     {
-        if (category === "all")
-        {
-            category = null;
-        }
-
-		utils.combine({
-			"categories" : api.getAllCategories.bind(api),
-			"posts"      : api.postsInCategory.bind(api, category, 5, page),
-			"archives"   : api.postsInCategoryByMonth.bind(api, category),
-			"navigation" : common.navigation.bind(common, "Blog")
-		}, function(err, result)
+		genrun(function*(run)
 		{
-			if (err || !result.posts)
+			if (category === "all")
 			{
-				console.log(err);
-				return res.end();
+				category = null;
 			}
 
-			flow.serialForEach(result.posts[0], function(post) 
+			var categories = yield api.getAllCategories(run());
+			var posts = yield api.postsInCategory(category, 5, page, run(3));
+			var archives = yield api.postsInCategoryByMonth(category, run());
+			var navigation = yield common.navigation("Blog", run());
+
+			for (var i in posts[0]) 
 			{
-				var self = this;
-				api.getTagsOnPost(post.id, function(err, tags) 
-				{
-					post.tags = tags;
-					self();
-				});
-			}, 
-			function()
-			{},
-			function() 
-			{
-				var nolimitCount = result.posts[1];
-				res.render("blog_category.html", {
-					navigation_blocks: result.navigation, 
-					title: category || "Anything and Everything", 
-					actual_category: category, 
-					feed: result.posts[0], 
-					categories : result.categories.rows, 
-					count: nolimitCount,
-					archives: result.archives, 
-					pages: Math.floor(nolimitCount / 5)
-				});
+				var post = posts[0][i];
+				post.tags = yield api.getTagsOnPost(post.id, run());
+			}
+
+			var nolimitCount = posts[1];
+			return res.render("blog_category.html", {
+				navigation_blocks: navigation, 
+				title: category || "Anything and Everything", 
+				actual_category: category, 
+				feed: posts[0], 
+
+				categories: categories.rowws, 
+				count: nolimitCount, 
+				archives: archives, 
+				pages: Math.floor(nolimitCount / 5)
 			});
 		});
     }
