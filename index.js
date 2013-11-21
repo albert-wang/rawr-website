@@ -85,108 +85,50 @@ var app = setup.setup(function(app)
             admin.preview(req, res);
         });
 
-		app.post("/admin/post/:index/?", setup.requiresAuth, function(req, res)
+		app.harmony.post("/admin/post/:index/?", setup.requiresAuth, function*(req, res, run)
 		{
-			admin.getpost(req, res, req.params.index);
+			yield* admin.getpost(req, res, req.params.index, run);
 		});
 
-        app.post("/admin/removepost", setup.requiresAuth, function(req, res)
-        {
-            admin.removepost(req, res);
-        });
 
 		app.post("/admin/authenticate/?", setup.requiresAuth, function(req, res)
 		{
 			admin.auth(req, res);
 		});
 
-        app.post("/admin/posttitles/?", setup.requiresAuth, function(req, res)
-        {
-            admin.getPostTitles(req, res);
-        })
+        app.harmony.post("/admin/removepost", setup.requiresAuth, admin.removepost);
+        app.harmony.post("/admin/posttitles/?", setup.requiresAuth, admin.getPostTitles) ;
 
         //Ideas
-        app.post("/admin/ideatitles/?", setup.requiresAuth, function(req, res)
-        {
-            admin.getIdeaTitles(req, res);
-        });
+        app.harmony.post("/admin/ideatitles/?", setup.requiresAuth, admin.getIdeaTitles);
+        app.harmony.post("/admin/addidea/?", setup.requiresAuth, admin.addIdea);
+        app.harmony.post("/admin/removeidea/?", setup.requiresAuth, admin.removeIdea);
+        app.harmony.post("/admin/saveidea/?", setup.requiresAuth, admin.saveIdea);
+        app.harmony.post("/admin/publishidea/?", setup.requiresAuth, admin.publishIdea);
 
-        app.post("/admin/addidea/?", setup.requiresAuth, function(req, res)
-        {
-            admin.addIdea(req, res);
-        });
-
-        app.post("/admin/removeidea/?", setup.requiresAuth, function (req, res)
-        {
-            admin.removeIdea(req, res);
-        });
-
-        app.post("/admin/saveidea/?", setup.requiresAuth, function(req, res)
-        {
-            admin.saveIdea(req, res);
-        });
-
-        app.post("/admin/publishidea/?", setup.requiresAuth, function(req, res)
-        {
-            admin.publishIdea(req, res);
-        });
-        
 		app.post("/admin/unauth/?", setup.requiresAuth, function(req, res)
 		{
 			req.logout();
 			res.redirect("/");
 		});
 
-		app.post("/admin/edit/?", setup.requiresAuth, function(req, res)
-		{
-			admin.editpost(req, res);
-		});
+		app.harmony.post("/admin/edit/?", setup.requiresAuth, admin.editpost); 
 
         //Galleries
-        app.post("/admin/addgallery/?", setup.requiresAuth, function (req, res)
-        {
-            admin.addGallery(req, res);
-        });
+        app.harmony.post("/admin/addgallery/?", setup.requiresAuth, admin.addGallery);
 
         app.post("/admin/gallery/?", setup.requiresAuth, function (req, res)
         {
             admin.gallery(req, res);
         });
 
-        app.post("/admin/getgalleries/?", setup.requiresAuth, function(req, res)
-        {
-            admin.getGalleries(req, res);
-        })
-
-        app.post("/admin/getimages/?", setup.requiresAuth, function(req, res)
-        {
-            admin.getGalleryImages(req, res);
-        });
-
-        app.post("/admin/togglegallery/?", setup.requiresAuth, function(req, res)
-        {
-            admin.toggleGallery(req, res);
-        });
-
-        app.post("/admin/gallery/addimage/?", setup.requiresAuth, function(req, res)
-        {
-            admin.addImage(req, res);
-        });
-
-        app.post("/admin/gallery/removeimage/?", setup.requiresAuth, function(req, res)
-        {
-            admin.removeImage(req, res);
-        });
-
-        app.post("/admin/gallery/editimage/?", setup.requiresAuth, function(req, res)
-        {
-            admin.editImage(req, res);
-        });
-
-        app.post("/admin/removegallery/?", setup.requiresAuth, function (req, res)
-        {
-            admin.removeGallery(req, res);
-        });
+        app.harmony.post("/admin/getgalleries/?", setup.requiresAuth, admin.getGalleries);
+        app.harmony.post("/admin/getimages/?", setup.requiresAuth, admin.getGalleryImages);
+        app.harmony.post("/admin/togglegallery/?", setup.requiresAuth, admin.toggleGallery);
+        app.harmony.post("/admin/gallery/addimage/?", setup.requiresAuth, admin.addImage);
+        app.harmony.post("/admin/gallery/removeimage/?", setup.requiresAuth, admin.removeImage);
+        app.harmony.post("/admin/gallery/editimage/?", setup.requiresAuth, admin.editImage); 
+        app.harmony.post("/admin/removegallery/?", setup.requiresAuth, admin.removeGallery);
 	})();
 
     //The API routes

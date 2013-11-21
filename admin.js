@@ -39,441 +39,179 @@
 	}
 	
     //Idea stuff
-	function getIdeaTitles(req, res)
+	function* getIdeaTitles(req, res, run)
 	{
-	    if (!req.isAuthenticated())
-	    {
-	        res.statusCode = 403;
-	        res.end();
-	        return;
-	    }
+		var client = yield setup.getConnection(run());
+		var result = yield client.query("SELECT id, title, content FROM blog_ideas WHERE is_visible=1 ORDER BY id DESC", run());
 
-	    setup.getConnection(function (err, client)
-	    {
-	        if (err)
-	        {
-	            res.statusCode = 404;
-	            res.end();
-	            console.log(err);
-	            return;
-	        }
-
-	        fe(function ()
-	        {
-	            client.query("SELECT id, title, content FROM blog_ideas WHERE is_visible=1 ORDER BY id DESC", this)
-	        }, function (err, results)
-	        {
-	            if (err)
-	            {
-	                res.statusCode = 403;
-	                res.end();
-	                return;
-	            }
-
-	            res.end(JSON.stringify(results.rows));
-	        });
-	    });
+		return res.end(JSON.stringify(result.rows));
 	}
 
-    function publishIdea(req, res)
+    function* publishIdea(req, res, run)
     {
-        setup.getConnection(function (err, client)
-        {
-            if (err)
-            {
-                res.statusCode = 403;
-                res.end();
-                return;
-            }
+		var client = yield setup.getConnection(run());
+		yield client.query({
+			name: "delete idea",
+			text: "UPDATE blog_ideas SET is_visible=0 WHERE id=$1",
+			values: [req.body.id]
+		}, run());
 
-            fe(function ()
-            {
-                client.query({
-                    name: "delete idea",
-                    text: "UPDATE blog_ideas SET is_visible=0 WHERE id=$1",
-                    values: [req.body.id]
-                }, this);
-                
-            }, function (err, results)
-            {
-                client.query({
-                    name: "Get idea",
-                    text: "SELECT id, title, content FROM blog_ideas WHERE id=$1;",
-                    values: [req.body.id]
-                }, this);
-            }, function(err, results)
-            {
-                api.post({
-                    category: req.body.category, 
-                    content: results.rows[0].content,
-                    title: results.rows[0].title,
-                    tags: req.body.tags.split(",")
-                }, this);
-            }, function(err)
-            {
-                if (err)
-                {
-                    res.statusCode = 502;
-                    res.end();
-                    return;
-                }
+		var idea = yield client.query({
+			name: "Get idea",
+			text: "SELECT id, title, content FROM blog_ideas WHERE id=$1;",
+			values: [req.body.id]
+		}, run());
 
-                res.end();
-                return;
-            });
-        });
+		idea = idea.rows[0];
+		yield api.post({
+			category: req.body.category,
+			content: idea.content,
+			title: idea.title, 
+			tags: req.body.tags.split(",")
+		}, run());
+
+		return res.end();
     };
 
-    function saveIdea(req, res)
+    function* saveIdea(req, res, run)
     {
-        if (!req.isAuthenticated())
-        {
-            res.statusCode = 403;
-            res.end();
-            return;
-        }
+		var client = yield setup.getConnection(run());
+		yield client.query({
+			name: "Insert idea",
+			text: "UPDATE blog_ideas SET title=$1, content=$2 WHERE id=$3",
+			values: [req.body.title, req.body.content, req.body.id]
+		}, run());
 
-        setup.getConnection(function (err, client)
-        {
-            if (err)
-            {
-                res.statusCode = 403;
-                res.end();
-                return;
-            }
-
-            fe(function ()
-            {
-                client.query({
-                    name: "Insert idea",
-                    text: "UPDATE blog_ideas SET title=$1, content=$2 WHERE id=$3",
-                    values: [req.body.title, req.body.content, req.body.id]
-                }, this);
-            }, function (err, results)
-            {
-                if (err)
-                {
-                    res.statusCode = 502;
-                    res.end();
-                    return;
-                }
-
-                res.end();
-                return;
-            });
-        });
+		return res.end();
     }
 
-    function addIdea(req, res)
+    function* addIdea(req, res, run)
     {
-        if (!req.isAuthenticated())
-        {
-            res.statusCode = 403;
-            res.end();
-            return;
-        }
+		var client = yield setup.getConnection(run());
+		var result = yield client.query({
+			name: "Insert idea", 
+			text: "INSERT INTO blog_ideas (title, category, content, is_visible) VALUES" + 
+				"($1, 1, '', 1) RETURNING id;",
+			values: [req.body.title]
+		}, run());
 
-        setup.getConnection(function(err, client)
-        {
-            if (err)
-            {
-                res.statusCode = 403;
-                res.end();
-                return;
-            }
-
-            fe(function()
-            {
-                client.query({
-                    name: "Insert idea", 
-                    text: "INSERT INTO blog_ideas (title, category, content, is_visible) VALUES" + 
-                        "($1, 1, '', 1) RETURNING id;",
-                    values: [req.body.title]
-                }, this);
-            }, function(err, results)
-            {
-                if (err)
-                {
-                    res.statusCode = 502;
-                    res.end();
-                    return;
-                }
-
-                res.end(JSON.stringify({ id: results.rows[0].id }));
-                return;
-            });
-        });
+		return res.end(JSON.stringify({ id: result.rows[0].id }));
     }
 
-    function removeIdea(req, res)
+    function* removeIdea(req, res, run)
     {
-        if (!req.isAuthenticated())
-        {
-            res.statusCode = 403;
-            res.end();
-            return;
-        }
+		var client = yield setup.getConnection(run());
+		yield client.query({
+			name: "delete idea",
+			text: "DELETE FROM blog_ideas WHERE id=$1",
+			values: [req.body.id]
+		}, run());
 
-        setup.getConnection(function (err, client)
-        {
-            if (err)
-            {
-                res.statusCode = 403;
-                res.end();
-                return;
-            }
-
-            fe(function ()
-            {
-                client.query({
-                    name: "delete idea",
-                    text: "DELETE FROM blog_ideas WHERE id=$1",
-                    values: [req.body.id]
-                }, this);
-            }, function (err, results)
-            {
-                res.end();
-                return;
-            });
-        });
+		return res.end();
     }
-    
 
     //Post stuff
-    function getPostTitles(req, res)
+    function* getPostTitles(req, res, run)
     {
-        if (!req.isAuthenticated())
-        {
-            res.statusCode = 403;
-            res.end();
-            return;
-        }
-        
-        setup.getConnection(function(err, client)
-        {
-            if (err)
-            {
-                res.statusCode = 404;
-                res.end();
-                console.log(err);
-                return;
-            }
-
-            fe(function()
-            {
-                client.query("SELECT id, title, content FROM blog_posts ORDER BY time ASC;", this)
-            }, function(err, results)
-            {
-                if (err)
-                {
-                    res.statusCode = 403;
-                    res.end();
-                    return;
-                }
-
-                res.end(JSON.stringify(results.rows));
-            });
-        });
+		var client = yield setup.getConnection(run());
+		var results = yield client.query("SELECT id, title, content FROM blog_posts ORDER BY time ASC;", run())
+		return res.end(JSON.stringify(results.rows));
     }
 
-	function getpost(req, res, id)
+	function* getpost(req, res, id, run)
 	{
-		if (!req.isAuthenticated())
-		{
-			res.statusCode = 403;
-			res.end();
-			return;
-		}
-
-		api.getPostWithId(id, function(err, data)
-		{
-			res.end(JSON.stringify({
-				content: data.content
-			}));
-		});
+		var data = yield api.getPostWithId(id, run());
+		return res.end(JSON.stringify({
+			content: data.content
+		}));
 	}
 
-	function editpost(req, res)
+	function* editpost(req, res, run)
 	{
-		if (!req.isAuthenticated())
-		{
-			res.statusCode = 403;
-			res.end();
-			return; 
-		}
-
-		api.editpost({
+		yield api.editpost({
 			id: req.body.id, 
 			content: req.body.content
-		}, function(err)
-		{
-			if (err) { console.log(err); }
-			res.end();
-		});
+		}, run());
+
+		return res.end();
 	}
     
-    function removePost(req, res)
+    function* removePost(req, res, run)
     {
-        setup.getConnection(function(err, client)
-        {
-            client.query({
-                name: "Delete referenced tags",
-                text: "DELETE FROM blog_tag_bridge WHERE post=$1",
-                values: [req.body.id]
-            }, function(err, results)
-            {
-                client.query({
-                    name: "Delete post",
-                    text: "DELETE FROM blog_posts WHERE id=$1", 
-                    values: [req.body.id]
-                }, function(err, results)
-                {
-                    res.end();
-                });
-            });
-        });
+		var client = yield setup.getConnection(run());
+		yield client.query({
+			name: "Delete referenced tags",
+			text: "DELETE FROM blog_tag_bridge WHERE post=$1",
+			values: [req.body.id]
+		}, run());
+
+		yield client.query({
+			name: "Delete post",
+			text: "DELETE FROM blog_posts WHERE id=$1", 
+			values: [req.body.id]
+		}, run());
+
+		return res.end();
     }
 
-    function getGalleries(req, res)
+    function* getGalleries(req, res, run)
     {
-        gapi.getGalleriesWithHidden(function(err, galleries)
-        {
-            if (err)
-            {
-                console.log(err);
-                res.statusCode = 403;
-                res.end();
-                return undefined;
-            }
-            res.end(JSON.stringify(galleries));
-        });
+		var galleries = yield gapi.getGalleriesWithHidden(run());
+		return res.end(JSON.stringify(galleries));
     }
 
-    function getGalleryImages(req, res)
+    function* getGalleryImages(req, res, run)
     {
-        gapi.getImagesInGallery(req.body.id, function(err, images)
-        {
-            if (err)
-            {
-                console.log(err);
-                res.statusCode = 403;
-                res.end();
-                return undefined;
-            }
-
-            res.end(JSON.stringify(images))
-        });
+		var images = yield gapi.getImagesInGallery(req.body.id, run());
+		return res.end(JSON.stringify(images));
     }
 
-	function addGallery(req, res)
+	function* addGallery(req, res, run)
 	{
-	    if (!req.isAuthenticated())
-	    {
-	        res.statusCode = 403;
-	        res.end();
-	        return;
-	    }
+		yield gapi.gallery({
+			name: req.body.name, 
+			desc: req.body.desc
+		}, run());
 
-	    gapi.gallery({
-	        name: req.body.name,
-	        desc: req.body.desc
-	    }, function (err)
-	    {
-	        if (err)
-	        {
-	            res.statusCode = 500;
-	            return res.end();
-	        }
-
-	        res.statusCode = 200;
-	        res.end();
-	    });
+		return res.end();
 	}
 
-    function toggleGallery(req, res)
+    function* toggleGallery(req, res, run)
     {
-        gapi.toggleGallery(req.body.id, function(err)
-        {
-            if (err)
-            {
-                console.log(err);
-                res.statusCode = 500;
-                return res.end();
-            }
-
-            res.statusCode = 200;
-            res.end();
-        });
+		yield gapi.toggleGallery(req.body.id, run());
+		return res.end();
     }
 
-    function removeGallery(req, res)
+    function* removeGallery(req, res, run)
     {
-        gapi.removeGallery(req.body.id, function (err)
-        {
-            if (err)
-            {
-                res.statusCode = 500;
-                return res.end();
-            }
-
-            res.statusCode = 200;
-            res.end();
-        });
+		yield gapi.removeGallery(req.body.id, run());
+		return res.end();
     }
 
-    function addImage(req, res)
+    function* addImage(req, res, run)
     {
-        gapi.image({
+        yield gapi.image({
             title: req.body.title,
             desc: req.body.desc, 
             image: req.files.image.path, 
             gallery: req.body.gallery,
             type: req.files.image.type
-        }, function(err)
-        {
-            if (err)
-            {
-                console.log(err);
-                res.statusCode = 403;
-                res.end();
-				return;
-            }
+        }, run());
 
-            res.writeHead(302, { 'Location': '/admin' });
-            res.end();
-        });
+		res.writeHead(302, { 'Location': '/admin' });
+		return res.end();
     }
 
-    function removeImage(req, res)
+    function* removeImage(req, res, run)
     {
-        gapi.removeImage(req.body.id, function(err)
-        {
-            if (err)
-            {
-                console.log(err);
-                res.statusCode = 403;
-                return res();
-                return undefined;
-            }
-
-            res.end();
-        });
+        yield gapi.removeImage(req.body.id, run());
+		return res.end();
     }
     
-    function editImage(req, res)
+    function* editImage(req, res, run)
     {
-        gapi.editImage(req.body.id, req.body.title, req.body.desc, function(err)
-        {
-            if (err)
-            {
-                console.log(err);
-                res.statusCode = 403;
-                return res();
-                return undefined;
-            }
-
-            res.end();
-        });
+		yield gapi.editImage(req.body.id, req.body.title, req.body.desc, run())
+		res.end();
     }
 
     function preview(req, res)
@@ -493,7 +231,7 @@
             context.tags.push({ name: tags[i] });
         }
 
-        res.end(postTemplate.render(context));
+        res.end(postTemplate(context));
     }
 
 
